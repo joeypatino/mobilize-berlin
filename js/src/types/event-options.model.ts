@@ -37,7 +37,7 @@ export class EventOptions implements IEventOptions {
 
   showRemainingAttendeeCapacity = false;
 
-  anonymousParticipation = false;
+  anonymousParticipation = true;
 
   hideOrganizerWhenGroupEvent = false;
 

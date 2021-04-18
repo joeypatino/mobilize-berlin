@@ -5,6 +5,9 @@ init:
 setup: stop
 	@bash docker/message.sh "Compiling everything"
 	docker-compose run --rm api bash -c 'mix deps.get; yarn --cwd "js"; yarn --cwd "js" build:pictures; mix ecto.create; mix ecto.migrate'
+shortsetup: stop
+	@bash docker/message.sh "Compiling everything"
+	docker-compose run --rm api bash -c 'mix deps.get; yarn --cwd "js"; mix ecto.create; mix ecto.migrate'
 migrate:
 	docker-compose run --rm api mix ecto.migrate
 logs:

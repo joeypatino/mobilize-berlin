@@ -1277,7 +1277,7 @@ div.sidebar {
         display: inline-block;
         padding: 0.3rem;
         background: $secondary;
-        color: #111;
+        color: #fff;
 
         &:empty {
           display: none;

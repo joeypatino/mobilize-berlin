@@ -60,7 +60,7 @@ div.group-section-title {
   display: flex;
   align-items: stretch;
   background: $secondary;
-  color: var(--title-color);
+  color: #ffffff;
 
   &.privateSection {
     color: $purple-3;

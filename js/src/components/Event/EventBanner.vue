@@ -1,17 +1,17 @@
 <template>
   <div class="banner-container">
-    <lazy-image-wrapper :picture="picture" />
+    <blurhash-img-wrapper :picture="picture" />
   </div>
 </template>
 <script lang="ts">
 import { IMedia } from "@/types/media.model";
 import { PropType } from "vue";
 import { Component, Prop, Vue } from "vue-property-decorator";
-import LazyImageWrapper from "../Image/LazyImageWrapper.vue";
+import BlurhashImgWrapper from "../Image/BlurhashImgWrapper.vue";
 
 @Component({
   components: {
-    LazyImageWrapper,
+    BlurhashImgWrapper,
   },
 })
 export default class EventBanner extends Vue {
