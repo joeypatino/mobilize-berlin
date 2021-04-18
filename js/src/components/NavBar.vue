@@ -270,19 +270,20 @@ nav {
     }
 
     svg {
-      height: 1.75rem;
+      height: 2rem;
     }
   }
 
   .navbar-dropdown .navbar-item {
     cursor: pointer;
+    background: $greyish;
 
     span {
       display: inherit;
     }
 
     &.is-active {
-      background: $secondary;
+      background: $greyish;
     }
 
     span.icon.is-medium {
@@ -301,7 +302,7 @@ nav {
   }
 
   a.navbar-item:focus-within {
-    background-color: inherit;
+    color: $tertiary;
   }
 }
 </style>
