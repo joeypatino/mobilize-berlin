@@ -150,7 +150,7 @@ export default class EventCard extends Vue {
 a.card {
   display: block;
   background: $secondary;
-  color: #3c376e;
+  color: #ffffff;
 
   &:hover {
     // box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
@@ -210,8 +210,10 @@ a.card {
 
   div.card-image {
     background: $secondary;
+    border-radius: 5px;
 
     figure.image {
+      border-radius: 5px 5px 0 0;
       background-size: cover;
       background-position: center;
     }
@@ -263,6 +265,17 @@ a.card {
 
     .event-subtitle {
       font-size: 0.85rem;
+      color: #ffffff;
+
+      span {
+        width: 14rem;
+        margin-right: 12px;
+        overflow: hidden;
+
+        flex-grow: 1;
+
+        text-overflow: ellipsis;
+      }
     }
 
     .organizer-name {
