@@ -784,7 +784,7 @@ div.container {
       position: relative;
 
       h1 {
-        color: $purple-1;
+        color: $greyish;
         font-size: 2rem;
         font-weight: 500;
       }
