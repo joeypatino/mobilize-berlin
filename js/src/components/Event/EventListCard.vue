@@ -433,8 +433,8 @@ article.box {
   .identity-header {
     background: $yellow-2;
     display: flex;
-    padding: 5px;
-    padding-left: calc(48px + 15px);
+    padding: 5px 5px 5px 10px;
+    border-radius: 4px 4px 0 0;
 
     figure {
       padding-right: 3px;

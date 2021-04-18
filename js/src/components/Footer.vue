@@ -130,8 +130,8 @@ footer.footer {
     text-decoration-color: $secondary;
   }
 
-  ::v-deep span.select select select,
-  option {
+::v-deep span.select select select,
+option {
     background: $greyish;
     color: $white;
   }
