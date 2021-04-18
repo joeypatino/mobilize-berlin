@@ -515,7 +515,8 @@ article.box {
   .identity-header {
     background: $yellow-2;
     display: flex;
-    padding: 5px;
+    padding: 5px 5px 5px 10px;
+    border-radius: 4px 4px 0 0;
 
     figure,
     span.icon {
