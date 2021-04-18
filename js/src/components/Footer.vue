@@ -154,10 +154,12 @@ footer.footer {
     }
   }
 
-  ::v-deep span.select select select,
-  option {
-    background: $greyish;
-    color: $white;
+  ::v-deep span.select {
+    select,
+    option {
+      background: $greyish;
+      color: $white;
+    }
   }
 }
 </style>
