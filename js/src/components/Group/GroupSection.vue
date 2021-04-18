@@ -58,7 +58,7 @@ div.group-section-title {
   display: flex;
   align-items: stretch;
   background: $secondary;
-  color: #3a384c;
+  color: #ffffff;
 
   &.privateSection {
     color: $violet-2;
