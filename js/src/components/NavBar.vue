@@ -46,11 +46,10 @@
       >
         <b-button
           v-if="!hideCreateEventsButton"
-          tag="router-link"
-          :to="{ name: RouteName.CREATE_EVENT }"
-          type="is-primary"
-          >{{ $t("Create") }}</b-button
-        >
+          type="is-primary" @click="isComponentModalActive = true"
+          >{{
+          $t("Create")
+        }}</b-button>
       </b-navbar-item>
       <b-navbar-item
         v-if="config && config.features.koenaConnect"
@@ -67,6 +66,60 @@
           alt="Contact accessibilité"
         />
       </b-navbar-item>
+      <b-modal :active.sync="isComponentModalActive" has-modal-card>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">{{ $t("Warning") }}</p>
+          </header>
+          <section class="modal-card-body">
+            <p style="color: red">
+              <b
+                >If you want to build an audience on mobilize.berlin, we
+                strongly advice you to create a group and publish your events on
+                behalf of that group.</b
+              >
+            </p>
+            <p style="color: black">
+              <br />From mobilizon version 2.0 mobilizon users will be able to
+              follow your group (but not your user account!). For any question
+              or assistance you can contact
+              <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.
+            </p>
+            <p style="color: black">
+              <br />For more information see
+              <a
+                href="https://docs.mobilize.berlin/organizer.html"
+                target="_blank"
+                >docs.mobilize.berlin/organizer.html</a
+              >.
+            </p>
+          </section>
+          <footer class="modal-card-foot">
+            <div
+              style="display: flex; justify-content: space-between; width: 100%"
+            >
+              <b-button
+                type="is-primary"
+                tag="router-link"
+                :to="{ name: RouteName.CREATE_EVENT }"
+                exact
+                v-on:click.native="closeDialog()"
+              >
+                {{ $t("Create") }}
+              </b-button>
+              <b-button
+                type="is-primary"
+                tag="router-link"
+                :to="{ name: RouteName.CREATE_GROUP }"
+                exact
+                v-on:click.native="closeDialog()"
+              >
+                {{ $t("Create group") }}
+              </b-button>
+            </div>
+          </footer>
+        </div>
+      </b-modal>
     </template>
     <template slot="end">
       <b-navbar-item tag="div">
@@ -118,19 +171,14 @@
           <span>
             <div class="media-left">
               <figure class="image is-32x32" v-if="identity.avatar">
-                <img
-                  class="is-rounded"
-                  loading="lazy"
-                  :src="identity.avatar.url"
-                  alt
-                />
+                <img class="is-rounded" :src="identity.avatar.url" alt />
               </figure>
               <b-icon v-else size="is-medium" icon="account-circle" />
             </div>
 
             <div class="media-content">
-              <span>{{ displayName(identity) }}</span>
-              <span class="has-text-grey-dark" v-if="identity.name"
+              <span>{{ identity.displayName() }}</span>
+              <span class="has-text-grey" v-if="identity.name"
                 >@{{ identity.preferredUsername }}</span
               >
             </div>
@@ -144,6 +192,11 @@
           :to="{ name: RouteName.UPDATE_IDENTITY }"
           >{{ $t("My account") }}</b-navbar-item
         >
+
+        <!--          <b-navbar-item tag="router-link" :to="{ name: RouteName.CREATE_GROUP }">-->
+        <!--            {{ $t('Create group') }}-->
+        <!--          </b-navbar-item>-->
+
         <b-navbar-item
           v-if="currentUser.role === ICurrentUserRole.ADMINISTRATOR"
           tag="router-link"
@@ -195,7 +248,7 @@ import {
   IDENTITIES,
   UPDATE_DEFAULT_ACTOR,
 } from "../graphql/actor";
-import { displayName, IPerson, Person } from "../types/actor";
+import { IPerson, Person } from "../types/actor";
 import { CONFIG } from "../graphql/config";
 import { IConfig } from "../types/config.model";
 import { ICurrentUser, IUser } from "../types/current-user.model";
@@ -223,7 +276,7 @@ import RouteName from "../router/name";
     loggedUser: {
       query: USER_SETTINGS,
       skip() {
-        return !this.currentUser || this.currentUser.isLoggedIn === false;
+        return this.currentUser.isLoggedIn === false;
       },
     },
   },
@@ -233,6 +286,12 @@ import RouteName from "../router/name";
   },
 })
 export default class NavBar extends Vue {
+  isComponentModalActive = false;
+
+  closeDialog(): void {
+    this.isComponentModalActive = false;
+  }
+
   currentActor!: IPerson;
 
   config!: IConfig;
@@ -265,24 +324,18 @@ export default class NavBar extends Vue {
       query: IDENTITIES,
     });
     if (data) {
-      this.identities = data.identities.map(
-        (identity: IPerson) => new Person(identity)
-      );
+      this.identities = data.identities.map((identity) => new Person(identity));
 
       // If we don't have any identities, the user has validated their account,
       // is logging for the first time but didn't create an identity somehow
       if (this.identities.length === 0) {
-        try {
-          await this.$router.push({
-            name: RouteName.REGISTER_PROFILE,
-            params: {
-              email: this.currentUser.email,
-              userAlreadyActivated: "true",
-            },
-          });
-        } catch (err) {
-          return undefined;
-        }
+        await this.$router.push({
+          name: RouteName.REGISTER_PROFILE,
+          params: {
+            email: this.currentUser.email,
+            userAlreadyActivated: "true",
+          },
+        });
       }
     }
   }
@@ -290,7 +343,6 @@ export default class NavBar extends Vue {
   @Watch("loggedUser")
   setSavedLanguage(): void {
     if (this.loggedUser?.locale) {
-      console.debug("Setting locale from navbar");
       loadLanguageAsync(this.loggedUser.locale);
     }
   }
@@ -340,42 +392,34 @@ nav {
     a.button {
       font-weight: bold;
     }
-
     svg {
-      height: 1.75rem;
+      height: 2rem;
     }
   }
-
   .navbar-dropdown .navbar-item {
     cursor: pointer;
-
+    background: $greyish;
     span {
       display: flex;
     }
-
     &.is-active {
-      background: $secondary;
+      background: $greyish;
     }
-
     span.icon.is-medium {
       display: flex;
     }
-
     img {
       max-height: 2.5em;
     }
   }
-
   .navbar-item.has-dropdown a.navbar-link figure {
     @include margin-right(0.75rem);
     display: flex;
     align-items: center;
   }
-
   a.navbar-item:focus-within {
-    background-color: inherit;
+    color: $tertiary;
   }
-
   .koena {
     padding-top: 0;
     padding-bottom: 0;
@@ -384,10 +428,8 @@ nav {
       padding-top: 0.2rem;
     }
   }
-
   .identity-wrapper {
     display: flex;
-
     .media-content span {
       display: flex;
       color: $violet-2;
