@@ -127,7 +127,7 @@ export default class About extends Vue {
 
 <style lang="scss" scoped>
 .hero.is-primary {
-  background: $background-color;
+  background: $contrast-backgrounds;
 
   .title {
     margin: 30px auto 1rem auto;
@@ -140,9 +140,9 @@ export default class About extends Vue {
 
 .hero.register {
   .title {
-    color: $violet-1;
+    color: #ffffff;
   }
-  background: $purple-2;
+  background: $contrast-backgrounds;
 }
 
 aside.menu {
