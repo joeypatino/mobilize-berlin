@@ -13,14 +13,14 @@
         </b-select>
       </li>
       <li>
-        <router-link :to="{ name: RouteName.ABOUT }">{{
-          $t("About")
-        }}</router-link>
+        <router-link :to="{ name: RouteName.ABOUT }"
+          >{{ $t("About") }}
+        </router-link>
       </li>
       <li>
-        <router-link :to="{ name: RouteName.TERMS }">{{
-          $t("Terms")
-        }}</router-link>
+        <router-link :to="{ name: RouteName.TERMS }"
+          >{{ $t("Terms") }}
+        </router-link>
       </li>
       <li>
         <a
@@ -124,8 +124,8 @@ footer.footer {
     text-decoration-color: $secondary;
   }
 
-::v-deep span.select select select,
-option {
+  ::v-deep span.select select select,
+  option {
     background: $greyish;
     color: $white;
   }
