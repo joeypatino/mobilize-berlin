@@ -29,6 +29,8 @@
         </router-link>
       </li>
       <li>
+=======
+>>>>>>> 438224c3 (css fix)
         <router-link :to="{ name: RouteName.TERMS }"
           >{{ $t("Terms") }}
         </router-link>
@@ -154,8 +156,8 @@ footer.footer {
     }
   }
 
-::v-deep span.select select select,
-option {
+  ::v-deep span.select select select,
+  option {
     background: $greyish;
     color: $white;
   }
