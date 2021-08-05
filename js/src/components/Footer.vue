@@ -24,14 +24,11 @@
         </router-link>
       </li>
       <li>
-<<<<<<< HEAD
         <router-link :to="{ name: RouteName.PRIVACY }"
           >{{ $t("Privacy policy") }}
         </router-link>
       </li>
       <li>
-=======
->>>>>>> 438224c3 (css fix)
         <router-link :to="{ name: RouteName.TERMS }"
           >{{ $t("Terms") }}
         </router-link>
