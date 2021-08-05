@@ -36,6 +36,11 @@
             </p>
             <ul class="menu-list">
               <li>
+                <router-link :to="{ name: RouteName.RULES }">{{
+                  $t("Instance rules")
+                }}</router-link>
+              </li>
+              <li>
                 <router-link :to="{ name: RouteName.TERMS }">{{
                   $t("Terms of service")
                 }}</router-link>
@@ -43,11 +48,6 @@
               <li>
                 <router-link :to="{ name: RouteName.PRIVACY }">{{
                   $t("Privacy policy")
-                }}</router-link>
-              </li>
-              <li>
-                <router-link :to="{ name: RouteName.RULES }">{{
-                  $t("Instance rules")
                 }}</router-link>
               </li>
               <li>
