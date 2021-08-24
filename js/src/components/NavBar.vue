@@ -44,7 +44,9 @@
           currentUser.isLoggedIn
         "
       >
-        <b-button type="is-primary" @click="isComponentModalActive = true">{{ $t("Create") }}</b-button>
+        <b-button type="is-primary" @click="isComponentModalActive = true">{{
+          $t("Create")
+        }}</b-button>
       </b-navbar-item>
       <b-navbar-item
         v-if="config && config.features.koenaConnect"
@@ -65,7 +67,8 @@
       <div class="modal-card">
         <section class="modal-card-body">
           <p style="color: red;"><b>If you want to build an audience on mobilize.berlin, we strongly advice you to create a group and publish your events on behalf of that group.</b></p>
-          <p>From mobilizon version 2.0 mobilizon users will be ably to follow your group (but not your user account!). For any question or assistance you can contact <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.</p>
+          <p style="color: black;"><br>From mobilizon version 2.0 mobilizon users will be ably to follow your group (but not your user account!). For any question or assistance you can contact <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.</p>
+          <p style="color: black;"><br>For more information see <a href="https://docs.mobilize.berlin/organizer.html" target="_blank">docs.mobilize.berlin/organizer.html</a>.</p>
         </section>
         <footer class="modal-card-foot">
           <b-button 
