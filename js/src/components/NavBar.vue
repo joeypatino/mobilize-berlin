@@ -17,13 +17,21 @@
       <b-navbar-item tag="router-link" :to="{ name: RouteName.SEARCH }">{{
         $t("Explore")
       }}</b-navbar-item>
-      <b-navbar-item tag="router-link" :to="{ name: RouteName.MY_EVENTS }">{{
-        $t("My events")
-      }}</b-navbar-item>
+      <b-navbar-item
+        v-if="currentActor.id && currentUser.isLoggedIn"
+        tag="router-link"
+        :to="{ name: RouteName.MY_EVENTS }"
+        >{{ $t("My events") }}</b-navbar-item
+      >
       <b-navbar-item
         tag="router-link"
         :to="{ name: RouteName.MY_GROUPS }"
-        v-if="config && config.features.groups"
+        v-if="
+          config &&
+          config.features.groups &&
+          currentActor.id &&
+          currentUser.isLoggedIn
+        "
         >{{ $t("My groups") }}</b-navbar-item
       >
       <b-navbar-item
