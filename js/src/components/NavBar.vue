@@ -339,40 +339,48 @@ nav {
     a.button {
       font-weight: bold;
     }
-
     svg {
-      height: 1.75rem;
+      height: 2rem;
     }
   }
-
   .navbar-dropdown .navbar-item {
     cursor: pointer;
-
+    background: $greyish;
     span {
-      display: inherit;
+      display: flex;
     }
-
     &.is-active {
-      background: $secondary;
+      background: $greyish;
     }
-
     span.icon.is-medium {
       display: flex;
     }
-
     img {
       max-height: 2.5em;
     }
   }
-
   .navbar-item.has-dropdown a.navbar-link figure {
     margin-right: 0.75rem;
     display: flex;
     align-items: center;
   }
-
   a.navbar-item:focus-within {
-    background-color: inherit;
+    color: $tertiary;
+  }
+  .koena {
+    padding-top: 0;
+    padding-bottom: 0;
+    & > img {
+      max-height: 4rem;
+      padding-top: 0.2rem;
+    }
+  }
+  .identity-wrapper {
+    display: flex;
+    .media-content span {
+      display: flex;
+      color: $violet-2;
+    }
   }
 }
 </style>
