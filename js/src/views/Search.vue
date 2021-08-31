@@ -72,7 +72,7 @@
       <div v-if="events.elements.length > 0">
         <div class="columns is-multiline">
           <div
-            class="column is-one-third-desktop"
+            class="column is-one-third-desktop is-half-tablet"
             v-for="event in events.elements"
             :key="event.uuid"
           >
@@ -111,7 +111,7 @@
         <div v-if="searchEvents.total > 0">
           <div class="columns is-multiline">
             <div
-              class="column is-one-third-desktop"
+              class="column is-one-third-desktop is-half-tablet"
               v-for="event in searchEvents.elements"
               :key="event.uuid"
             >
