@@ -65,7 +65,7 @@
         <div v-if="this.events.total > 0">
           <div class="columns is-multiline">
             <div
-              class="column is-one-third-desktop is-half-tablet"
+              class="column is-half-tablet is-one-third-desktop"
               v-for="event in this.events.elements.slice(0, 6)"
               :key="event.uuid"
             >
@@ -318,7 +318,7 @@
         <div v-if="this.events.total > 0">
           <div class="columns is-multiline">
             <div
-              class="column is-one-third-desktop"
+              class="column is-one-third-desktop is-half-tablet"
               v-for="event in this.events.elements.slice(0, 6)"
               :key="event.uuid"
             >

@@ -140,6 +140,12 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
+    <figure class="image is-16by9" @click="showImage = true">
+      <lazy-image-wrapper
+        :picture="event.picture"
+        style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
+      />
+    </figure>
     <b-modal
       class="map-modal"
       v-if="physicalAddress && physicalAddress.geom"
@@ -232,6 +238,7 @@ import RouteName from "../../router/name";
 import { usernameWithDomain } from "../../types/actor";
 import EventMetadataBlock from "./EventMetadataBlock.vue";
 import EventFullDate from "./EventFullDate.vue";
+import LazyImageWrapper from "../Image/LazyImageWrapper.vue";
 import PopoverActorCard from "../Account/PopoverActorCard.vue";
 import ActorCard from "../../components/Account/ActorCard.vue";
 import {
@@ -244,6 +251,7 @@ import { eventMetaDataList } from "../../services/EventMetadata";
   components: {
     EventMetadataBlock,
     EventFullDate,
+    LazyImageWrapper,
     PopoverActorCard,
     ActorCard,
     "map-leaflet": () =>
@@ -253,6 +261,8 @@ import { eventMetaDataList } from "../../services/EventMetadata";
 export default class EventMetadataSidebar extends Vue {
   @Prop({ type: Object as PropType<IEvent>, required: true }) event!: IEvent;
   @Prop({ type: Object as PropType<IConfig>, required: true }) config!: IConfig;
+
+  showImage = false;
 
   showMap = false;
 
