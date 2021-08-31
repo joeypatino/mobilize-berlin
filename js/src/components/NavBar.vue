@@ -65,9 +65,9 @@
       </b-navbar-item>
       <b-modal :active.sync="isComponentModalActive" has-modal-card>
         <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">{{ $t("Warning") }}</p>
-        </header>
+          <header class="modal-card-head">
+            <p class="modal-card-title">{{ $t("Warning") }}</p>
+          </header>
           <section class="modal-card-body">
             <p style="color: red">
               <b
