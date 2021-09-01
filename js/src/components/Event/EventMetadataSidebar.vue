@@ -140,6 +140,7 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
+    <h2>{{ $t("Headline picture") }}</h2>
     <figure
       v-if="event.picture"
       class="image is-16by9"
@@ -150,14 +151,16 @@
         style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
       />
     </figure>
-    <b-modal class="map-modal" has-modal-card :active.sync="showImage">
-      <div class="modal-card">
+    <b-modal :active.sync="showImage" has-modal-card>
+      <div class="modal-card banner-container">
+        <header class="modal-card-head"></header>
         <section class="modal-card-body">
           <lazy-image-wrapper
             :picture="event.picture"
-            style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
+            style="object-fit: cover; height: 100%; width: 100%"
           />
         </section>
+        <footer class="modal-card-foot"></footer>
       </div>
     </b-modal>
     <b-modal
@@ -412,6 +415,23 @@ export default class EventMetadataSidebar extends Vue {
       }
     }
   }
+}
+
+h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: $violet;
+}
+
+.banner-container {
+  width: 60vw;
+  height: 60vh;
+}
+
+.object-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 div.address-wrapper {
