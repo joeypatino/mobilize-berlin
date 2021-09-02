@@ -90,6 +90,7 @@
             </p>
           </section>
           <footer class="modal-card-foot">
+            <div style="display: flex; justify-content: space-between; width: 100%">
             <b-button
               type="is-primary"
               tag="router-link"
@@ -99,6 +100,16 @@
             >
               {{ $t("Create") }}
             </b-button>
+            <b-button
+              type="is-primary"
+              tag="router-link"
+              :to="{ name: RouteName.CREATE_GROUP }"
+              exact
+              v-on:click.native="closeDialog()"
+            >
+              {{ $t("Create group") }}
+            </b-button>
+            </div>
           </footer>
         </div>
       </b-modal>
