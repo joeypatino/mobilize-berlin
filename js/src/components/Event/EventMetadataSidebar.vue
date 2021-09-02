@@ -140,13 +140,21 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
-    <h2>{{ $t("Headline picture") }}</h2>
-    <figure v-if="event.picture" class="image is-16by9">
-      <lazy-image-wrapper
-        :picture="event.picture"
-        style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
-      />
-    </figure>
+    <div v-if="event.picture">
+      <h2>{{ $t("Headline picture") }}</h2>
+      <div style="position: relative" @click="showImage = true">
+        <img :src="event.picture.url" />
+      </div>
+    </div>
+    <b-modal v-if="event.picture" :active.sync="showImage">
+      <div>
+        <header class="modal-card-head">{{ $t("Headline picture") }}</header>
+        <section style="background-color: white">
+          <img :src="event.picture.url" />
+        </section>
+        <footer class="modal-card-foot"></footer>
+      </div>
+    </b-modal>
     <b-modal
       class="map-modal"
       v-if="physicalAddress && physicalAddress.geom"
@@ -262,6 +270,8 @@ import { eventMetaDataList } from "../../services/EventMetadata";
 export default class EventMetadataSidebar extends Vue {
   @Prop({ type: Object as PropType<IEvent>, required: true }) event!: IEvent;
   @Prop({ type: Object as PropType<IConfig>, required: true }) config!: IConfig;
+
+  showImage = false;
 
   showMap = false;
 
