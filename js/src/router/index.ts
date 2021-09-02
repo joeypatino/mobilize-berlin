@@ -103,6 +103,15 @@ export const routes = [
           ),
         meta: { requiredAuth: false },
       },
+      {
+        path: "/impressum",
+        name: RouteName.IMPRESSUM,
+        component: (): Promise<ImportedComponent> =>
+          import(
+            /* webpackChunkName: "cookies" */ "@/views/About/Impressum.vue"
+          ),
+        meta: { requiredAuth: false },
+      },
     ],
   },
   {

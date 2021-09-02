@@ -51,6 +51,11 @@
                 }}</router-link>
               </li>
               <li>
+                <router-link :to="{ name: RouteName.IMPRESSUM }">
+                  Impressum
+                </router-link>
+              </li>
+              <li>
                 <router-link :to="{ name: RouteName.GLOSSARY }">{{
                   $t("Glossary")
                 }}</router-link>

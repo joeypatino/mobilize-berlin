@@ -13,8 +13,8 @@
         </b-select>
       </li>
       <li>
-        <router-link :to="{ name: RouteName.ABOUT }"
-          >{{ $t("About") }}
+        <router-link :to="{ name: RouteName.IMPRESSUM }"
+          >Impressum
         </router-link>
       </li>
       <li>
@@ -23,8 +23,8 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: RouteName.TERMS }"
-          >{{ $t("Terms") }}
+        <router-link :to="{ name: RouteName.RULES }"
+          >{{ $t("Rules") }}
         </router-link>
       </li>
       <li>
