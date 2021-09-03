@@ -121,20 +121,34 @@
         <search-field @navbar-search="mobileNavbarActive = false" />
       </b-navbar-item>
 
-      <b-navbar-dropdown v-if="currentActor.id && currentUser.isLoggedIn" right>
+      <b-navbar-dropdown
+        v-if="currentActor.id && currentUser.isLoggedIn"
+        right
+        collapsible
+      >
         <template
           slot="label"
           v-if="currentActor"
           class="navbar-dropdown-profile"
         >
-          <figure class="image is-32x32" v-if="currentActor.avatar">
-            <img
-              class="is-rounded"
-              alt="avatarUrl"
-              :src="currentActor.avatar.url"
-            />
-          </figure>
-          <b-icon v-else icon="account-circle" />
+          <div class="identity-wrapper">
+            <div>
+              <figure class="image is-32x32" v-if="currentActor.avatar">
+                <img
+                  class="is-rounded"
+                  alt="avatarUrl"
+                  :src="currentActor.avatar.url"
+                />
+              </figure>
+              <b-icon v-else icon="account-circle" />
+            </div>
+            <div class="media-content is-hidden-desktop">
+              <span>{{ displayName(currentActor) }}</span>
+              <span class="has-text-grey-dark" v-if="currentActor.name"
+                >@{{ currentActor.preferredUsername }}</span
+              >
+            </div>
+          </div>
         </template>
 
         <!-- No identities dropdown if no identities -->
@@ -149,14 +163,19 @@
           <span @click="setIdentity(identity)">
             <div class="media-left">
               <figure class="image is-32x32" v-if="identity.avatar">
-                <img class="is-rounded" :src="identity.avatar.url" alt />
+                <img
+                  class="is-rounded"
+                  loading="lazy"
+                  :src="identity.avatar.url"
+                  alt
+                />
               </figure>
               <b-icon v-else size="is-medium" icon="account-circle" />
             </div>
 
             <div class="media-content">
-              <span>{{ identity.displayName() }}</span>
-              <span class="has-text-grey" v-if="identity.name"
+              <span>{{ displayName(identity) }}</span>
+              <span class="has-text-grey-dark" v-if="identity.name"
                 >@{{ identity.preferredUsername }}</span
               >
             </div>
@@ -170,11 +189,6 @@
           :to="{ name: RouteName.UPDATE_IDENTITY }"
           >{{ $t("My account") }}</b-navbar-item
         >
-
-        <!--          <b-navbar-item tag="router-link" :to="{ name: RouteName.CREATE_GROUP }">-->
-        <!--            {{ $t('Create group') }}-->
-        <!--          </b-navbar-item>-->
-
         <b-navbar-item
           v-if="currentUser.role === ICurrentUserRole.ADMINISTRATOR"
           tag="router-link"
@@ -221,7 +235,7 @@ import {
   IDENTITIES,
   UPDATE_DEFAULT_ACTOR,
 } from "../graphql/actor";
-import { IPerson, Person } from "../types/actor";
+import { displayName, IPerson, Person } from "../types/actor";
 import { CONFIG } from "../graphql/config";
 import { IConfig } from "../types/config.model";
 import { ICurrentUser, IUser } from "../types/current-user.model";
@@ -253,7 +267,7 @@ import RouteName from "../router/name";
     loggedUser: {
       query: USER_SETTINGS,
       skip() {
-        return this.currentUser.isLoggedIn === false;
+        return !this.currentUser || this.currentUser.isLoggedIn === false;
       },
     },
   },
@@ -285,6 +299,8 @@ export default class NavBar extends Vue {
 
   mobileNavbarActive = false;
 
+  displayName = displayName;
+
   @Watch("currentActor")
   async initializeListOfIdentities(): Promise<void> {
     if (!this.currentUser.isLoggedIn) return;
@@ -292,18 +308,24 @@ export default class NavBar extends Vue {
       query: IDENTITIES,
     });
     if (data) {
-      this.identities = data.identities.map((identity) => new Person(identity));
+      this.identities = data.identities.map(
+        (identity: IPerson) => new Person(identity)
+      );
 
       // If we don't have any identities, the user has validated their account,
       // is logging for the first time but didn't create an identity somehow
       if (this.identities.length === 0) {
-        await this.$router.push({
-          name: RouteName.REGISTER_PROFILE,
-          params: {
-            email: this.currentUser.email,
-            userAlreadyActivated: "true",
-          },
-        });
+        try {
+          await this.$router.push({
+            name: RouteName.REGISTER_PROFILE,
+            params: {
+              email: this.currentUser.email,
+              userAlreadyActivated: "true",
+            },
+          });
+        } catch (err) {
+          return undefined;
+        }
       }
     }
   }
@@ -311,6 +333,7 @@ export default class NavBar extends Vue {
   @Watch("loggedUser")
   setSavedLanguage(): void {
     if (this.loggedUser?.locale) {
+      console.debug("Setting locale from navbar");
       loadLanguageAsync(this.loggedUser.locale);
     }
   }
@@ -355,34 +378,42 @@ nav {
     a.button {
       font-weight: bold;
     }
+
     svg {
       height: 2rem;
     }
   }
+
   .navbar-dropdown .navbar-item {
     cursor: pointer;
     background: $greyish;
     span {
       display: flex;
     }
+
     &.is-active {
       background: $greyish;
     }
+
     span.icon.is-medium {
       display: flex;
     }
+
     img {
       max-height: 2.5em;
     }
   }
+
   .navbar-item.has-dropdown a.navbar-link figure {
     margin-right: 0.75rem;
     display: flex;
     align-items: center;
   }
+
   a.navbar-item:focus-within {
     color: $tertiary;
   }
+
   .koena {
     padding-top: 0;
     padding-bottom: 0;
@@ -391,8 +422,10 @@ nav {
       padding-top: 0.2rem;
     }
   }
+
   .identity-wrapper {
     display: flex;
+
     .media-content span {
       display: flex;
       color: $violet-2;
