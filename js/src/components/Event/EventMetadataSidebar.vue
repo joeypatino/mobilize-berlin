@@ -247,7 +247,6 @@ import RouteName from "../../router/name";
 import { usernameWithDomain } from "../../types/actor";
 import EventMetadataBlock from "./EventMetadataBlock.vue";
 import EventFullDate from "./EventFullDate.vue";
-import LazyImageWrapper from "../Image/LazyImageWrapper.vue";
 import PopoverActorCard from "../Account/PopoverActorCard.vue";
 import ActorCard from "../../components/Account/ActorCard.vue";
 import {
@@ -260,7 +259,6 @@ import { eventMetaDataList } from "../../services/EventMetadata";
   components: {
     EventMetadataBlock,
     EventFullDate,
-    LazyImageWrapper,
     PopoverActorCard,
     ActorCard,
     "map-leaflet": () =>
