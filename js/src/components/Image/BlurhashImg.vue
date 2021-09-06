@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvas" width="32" height="32" />
+  <canvas ref="canvas" width="128" height="32" />
 </template>
 
 <script lang="ts">
@@ -15,8 +15,8 @@ export default class BlurhashImg extends Vue {
 
   mounted(): void {
     try {
-      const pixels = decode(this.hash, 32, 32);
-      const imageData = new ImageData(pixels, 32, 32);
+      const pixels = decode(this.hash, 128, 32);
+      const imageData = new ImageData(pixels, 128, 32);
       const context = this.canvas.getContext("2d");
       context.putImageData(imageData, 0, 0);
     } catch (e) {
@@ -27,8 +27,8 @@ export default class BlurhashImg extends Vue {
   @Watch("hash")
   updateHashChange(): void {
     try {
-      const pixels = decode(this.hash, 32, 32);
-      const imageData = new ImageData(pixels, 32, 32);
+      const pixels = decode(this.hash, 128, 32);
+      const imageData = new ImageData(pixels, 128, 32);
       const context = this.canvas.getContext("2d");
       context.putImageData(imageData, 0, 0);
     } catch (e) {
