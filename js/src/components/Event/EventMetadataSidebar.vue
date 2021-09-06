@@ -143,7 +143,7 @@
     <div v-if="event.picture">
       <h2>{{ $t("Headline picture") }}</h2>
       <div style="position: relative" @click="showImage = true">
-        <img :src="event.picture.url" />
+        <img :src="event.picture.url" style="width: 100%" />
       </div>
     </div>
     <b-modal v-if="event.picture" :active.sync="showImage">
