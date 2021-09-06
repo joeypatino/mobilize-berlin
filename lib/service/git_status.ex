@@ -4,7 +4,7 @@ defmodule Mobilizon.Service.GitStatus do
   """
   require Logger
 
-  @commit (case System.cmd("git", ["describe", "--tags", "--dirty"]) do
+  @commit (case System.cmd("git", ["describe", "--tags"]) do
              {hash, 0} ->
                String.trim(hash)
 
