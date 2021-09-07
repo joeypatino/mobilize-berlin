@@ -150,7 +150,7 @@
       <div>
         <header class="modal-card-head">{{ $t("Headline picture") }}</header>
         <section style="background-color: white">
-          <img :src="event.picture.url" />
+          <img :src="event.picture.url" style="width:100%" />
         </section>
         <footer class="modal-card-foot"></footer>
       </div>
