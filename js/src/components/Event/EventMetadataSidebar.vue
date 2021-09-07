@@ -146,11 +146,14 @@
         <img :src="event.picture.url" style="width: 100%" />
       </div>
     </div>
-    <b-modal v-if="event.picture" :active.sync="showImage">
+    <b-modal v-if="event.picture" :active.sync="showImage" has-modal-card>
       <div>
         <header class="modal-card-head">{{ $t("Headline picture") }}</header>
-        <section style="background-color: white">
-          <img :src="event.picture.url" style="width:100%" />
+        <section
+          class="modal-card"
+          style="width: auto; -webkit-overflow-scrolling: touch; overflow: auto"
+        >
+          <img :src="event.picture.url" />
         </section>
         <footer class="modal-card-foot"></footer>
       </div>
