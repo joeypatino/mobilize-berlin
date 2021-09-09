@@ -78,7 +78,8 @@
             </p>
             <p style="color: black">
               <br />From mobilizon version 2.0 mobilizon users will be able to
-              follow your group (but not your user account!). For any question
+              follow your group (but not your user account!). Mobilizon 2.0 is
+              expected to be delivered in october 2021 (soon). For any question
               or assistance you can contact
               <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.
             </p>
