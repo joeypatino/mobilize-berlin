@@ -117,9 +117,9 @@
                 )
               "
             />
-            <span v-else>
+            <!--span v-else>
               {{ $t("You may show some members as contacts.") }}
-            </span>
+            </span-->
           </p>
         </div>
         <subtitle>{{ $t("Event metadata") }}</subtitle>
