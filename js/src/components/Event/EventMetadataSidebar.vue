@@ -133,6 +133,12 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
+    <figure class="image is-16by9" @click="showImage = true">
+      <lazy-image-wrapper
+        :picture="event.picture"
+        style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
+      />
+    </figure>
   </div>
 </template>
 <script lang="ts">
@@ -146,6 +152,7 @@ import RouteName from "../../router/name";
 import { usernameWithDomain } from "../../types/actor";
 import EventMetadataBlock from "./EventMetadataBlock.vue";
 import EventFullDate from "./EventFullDate.vue";
+import LazyImageWrapper from "../Image/LazyImageWrapper.vue";
 import PopoverActorCard from "../Account/PopoverActorCard.vue";
 import ActorCard from "../../components/Account/ActorCard.vue";
 import AddressInfo from "../../components/Address/AddressInfo.vue";
@@ -160,6 +167,7 @@ import { IUser } from "@/types/current-user.model";
   components: {
     EventMetadataBlock,
     EventFullDate,
+    LazyImageWrapper,
     PopoverActorCard,
     ActorCard,
     AddressInfo,
@@ -170,6 +178,8 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ type: Object as PropType<IConfig>, required: true }) config!: IConfig;
   @Prop({ required: true }) user!: IUser | undefined;
   @Prop({ required: false, default: false }) showMap!: boolean;
+
+  showImage = false;
 
   RouteName = RouteName;
 

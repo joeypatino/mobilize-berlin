@@ -131,8 +131,6 @@ export default class EventCard extends Vue {
       this.event.organizerActor || this.mergedOptions.organizerActor
     );
   }
-<<<<<<< HEAD
-=======
 
   get isDescriptionDifferentFromLocality(): boolean {
     return (
@@ -154,13 +152,6 @@ export default class EventCard extends Vue {
       return `${this.event?.physicalAddress?.description}`;
     }
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> efbb4a62 (Css updates)
-=======
->>>>>>> 71bbdddc (Css updates)
-=======
->>>>>>> 510e25eb (Css updates)
 }
 </script>
 
@@ -277,18 +268,10 @@ a.card {
 
     .event-subtitle {
       font-size: 0.85rem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     }
 
     .organizer-name {
       font-size: 14px;
-=======
-=======
->>>>>>> 71bbdddc (Css updates)
-=======
->>>>>>> 510e25eb (Css updates)
 
       color: #ffffff;
 
@@ -301,7 +284,6 @@ a.card {
 
         text-overflow: ellipsis;
       }
->>>>>>> efbb4a62 (Css updates)
     }
   }
 }

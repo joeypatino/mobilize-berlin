@@ -283,7 +283,6 @@ export default class NavBar extends Vue {
 
   mobileNavbarActive = false;
 
-<<<<<<< HEAD
   displayName = displayName;
 
   @Ref("user-dropdown") userDropDown!: any;
@@ -293,8 +292,6 @@ export default class NavBar extends Vue {
     this.userDropDown.showMenu();
   }
 
-=======
->>>>>>> a3fc6f65 (fixed prettier issues and issues in organizerpickerwrapper)
   @Watch("currentActor")
   async initializeListOfIdentities(): Promise<void> {
     if (!this.currentUser.isLoggedIn) return;
