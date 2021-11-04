@@ -186,16 +186,7 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ required: true }) user!: IUser | undefined;
   @Prop({ required: false, default: false }) showMap!: boolean;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   showImage = false;
-=======
-=======
-  showImage = false;
-
->>>>>>> 4dcf15a5 (added picture to the sidebar, and let it expand on click)
-  showMap = false;
->>>>>>> 205a3e1b (removed modal image)
 
   RouteName = RouteName;
 
