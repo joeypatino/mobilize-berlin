@@ -133,21 +133,17 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
-    <h2>{{ $t("Headline picture") }}</h2>
-    <figure v-if="event.picture" class="image is-16by9">
-      <lazy-image-wrapper
-        :picture="event.picture"
-        style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
-      />
-    </figure>
-    <b-modal :active.sync="showImage" has-modal-card>
-      <div class="modal-card banner-container">
-        <header class="modal-card-head"></header>
-        <section class="modal-card-body">
-          <lazy-image-wrapper
-            :picture="event.picture"
-            style="object-fit: cover; height: 100%; width: 100%"
-          />
+    <div v-if="event.picture">
+      <h2>{{ $t("Headline picture") }}</h2>
+      <div style="position: relative" @click="showImage = true">
+        <img :src="event.picture.url" />
+      </div>
+    </div>
+    <b-modal v-if="event.picture" :active.sync="showImage">
+      <div>
+        <header class="modal-card-head">{{ $t("Headline picture") }}</header>
+        <section style="background-color: white">
+          <img :src="event.picture.url" />
         </section>
         <footer class="modal-card-foot"></footer>
       </div>
@@ -193,8 +189,13 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ required: false, default: false }) showMap!: boolean;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   showImage = false;
 =======
+=======
+  showImage = false;
+
+>>>>>>> 4dcf15a5 (added picture to the sidebar, and let it expand on click)
   showMap = false;
 >>>>>>> 205a3e1b (removed modal image)
 
