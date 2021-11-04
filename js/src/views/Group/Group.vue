@@ -1102,7 +1102,7 @@ div.container {
       flex-direction: column;
 
       h1 {
-        color: $purple-1;
+        color: $greyish;
         font-size: 2rem;
         font-weight: 500;
       }
