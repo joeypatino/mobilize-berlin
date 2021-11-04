@@ -4,6 +4,7 @@
       <figure class="image is-24x24" v-if="member.actor.avatar">
         <img class="is-rounded" :src="member.actor.avatar.url" alt="" />
       </figure>
+      <b-icon v-else icon="account-circle" />
       {{ displayNameAndUsername(member.actor) }}
     </div>
     <div class="card-content">
@@ -47,7 +48,7 @@
           </div>
         </div>
         <div class="content" v-if="member.parent.summary">
-          <p>{{ member.parent.summary }}</p>
+          <p v-html="member.parent.summary" />
         </div>
       </div>
       <div>
@@ -85,6 +86,7 @@ export default class GroupMemberCard extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+@use "@/styles/_mixins" as *;
 .card {
   .card-content {
     display: flex;
@@ -110,8 +112,9 @@ export default class GroupMemberCard extends Vue {
     display: flex;
     padding: 5px;
 
-    figure {
-      padding-right: 3px;
+    figure,
+    span.icon {
+      @include padding-right(3px);
     }
   }
 }

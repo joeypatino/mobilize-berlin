@@ -81,10 +81,16 @@
           {{ $t("Date parameters") }}
         </b-button>
 
-        <full-address-auto-complete
-          v-model="eventPhysicalAddress"
-          :user-timezone="userActualTimezone"
-        />
+        <div class="address">
+          <full-address-auto-complete
+            v-model="eventPhysicalAddress"
+            :user-timezone="userActualTimezone"
+            :disabled="isOnline"
+          />
+          <b-switch class="is-online" v-model="isOnline">{{
+            $t("The event is fully online")
+          }}</b-switch>
+        </div>
 
         <div class="field">
           <label class="label">{{ $t("Description") }}</label>
@@ -453,6 +459,7 @@
 </template>
 
 <style lang="scss" scoped>
+@use "@/styles/_mixins" as *;
 main section > .container {
   background: $white;
 
@@ -531,9 +538,18 @@ section {
 
       .navbar-end {
         justify-content: flex-end;
-        margin-left: auto;
+        @include margin-left(auto);
       }
     }
+  }
+}
+
+.address {
+  ::v-deep .address-autocomplete {
+    margin-bottom: 0 !important;
+  }
+  .is-online {
+    margin-bottom: 10px;
   }
 }
 </style>
@@ -591,8 +607,7 @@ import {
   CURRENT_ACTOR_CLIENT,
   IDENTITIES,
   LOGGED_USER_DRAFTS,
-  LOGGED_USER_PARTICIPATIONS,
-  PERSON_MEMBERSHIP_GROUP,
+  PERSON_STATUS_GROUP,
 } from "../../graphql/actor";
 import {
   displayNameAndUsername,
@@ -620,6 +635,7 @@ import { IEventOptions } from "@/types/event-options.model";
 import { USER_SETTINGS } from "@/graphql/user";
 import { IUser } from "@/types/current-user.model";
 import { IAddress } from "@/types/address.model";
+import { LOGGED_USER_PARTICIPATIONS } from "@/graphql/participant";
 
 const DEFAULT_LIMIT_NUMBER_OF_PLACES = 10;
 
@@ -654,7 +670,7 @@ const DEFAULT_LIMIT_NUMBER_OF_PLACES = 10;
       },
     },
     person: {
-      query: PERSON_MEMBERSHIP_GROUP,
+      query: PERSON_STATUS_GROUP,
       fetchPolicy: "cache-and-network",
       variables() {
         return {
@@ -1287,6 +1303,17 @@ export default class EditEvent extends Vue {
       this.timezone = address.timezone;
     }
     this.event.physicalAddress = address;
+  }
+
+  get isOnline(): boolean {
+    return this.event.options.isOnline;
+  }
+
+  set isOnline(isOnline: boolean) {
+    this.event.options = {
+      ...this.event.options,
+      isOnline,
+    };
   }
 }
 </script>

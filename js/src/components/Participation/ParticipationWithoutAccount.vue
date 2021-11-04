@@ -158,6 +158,7 @@ import { ApolloCache, FetchResult } from "@apollo/client/core";
   metaInfo() {
     return {
       title: this.$t("Participation without account") as string,
+      meta: [{ name: "robots", content: "noindex" }],
     };
   },
 })
@@ -200,6 +201,7 @@ export default class ParticipationWithoutAccount extends Vue {
           email: this.anonymousParticipation.email,
           message: this.anonymousParticipation.message,
           locale: this.$i18n.locale,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
         update: (
           store: ApolloCache<{ joinEvent: IParticipant }>,

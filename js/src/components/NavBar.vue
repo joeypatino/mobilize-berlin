@@ -58,7 +58,7 @@
         tag="a"
         href="https://mediation.koena.net/framasoft/mobilizon/"
         target="_blank"
-        rel="noopener"
+        rel="noopener external"
         hreflang="fr"
       >
         <img
@@ -208,12 +208,8 @@ import RouteName from "../router/name";
 
 @Component({
   apollo: {
-    currentUser: {
-      query: CURRENT_USER_CLIENT,
-    },
-    currentActor: {
-      query: CURRENT_ACTOR_CLIENT,
-    },
+    currentUser: CURRENT_USER_CLIENT,
+    currentActor: CURRENT_ACTOR_CLIENT,
     identities: {
       query: IDENTITIES,
       update: ({ identities }) =>
@@ -342,6 +338,7 @@ export default class NavBar extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+@use "@/styles/_mixins" as *;
 nav {
   .navbar-item {
     a.button {
@@ -374,7 +371,7 @@ nav {
   }
 
   .navbar-item.has-dropdown a.navbar-link figure {
-    margin-right: 0.75rem;
+    @include margin-right(0.75rem);
     display: flex;
     align-items: center;
   }

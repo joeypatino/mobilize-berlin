@@ -932,11 +932,11 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
 
     test "update_event/3 updates an event", %{conn: conn, actor: actor, user: user} do
       event = insert(:event, organizer_actor: actor)
-      _creator = insert(:participant, event: event, actor: actor, role: :creator)
+      creator = insert(:participant, event: event, actor: actor, role: :creator)
       participant_user = insert(:user)
       participant_actor = insert(:actor, user: participant_user)
 
-      _participant =
+      participant =
         insert(:participant, event: event, actor: participant_actor, role: :participant)
 
       address = insert(:address)
@@ -1010,6 +1010,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       assert_delivered_email(
         Email.Event.event_updated(
           user.email,
+          creator,
           actor,
           event,
           new_event,
@@ -1020,6 +1021,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       assert_delivered_email(
         Email.Event.event_updated(
           participant_user.email,
+          participant,
           participant_actor,
           event,
           new_event,
@@ -1235,7 +1237,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
         |> Map.put(:attributed_to_id, "#{group_id}")
         |> Map.put(:eventId, to_string(event.id))
 
-      Users.update_user_default_actor(user.id, member_not_approved_actor)
+      Users.update_user_default_actor(user, member_not_approved_actor)
 
       res =
         conn
@@ -1250,7 +1252,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       assert hd(res["errors"])["message"] ==
                "This profile doesn't have permission to update an event on behalf of this group"
 
-      Users.update_user_default_actor(user.id, not_member_actor)
+      Users.update_user_default_actor(user, not_member_actor)
 
       res =
         conn
@@ -1265,7 +1267,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       assert hd(res["errors"])["message"] ==
                "This profile doesn't have permission to update an event on behalf of this group"
 
-      Users.update_user_default_actor(user.id, member_actor)
+      Users.update_user_default_actor(user, member_actor)
 
       res =
         conn
@@ -1280,7 +1282,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       assert hd(res["errors"])["message"] ==
                "This profile doesn't have permission to update an event on behalf of this group"
 
-      Users.update_user_default_actor(user.id, moderator_actor)
+      Users.update_user_default_actor(user, moderator_actor)
 
       res =
         conn

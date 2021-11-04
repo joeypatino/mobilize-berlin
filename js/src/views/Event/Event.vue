@@ -135,17 +135,17 @@
                     }"
                   >
                     <!-- We retire one because of the event creator who is a participant -->
-                    <span v-if="event.options.maximumAttendeeCapacity">
+                    <span v-if="maximumAttendeeCapacity">
                       {{
                         $tc(
                           "{available}/{capacity} available places",
-                          event.options.maximumAttendeeCapacity -
+                          maximumAttendeeCapacity -
                             event.participantStats.participant,
                           {
                             available:
-                              event.options.maximumAttendeeCapacity -
+                              maximumAttendeeCapacity -
                               event.participantStats.participant,
-                            capacity: event.options.maximumAttendeeCapacity,
+                            capacity: maximumAttendeeCapacity,
                           }
                         )
                       }}
@@ -163,17 +163,17 @@
                     </span>
                   </router-link>
                   <span v-else>
-                    <span v-if="event.options.maximumAttendeeCapacity">
+                    <span v-if="maximumAttendeeCapacity">
                       {{
                         $tc(
                           "{available}/{capacity} available places",
-                          event.options.maximumAttendeeCapacity -
+                          maximumAttendeeCapacity -
                             event.participantStats.participant,
                           {
                             available:
-                              event.options.maximumAttendeeCapacity -
+                              maximumAttendeeCapacity -
                               event.participantStats.participant,
-                            capacity: event.options.maximumAttendeeCapacity,
+                            capacity: maximumAttendeeCapacity,
                           }
                         )
                       }}
@@ -345,15 +345,7 @@
         <h3 class="title has-text-centered">
           {{ $t("These events may interest you") }}
         </h3>
-        <div class="columns">
-          <div
-            class="column is-one-third-desktop"
-            v-for="relatedEvent in event.relatedEvents"
-            :key="relatedEvent.uuid"
-          >
-            <EventCard :event="relatedEvent" />
-          </div>
-        </div>
+        <multi-card :events="event.relatedEvents" />
       </section>
       <b-modal
         :active.sync="isReportModalActive"
@@ -496,15 +488,12 @@ import {
   FETCH_EVENT,
   JOIN_EVENT,
 } from "../../graphql/event";
-import {
-  CURRENT_ACTOR_CLIENT,
-  PERSON_MEMBERSHIP_GROUP,
-} from "../../graphql/actor";
+import { CURRENT_ACTOR_CLIENT, PERSON_STATUS_GROUP } from "../../graphql/actor";
 import { EventModel, IEvent } from "../../types/event.model";
 import { IActor, IPerson, Person, usernameWithDomain } from "../../types/actor";
 import { GRAPHQL_API_ENDPOINT } from "../../api/_entrypoint";
 import DateCalendarIcon from "../../components/Event/DateCalendarIcon.vue";
-import EventCard from "../../components/Event/EventCard.vue";
+import MultiCard from "../../components/Event/MultiCard.vue";
 import ReportModal from "../../components/Report/ReportModal.vue";
 import { IReport } from "../../types/report.model";
 import { CREATE_REPORT } from "../../graphql/report";
@@ -539,7 +528,7 @@ import { IUser } from "@/types/current-user.model";
 @Component({
   components: {
     Subtitle,
-    EventCard,
+    MultiCard,
     BIcon,
     DateCalendarIcon,
     ReportModal,
@@ -579,7 +568,6 @@ import { IUser } from "@/types/current-user.model";
   apollo: {
     event: {
       query: FETCH_EVENT,
-      fetchPolicy: "cache-and-network",
       variables() {
         return {
           uuid: this.uuid,
@@ -593,7 +581,6 @@ import { IUser } from "@/types/current-user.model";
     loggedUser: USER_SETTINGS,
     participations: {
       query: EVENT_PERSON_PARTICIPATION,
-      fetchPolicy: "cache-and-network",
       variables() {
         return {
           eventId: this.event.id,
@@ -623,8 +610,7 @@ import { IUser } from "@/types/current-user.model";
       },
     },
     person: {
-      query: PERSON_MEMBERSHIP_GROUP,
-      fetchPolicy: "cache-and-network",
+      query: PERSON_STATUS_GROUP,
       variables() {
         return {
           id: this.currentActor.id,
@@ -1074,20 +1060,23 @@ export default class Event extends EventMixin {
       : this.event.beginsOn;
   }
 
+  get maximumAttendeeCapacity(): number {
+    return this.event?.options?.maximumAttendeeCapacity;
+  }
+
   get eventCapacityOK(): boolean {
     if (this.event.draft) return true;
-    if (!this.event.options.maximumAttendeeCapacity) return true;
+    if (!this.maximumAttendeeCapacity) return true;
     return (
-      this.event.options.maximumAttendeeCapacity >
+      this.event?.options?.maximumAttendeeCapacity >
       this.event.participantStats.participant
     );
   }
 
   get numberOfPlacesStillAvailable(): number {
-    if (this.event.draft) return this.event.options.maximumAttendeeCapacity;
+    if (this.event.draft) return this.maximumAttendeeCapacity;
     return (
-      this.event.options.maximumAttendeeCapacity -
-      this.event.participantStats.participant
+      this.maximumAttendeeCapacity - this.event.participantStats.participant
     );
   }
 
@@ -1162,6 +1151,7 @@ export default class Event extends EventMixin {
 }
 </script>
 <style lang="scss" scoped>
+@use "@/styles/_mixins" as *;
 .section {
   padding: 1rem 2rem 4rem;
 }
@@ -1203,7 +1193,7 @@ div.sidebar {
 
       span {
         line-height: 2.7rem;
-        padding-right: 6px;
+        @include padding-right(6px);
       }
     }
   }
@@ -1250,7 +1240,7 @@ div.sidebar {
     min-width: 20rem;
     flex: 1;
     @media all and (min-width: 672px) {
-      padding-left: 1rem;
+      @include padding-left(1rem);
     }
 
     .sticky {
@@ -1292,7 +1282,7 @@ div.sidebar {
     ::v-deep blockquote {
       border-left: 0.2em solid #333;
       display: block;
-      padding-left: 1em;
+      @include padding-left(1rem);
     }
 
     ::v-deep p {
@@ -1338,7 +1328,7 @@ a.dropdown-item,
 button.dropdown-item {
   white-space: nowrap;
   width: 100%;
-  padding-right: 1rem;
+  @include padding-right(1rem);
   text-align: right;
 }
 
@@ -1373,7 +1363,7 @@ a.participations-link {
     align-items: flex-end;
     align-self: flex-start;
     margin-bottom: 7px;
-    margin-left: 0rem;
+    @include margin-left(0);
   }
 }
 .title {

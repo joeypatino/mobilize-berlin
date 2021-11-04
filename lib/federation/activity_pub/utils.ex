@@ -114,7 +114,11 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
           "PropertyValue" => "sc:PropertyValue",
           "value" => "sc:value",
           "propertyID" => "sc:propertyID",
-          "inLanguage" => "sc:inLanguage"
+          "inLanguage" => "sc:inLanguage",
+          "timezone" => %{
+            "@id" => "mz:timezone",
+            "@type" => "sc:Text"
+          }
         }
       ]
     }
@@ -296,7 +300,7 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
   end
 
   def origin_check?(id, %{"type" => type, "id" => actor_id} = _params)
-      when type in ["Actor", "Person", "Group"],
+      when type in ["Actor", "Person", "Group", "Application"],
       do: id == actor_id
 
   def origin_check?(_id, %{"actor" => nil} = _args), do: false

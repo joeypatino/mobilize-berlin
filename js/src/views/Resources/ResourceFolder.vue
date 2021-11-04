@@ -60,11 +60,11 @@
             <hr
               role="presentation"
               class="dropdown-divider"
-              v-if="config.resourceProviders.length"
+              v-if="resourceProviders.length"
             />
             <b-dropdown-item
               aria-role="listitem"
-              v-for="resourceProvider in config.resourceProviders"
+              v-for="resourceProvider in resourceProviders"
               :key="resourceProvider.software"
               @click="createResourceFromProvider(resourceProvider)"
             >
@@ -418,6 +418,10 @@ export default class Resources extends Mixins(ResourceMixin) {
     return this.filteredPath.slice(-1)[0];
   }
 
+  get resourceProviders(): IProvider[] {
+    return this.config?.resourceProviders || [];
+  }
+
   async createResource(): Promise<void> {
     if (!this.resource.actor) return;
     this.modalError = "";
@@ -750,6 +754,8 @@ export default class Resources extends Mixins(ResourceMixin) {
 }
 </script>
 <style lang="scss" scoped>
+@use "@/styles/_mixins" as *;
+
 .container.section {
   background: $white;
 
@@ -762,7 +768,7 @@ nav.breadcrumb ul {
   align-items: center;
 
   li:last-child .dropdown {
-    margin-left: 5px;
+    @include margin-left(5px);
 
     a {
       justify-content: left;
@@ -781,14 +787,14 @@ nav.breadcrumb ul {
     align-items: center;
 
     ::v-deep .b-checkbox.checkbox {
-      margin-left: 10px;
+      @include margin-left(10px);
     }
 
     .actions {
-      margin-right: 5px;
+      @include margin-right(5px);
 
       & > * {
-        margin-left: 5px;
+        @include margin-left(5px);
       }
     }
   }
@@ -806,11 +812,11 @@ nav.breadcrumb ul {
 
   .resource-checkbox {
     align-self: center;
-    padding-left: 10px;
+    @include padding-left(10px);
     opacity: 0.3;
 
     ::v-deep .b-checkbox.checkbox {
-      margin-right: 0.25rem;
+      @include margin-right(0.25rem);
     }
   }
 
