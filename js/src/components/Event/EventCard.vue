@@ -155,9 +155,12 @@ export default class EventCard extends Vue {
     }
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> efbb4a62 (Css updates)
 =======
 >>>>>>> 71bbdddc (Css updates)
+=======
+>>>>>>> 510e25eb (Css updates)
 }
 </script>
 
@@ -276,6 +279,7 @@ a.card {
       font-size: 0.85rem;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 
     .organizer-name {
@@ -283,6 +287,8 @@ a.card {
 =======
 =======
 >>>>>>> 71bbdddc (Css updates)
+=======
+>>>>>>> 510e25eb (Css updates)
 
       color: #ffffff;
 
