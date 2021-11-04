@@ -2,8 +2,9 @@
 @import "~bulma/sass/utilities/initial-variables.sass";
 @import "~bulma/sass/utilities/derived-variables.sass";
 
-$bleuvert: #1e7d97;
-$jaune: #ffd599;
+$greyish: #292e38;
+$bleuvert: #5383c2;
+$jaune: $greyish;
 $violet: #424056;
 
 /**
@@ -15,18 +16,19 @@ $violet-2: #474467;
 /**
  * Titles, dark borders, buttons
  */
-$violet-3: #3c376e;
+$violet-3: $greyish;
 
 /**
  * Borders
  */
 $borders: #d7d6de;
 $backgrounds: #ecebf2;
+$contrast-backgrounds: #4a5364;
 
 /**
  * Text
  */
-$purple-1: #757199;
+$purple-1: $greyish;
 
 /**
  * Background
@@ -46,9 +48,12 @@ $primary: $bleuvert;
 $primary-invert: findColorInvert($primary);
 $secondary: $jaune;
 $secondary-invert: findColorInvert($secondary);
+$tertiary: #a3abbd;
 
 $background-color: $violet-2;
 
+$logo-color: $tertiary;
+$logo-color-invert: findColorInvert($logo-color);
 $success: #0d8758;
 $success-invert: findColorInvert($success);
 $info: #36bcd4;
@@ -83,20 +88,24 @@ $colors: map-merge(
       $danger,
       $danger-invert,
     ),
+    "text": (
+      #3f4655,
+      #ffffff,
+    ),
     "link": (
       $link,
       $link-invert,
     ),
     "grey": (
-      $grey,
-      findColorInvert($grey),
+      $greyish,
+      findColorInvert($greyish),
     ),
   )
 );
 
 // Navbar
 $navbar-background-color: $secondary;
-$navbar-item-color: $background-color;
+$navbar-item-color: #FFFFFF;
 $navbar-height: 4rem;
 
 // Footer
@@ -112,7 +121,7 @@ main > .container {
   min-height: 70vh;
 }
 
-$title-color: #3c376e;
+$title-color: $greyish;
 $title-family: "Liberation Sans", "Helvetica Neue", Roboto, Helvetica, Arial,
   serif;
 $title-weight: 700;
@@ -129,6 +138,7 @@ $subtitle-sub-size: 30px;
 $subtitle-sup-size: 15px;
 
 .subtitle {
+  color: #ffffff;
   background: $secondary;
   display: inline;
   padding: 3px 8px;

@@ -131,6 +131,30 @@ export default class EventCard extends Vue {
       this.event.organizerActor || this.mergedOptions.organizerActor
     );
   }
+<<<<<<< HEAD
+=======
+
+  get isDescriptionDifferentFromLocality(): boolean {
+    return (
+      this.event?.physicalAddress?.description !==
+        this.event?.physicalAddress?.locality &&
+      this.event?.physicalAddress?.description !== undefined
+    );
+  }
+
+  get eventDescriptionWithLocality(): string {
+    if (
+      this.event !== null &&
+      this.event?.physicalAddress !== null &&
+      this.event?.physicalAddress?.locality &&
+      this.event?.physicalAddress?.locality.length > 0
+    ) {
+      return `${this.event?.physicalAddress?.description}, ${this.event?.physicalAddress?.locality}`;
+    } else {
+      return `${this.event?.physicalAddress?.description}`;
+    }
+  }
+>>>>>>> efbb4a62 (Css updates)
 }
 </script>
 
@@ -141,7 +165,7 @@ export default class EventCard extends Vue {
 a.card {
   display: block;
   background: $secondary;
-  color: #3c376e;
+  color: #ffffff;
 
   &:hover {
     // box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
@@ -195,8 +219,10 @@ a.card {
 
   div.card-image {
     background: $secondary;
+    border-radius: 5px;
 
     figure.image {
+      border-radius: 5px 5px 0 0;
       background-size: cover;
       background-position: center;
     }
@@ -245,10 +271,25 @@ a.card {
 
     .event-subtitle {
       font-size: 0.85rem;
+<<<<<<< HEAD
     }
 
     .organizer-name {
       font-size: 14px;
+=======
+
+      color: #ffffff;
+
+      span {
+        width: 14rem;
+        margin-right: 12px;
+        overflow: hidden;
+
+        flex-grow: 1;
+
+        text-overflow: ellipsis;
+      }
+>>>>>>> efbb4a62 (Css updates)
     }
   }
 }
