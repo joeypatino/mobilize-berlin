@@ -44,13 +44,7 @@
           currentUser.isLoggedIn
         "
       >
-        <b-button
-          v-if="!hideCreateEventsButton"
-          tag="router-link"
-          :to="{ name: RouteName.CREATE_EVENT }"
-          type="is-primary"
-          >{{ $t("Create") }}</b-button
-        >
+        <b-button type="is-primary" @click="isComponentModalActive = true">{{ $t("Create") }}</b-button>
       </b-navbar-item>
       <b-navbar-item
         v-if="config && config.features.koenaConnect"
@@ -67,6 +61,22 @@
           alt="Contact accessibilité"
         />
       </b-navbar-item>
+      <b-modal :active.sync="isComponentModalActive" has-modal-card>
+      <div class="modal-card">
+        <section class="modal-card-body">
+          <p style="color: red;"><b>Here some hint and link to: "Why you should use groups"</b></p>
+        </section>
+        <footer class="modal-card-foot">
+          <b-button 
+          type="is-primary"  
+          tag="router-link"
+          :to="{ name: RouteName.CREATE_EVENT }" exact v-on:click.native="closeDialog()"
+          >
+            {{ $t("Create") }}
+          </b-button>
+        </footer>
+      </div>
+    </b-modal>
     </template>
     <template slot="end">
       <b-navbar-item tag="div">
@@ -237,6 +247,12 @@ import RouteName from "../router/name";
   },
 })
 export default class NavBar extends Vue {
+  isComponentModalActive = false;
+  
+  closeDialog(): void {
+    this.isComponentModalActive = false;
+  }
+  
   currentActor!: IPerson;
 
   config!: IConfig;
