@@ -134,11 +134,7 @@
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
     <h2>{{ $t("Headline picture") }}</h2>
-    <figure
-      v-if="event.picture"
-      class="image is-16by9"
-      @click="showImage = true"
-    >
+    <figure v-if="event.picture" class="image is-16by9">
       <lazy-image-wrapper
         :picture="event.picture"
         style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
@@ -196,7 +192,11 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ required: true }) user!: IUser | undefined;
   @Prop({ required: false, default: false }) showMap!: boolean;
 
+<<<<<<< HEAD
   showImage = false;
+=======
+  showMap = false;
+>>>>>>> 205a3e1b (removed modal image)
 
   RouteName = RouteName;
 
