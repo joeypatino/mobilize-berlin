@@ -154,7 +154,10 @@ export default class EventCard extends Vue {
       return `${this.event?.physicalAddress?.description}`;
     }
   }
+<<<<<<< HEAD
 >>>>>>> efbb4a62 (Css updates)
+=======
+>>>>>>> 71bbdddc (Css updates)
 }
 </script>
 
@@ -272,11 +275,14 @@ a.card {
     .event-subtitle {
       font-size: 0.85rem;
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 
     .organizer-name {
       font-size: 14px;
 =======
+=======
+>>>>>>> 71bbdddc (Css updates)
 
       color: #ffffff;
 
