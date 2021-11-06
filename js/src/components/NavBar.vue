@@ -44,13 +44,9 @@
           currentUser.isLoggedIn
         "
       >
-        <b-button
-          v-if="!hideCreateEventsButton"
-          tag="router-link"
-          :to="{ name: RouteName.CREATE_EVENT }"
-          type="is-primary"
-          >{{ $t("Create") }}</b-button
-        >
+        <b-button type="is-primary" @click="isComponentModalActive = true">{{
+          $t("Create")
+        }}</b-button>
       </b-navbar-item>
       <b-navbar-item
         v-if="config && config.features.koenaConnect"
@@ -67,6 +63,61 @@
           alt="Contact accessibilité"
         />
       </b-navbar-item>
+      <b-modal :active.sync="isComponentModalActive" has-modal-card>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">{{ $t("Warning") }}</p>
+          </header>
+          <section class="modal-card-body">
+            <p style="color: red">
+              <b
+                >If you want to build an audience on mobilize.berlin, we
+                strongly advice you to create a group and publish your events on
+                behalf of that group.</b
+              >
+            </p>
+            <p style="color: black">
+              <br />From mobilizon version 2.0 mobilizon users will be able to
+              follow your group (but not your user account!). Mobilizon 2.0 is
+              expected to be delivered in october 2021 (soon). For any question
+              or assistance you can contact
+              <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.
+            </p>
+            <p style="color: black">
+              <br />For more information see
+              <a
+                href="https://docs.mobilize.berlin/organizer.html"
+                target="_blank"
+                >docs.mobilize.berlin/organizer.html</a
+              >.
+            </p>
+          </section>
+          <footer class="modal-card-foot">
+            <div
+              style="display: flex; justify-content: space-between; width: 100%"
+            >
+              <b-button
+                type="is-primary"
+                tag="router-link"
+                :to="{ name: RouteName.CREATE_EVENT }"
+                exact
+                v-on:click.native="closeDialog()"
+              >
+                {{ $t("Create") }}
+              </b-button>
+              <b-button
+                type="is-primary"
+                tag="router-link"
+                :to="{ name: RouteName.CREATE_GROUP }"
+                exact
+                v-on:click.native="closeDialog()"
+              >
+                {{ $t("Create group") }}
+              </b-button>
+            </div>
+          </footer>
+        </div>
+      </b-modal>
     </template>
     <template slot="end">
       <b-navbar-item tag="div">
@@ -237,6 +288,12 @@ import RouteName from "../router/name";
   },
 })
 export default class NavBar extends Vue {
+  isComponentModalActive = false;
+
+  closeDialog(): void {
+    this.isComponentModalActive = false;
+  }
+
   currentActor!: IPerson;
 
   config!: IConfig;
@@ -353,7 +410,6 @@ nav {
   .navbar-dropdown .navbar-item {
     cursor: pointer;
     background: $greyish;
-
     span {
       display: flex;
     }

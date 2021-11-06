@@ -131,30 +131,6 @@ export default class EventCard extends Vue {
       this.event.organizerActor || this.mergedOptions.organizerActor
     );
   }
-<<<<<<< HEAD
-=======
-
-  get isDescriptionDifferentFromLocality(): boolean {
-    return (
-      this.event?.physicalAddress?.description !==
-        this.event?.physicalAddress?.locality &&
-      this.event?.physicalAddress?.description !== undefined
-    );
-  }
-
-  get eventDescriptionWithLocality(): string {
-    if (
-      this.event !== null &&
-      this.event?.physicalAddress !== null &&
-      this.event?.physicalAddress?.locality &&
-      this.event?.physicalAddress?.locality.length > 0
-    ) {
-      return `${this.event?.physicalAddress?.description}, ${this.event?.physicalAddress?.locality}`;
-    } else {
-      return `${this.event?.physicalAddress?.description}`;
-    }
-  }
->>>>>>> efbb4a62 (Css updates)
 }
 </script>
 
@@ -271,25 +247,24 @@ a.card {
 
     .event-subtitle {
       font-size: 0.85rem;
-<<<<<<< HEAD
-    }
-
-    .organizer-name {
-      font-size: 14px;
-=======
-
+      display: inline-flex;
+      flex-wrap: wrap;
       color: #ffffff;
 
       span {
         width: 14rem;
-        margin-right: 12px;
+        display: block;
         overflow: hidden;
 
         flex-grow: 1;
 
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
->>>>>>> efbb4a62 (Css updates)
+    }
+
+    .organizer-name {
+      font-size: 14px;
     }
   }
 }

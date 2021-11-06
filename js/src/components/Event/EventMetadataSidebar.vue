@@ -133,6 +133,24 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
+    <div v-if="event.picture">
+      <h2>{{ $t("Headline picture") }}</h2>
+      <div style="position: relative" @click="showImage = true">
+        <img :src="event.picture.url" style="width: 100%; cursor: zoom-in" />
+      </div>
+    </div>
+    <b-modal v-if="event.picture" :active.sync="showImage" has-modal-card>
+      <div>
+        <header class="modal-card-head">{{ $t("Headline picture") }}</header>
+        <section
+          class="modal-card"
+          style="width: auto; -webkit-overflow-scrolling: touch; overflow: auto"
+        >
+          <img :src="event.picture.url" />
+        </section>
+        <footer class="modal-card-foot"></footer>
+      </div>
+    </b-modal>
   </div>
 </template>
 <script lang="ts">
@@ -170,6 +188,8 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ type: Object as PropType<IConfig>, required: true }) config!: IConfig;
   @Prop({ required: true }) user!: IUser | undefined;
   @Prop({ required: false, default: false }) showMap!: boolean;
+
+  showImage = false;
 
   RouteName = RouteName;
 
@@ -248,6 +268,23 @@ export default class EventMetadataSidebar extends Vue {
       }
     }
   }
+}
+
+h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: $violet;
+}
+
+.banner-container {
+  width: 60vw;
+  height: 60vh;
+}
+
+.object-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 div.address-wrapper {

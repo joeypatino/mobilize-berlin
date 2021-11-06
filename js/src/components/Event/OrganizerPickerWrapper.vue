@@ -51,55 +51,12 @@
           <p class="modal-card-title">{{ $t("Pick a profile or a group") }}</p>
         </header>
         <section class="modal-card-body">
-          <div class="columns">
-            <div class="column actor-picker">
-              <organizer-picker
-                v-model="selectedActor"
-                @input="relay"
-                :restrict-moderator-level="true"
-              />
-            </div>
-            <div class="column contact-picker">
-              <div v-if="isSelectedActorAGroup && actorMembers.length > 0">
-                <p>{{ $t("Add a contact") }}</p>
-                <b-input
-                  :placeholder="$t('Filter by name')"
-                  v-model="contactFilter"
-                />
-                <p
-                  class="field"
-                  v-for="actor in filteredActorMembers"
-                  :key="actor.id"
-                >
-                  <b-checkbox v-model="actualContacts" :native-value="actor.id">
-                    <div class="media">
-                      <div class="media-left">
-                        <figure class="image is-48x48" v-if="actor.avatar">
-                          <img
-                            class="image is-rounded"
-                            :src="actor.avatar.url"
-                            :alt="actor.avatar.alt"
-                          />
-                        </figure>
-                        <b-icon v-else size="is-large" icon="account-circle" />
-                      </div>
-                      <div class="media-content" v-if="actor.name">
-                        <p class="is-4">{{ actor.name }}</p>
-                        <p class="is-6 has-text-grey-dark">
-                          {{ `@${usernameWithDomain(actor)}` }}
-                        </p>
-                      </div>
-                      <div class="media-content" v-else>
-                        {{ `@${usernameWithDomain(actor)}` }}
-                      </div>
-                    </div>
-                  </b-checkbox>
-                </p>
-              </div>
-              <div v-else class="content has-text-grey-dark has-text-centered">
-                <p>{{ $t("Your profile will be shown as contact.") }}</p>
-              </div>
-            </div>
+          <div>
+            <organizer-picker
+              v-model="selectedActor"
+              @input="relay"
+              :restrict-moderator-level="true"
+            />
           </div>
         </section>
         <footer class="modal-card-foot">
@@ -175,10 +132,6 @@ export default class OrganizerPickerWrapper extends Vue {
 
   isComponentModalActive = false;
 
-  contactFilter = "";
-
-  usernameWithDomain = usernameWithDomain;
-
   @Prop({ type: Array, required: false, default: () => [] })
   contacts!: IActor[];
   members: Paginate<IMember> = { elements: [], total: 0 };
@@ -240,16 +193,6 @@ export default class OrganizerPickerWrapper extends Vue {
       return this.members.elements.map(({ actor }: { actor: IActor }) => actor);
     }
     return [];
-  }
-
-  get filteredActorMembers(): IActor[] {
-    return this.actorMembers.filter((actor) => {
-      return [
-        actor.preferredUsername.toLowerCase(),
-        actor.name?.toLowerCase(),
-        actor.domain?.toLowerCase(),
-      ].some((match) => match?.includes(this.contactFilter.toLowerCase()));
-    });
   }
 
   get isSelectedActorAGroup(): boolean {

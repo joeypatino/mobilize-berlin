@@ -362,6 +362,16 @@ import Subtitle from "../components/Utils/Subtitle.vue";
       update: (data) => new Person(data.currentActor),
     },
     currentUser: CURRENT_USER_CLIENT,
+    loggedUser: {
+      query: USER_SETTINGS,
+      fetchPolicy: "network-only",
+      skip() {
+        return !this.currentUser || this.currentUser.isLoggedIn === false;
+      },
+      error() {
+        return null;
+      },
+    },
     config: CONFIG,
     closeContent: {
       query: CLOSE_CONTENT,

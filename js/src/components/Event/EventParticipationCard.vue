@@ -515,6 +515,7 @@ article.box {
     display: flex;
     padding: 5px 5px 5px 10px;
     border-radius: 4px 4px 0 0;
+    padding-left: calc(48px + 15px);
 
     figure,
     span.icon {
