@@ -163,7 +163,6 @@ export default class OrganizerPickerWrapper extends Vue {
   }
 
   async relay(group: IGroup): Promise<void> {
-    this.actualContacts = [];
     this.selectedActor = group;
   }
 
