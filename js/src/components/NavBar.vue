@@ -18,21 +18,13 @@
       <b-navbar-item tag="router-link" :to="{ name: RouteName.SEARCH }">{{
         $t("Explore")
       }}</b-navbar-item>
-      <b-navbar-item
-        v-if="currentActor.id && currentUser.isLoggedIn"
-        tag="router-link"
-        :to="{ name: RouteName.MY_EVENTS }"
-        >{{ $t("My events") }}</b-navbar-item
-      >
+      <b-navbar-item tag="router-link" :to="{ name: RouteName.MY_EVENTS }">{{
+        $t("My events")
+      }}</b-navbar-item>
       <b-navbar-item
         tag="router-link"
         :to="{ name: RouteName.MY_GROUPS }"
-        v-if="
-          config &&
-          config.features.groups &&
-          currentActor.id &&
-          currentUser.isLoggedIn
-        "
+        v-if="config && config.features.groups"
         >{{ $t("My groups") }}</b-navbar-item
       >
       <b-navbar-item
@@ -138,24 +130,14 @@
           v-if="currentActor"
           class="navbar-dropdown-profile"
         >
-          <div class="identity-wrapper">
-            <div>
-              <figure class="image is-32x32" v-if="currentActor.avatar">
-                <img
-                  class="is-rounded"
-                  alt="avatarUrl"
-                  :src="currentActor.avatar.url"
-                />
-              </figure>
-              <b-icon v-else icon="account-circle" />
-            </div>
-            <div class="media-content is-hidden-desktop">
-              <span>{{ displayName(currentActor) }}</span>
-              <span class="has-text-grey-dark" v-if="currentActor.name"
-                >@{{ currentActor.preferredUsername }}</span
-              >
-            </div>
-          </div>
+          <figure class="image is-32x32" v-if="currentActor.avatar">
+            <img
+              class="is-rounded"
+              alt="avatarUrl"
+              :src="currentActor.avatar.url"
+            />
+          </figure>
+          <b-icon v-else icon="account-circle" />
         </template>
 
         <!-- No identities dropdown if no identities -->
@@ -173,19 +155,14 @@
           <span>
             <div class="media-left">
               <figure class="image is-32x32" v-if="identity.avatar">
-                <img
-                  class="is-rounded"
-                  loading="lazy"
-                  :src="identity.avatar.url"
-                  alt
-                />
+                <img class="is-rounded" :src="identity.avatar.url" alt />
               </figure>
               <b-icon v-else size="is-medium" icon="account-circle" />
             </div>
 
             <div class="media-content">
-              <span>{{ displayName(identity) }}</span>
-              <span class="has-text-grey-dark" v-if="identity.name"
+              <span>{{ identity.displayName() }}</span>
+              <span class="has-text-grey" v-if="identity.name"
                 >@{{ identity.preferredUsername }}</span
               >
             </div>
@@ -199,6 +176,11 @@
           :to="{ name: RouteName.UPDATE_IDENTITY }"
           >{{ $t("My account") }}</b-navbar-item
         >
+
+        <!--          <b-navbar-item tag="router-link" :to="{ name: RouteName.CREATE_GROUP }">-->
+        <!--            {{ $t('Create group') }}-->
+        <!--          </b-navbar-item>-->
+
         <b-navbar-item
           v-if="currentUser.role === ICurrentUserRole.ADMINISTRATOR"
           tag="router-link"
@@ -250,7 +232,7 @@ import {
   IDENTITIES,
   UPDATE_DEFAULT_ACTOR,
 } from "../graphql/actor";
-import { displayName, IPerson, Person } from "../types/actor";
+import { IPerson, Person } from "../types/actor";
 import { CONFIG } from "../graphql/config";
 import { IConfig } from "../types/config.model";
 import { ICurrentUser, IUser } from "../types/current-user.model";
@@ -278,7 +260,7 @@ import RouteName from "../router/name";
     loggedUser: {
       query: USER_SETTINGS,
       skip() {
-        return !this.currentUser || this.currentUser.isLoggedIn === false;
+        return this.currentUser.isLoggedIn === false;
       },
     },
   },
@@ -289,11 +271,11 @@ import RouteName from "../router/name";
 })
 export default class NavBar extends Vue {
   isComponentModalActive = false;
-  
+
   closeDialog(): void {
     this.isComponentModalActive = false;
   }
-  
+
   currentActor!: IPerson;
 
   config!: IConfig;
@@ -326,24 +308,18 @@ export default class NavBar extends Vue {
       query: IDENTITIES,
     });
     if (data) {
-      this.identities = data.identities.map(
-        (identity: IPerson) => new Person(identity)
-      );
+      this.identities = data.identities.map((identity) => new Person(identity));
 
       // If we don't have any identities, the user has validated their account,
       // is logging for the first time but didn't create an identity somehow
       if (this.identities.length === 0) {
-        try {
-          await this.$router.push({
-            name: RouteName.REGISTER_PROFILE,
-            params: {
-              email: this.currentUser.email,
-              userAlreadyActivated: "true",
-            },
-          });
-        } catch (err) {
-          return undefined;
-        }
+        await this.$router.push({
+          name: RouteName.REGISTER_PROFILE,
+          params: {
+            email: this.currentUser.email,
+            userAlreadyActivated: "true",
+          },
+        });
       }
     }
   }
@@ -351,7 +327,6 @@ export default class NavBar extends Vue {
   @Watch("loggedUser")
   setSavedLanguage(): void {
     if (this.loggedUser?.locale) {
-      console.debug("Setting locale from navbar");
       loadLanguageAsync(this.loggedUser.locale);
     }
   }
@@ -403,7 +378,7 @@ nav {
     }
 
     svg {
-      height: 2rem;
+      height: 1.75rem;
     }
   }
 
@@ -411,11 +386,11 @@ nav {
     cursor: pointer;
     background: $greyish;
     span {
-      display: flex;
+      display: inherit;
     }
 
     &.is-active {
-      background: $greyish;
+      background: $secondary;
     }
 
     span.icon.is-medium {
@@ -434,25 +409,7 @@ nav {
   }
 
   a.navbar-item:focus-within {
-    color: $tertiary;
-  }
-
-  .koena {
-    padding-top: 0;
-    padding-bottom: 0;
-    & > img {
-      max-height: 4rem;
-      padding-top: 0.2rem;
-    }
-  }
-
-  .identity-wrapper {
-    display: flex;
-
-    .media-content span {
-      display: flex;
-      color: $violet-2;
-    }
+    background-color: inherit;
   }
 }
 </style>

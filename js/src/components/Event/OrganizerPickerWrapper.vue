@@ -51,7 +51,7 @@
           <p class="modal-card-title">{{ $t("Pick a profile or a group") }}</p>
         </header>
         <section class="modal-card-body">
-          <div class="actor-picker">
+          <div>
             <organizer-picker
               v-model="selectedActor"
               @input="relay"
@@ -75,7 +75,6 @@ import { IActor, IGroup, IPerson, usernameWithDomain } from "../../types/actor";
 import OrganizerPicker from "./OrganizerPicker.vue";
 import {
   CURRENT_ACTOR_CLIENT,
-  IDENTITIES,
   LOGGED_USER_MEMBERSHIPS,
 } from "../../graphql/actor";
 import { Paginate } from "../../types/paginate";
@@ -92,6 +91,23 @@ const MEMBER_ROLES = [
 @Component({
   components: { OrganizerPicker },
   apollo: {
+    members: {
+      query: GROUP_MEMBERS,
+      variables() {
+        return {
+          name: usernameWithDomain(this.selectedActor),
+          page: this.membersPage,
+          limit: 10,
+          roles: MEMBER_ROLES.join(","),
+        };
+      },
+      update: (data) => data.group.members,
+      skip() {
+        return (
+          !this.selectedActor || this.selectedActor.type !== ActorType.GROUP
+        );
+      },
+    },
     currentActor: CURRENT_ACTOR_CLIENT,
     userMemberships: {
       query: LOGGED_USER_MEMBERSHIPS,
@@ -101,7 +117,6 @@ const MEMBER_ROLES = [
       },
       update: (data) => data.loggedUser.memberships,
     },
-    identities: IDENTITIES,
   },
 })
 export default class OrganizerPickerWrapper extends Vue {
@@ -110,8 +125,6 @@ export default class OrganizerPickerWrapper extends Vue {
   @Prop({ default: true, type: Boolean }) inline!: boolean;
 
   currentActor!: IPerson;
-
-  identities!: IPerson[];
 
   isComponentModalActive = false;
 
@@ -138,6 +151,7 @@ export default class OrganizerPickerWrapper extends Vue {
   setInitialActor(): void {
     if (this.$route.query?.actorId) {
       const actorId = this.$route.query?.actorId as string;
+      this.$router.replace({ query: undefined });
       const actor = this.userMemberships.elements.find(
         ({ parent: { id }, role }) =>
           actorId === id && MEMBER_ROLES.includes(role)
@@ -151,9 +165,7 @@ export default class OrganizerPickerWrapper extends Vue {
       return this.value;
     }
     if (this.currentActor) {
-      return this.identities.find(
-        (identity) => identity.id === this.currentActor.id
-      );
+      return this.currentActor;
     }
     return undefined;
   }
@@ -163,6 +175,7 @@ export default class OrganizerPickerWrapper extends Vue {
   }
 
   async relay(group: IGroup): Promise<void> {
+    this.actualContacts = [];
     this.selectedActor = group;
   }
 
@@ -183,8 +196,11 @@ export default class OrganizerPickerWrapper extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.modal-card {
-  overflow-y: auto;
-  max-height: 60vh;
+.group-picker {
+  .block,
+  .no-group,
+  .inline {
+    cursor: pointer;
+  }
 }
 </style>
