@@ -80,11 +80,6 @@ export default class Footer extends Vue {
 
   langs: Record<string, string> = langs;
 
-  // eslint-disable-next-line class-methods-use-this
-  get random(): number {
-    return Math.floor(Math.random() * 4) + 1;
-  }
-
   @Watch("locale")
   // eslint-disable-next-line class-methods-use-this
   async updateLocale(locale: string): Promise<void> {
