@@ -164,6 +164,7 @@ import RouteName from "../../router/name";
 import { usernameWithDomain } from "../../types/actor";
 import EventMetadataBlock from "./EventMetadataBlock.vue";
 import EventFullDate from "./EventFullDate.vue";
+import LazyImageWrapper from "../Image/LazyImageWrapper.vue";
 import PopoverActorCard from "../Account/PopoverActorCard.vue";
 import ActorCard from "../../components/Account/ActorCard.vue";
 import AddressInfo from "../../components/Address/AddressInfo.vue";
@@ -178,6 +179,7 @@ import { IUser } from "@/types/current-user.model";
   components: {
     EventMetadataBlock,
     EventFullDate,
+    LazyImageWrapper,
     PopoverActorCard,
     ActorCard,
     AddressInfo,
