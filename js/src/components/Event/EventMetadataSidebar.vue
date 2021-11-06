@@ -133,12 +133,26 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
-    <figure class="image is-16by9" @click="showImage = true">
+    <figure
+      v-if="event.picture"
+      class="image is-16by9"
+      @click="showImage = true"
+    >
       <lazy-image-wrapper
         :picture="event.picture"
         style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
       />
     </figure>
+    <b-modal class="map-modal" has-modal-card :active.sync="showImage">
+      <div class="modal-card">
+        <section class="modal-card-body">
+          <lazy-image-wrapper
+            :picture="event.picture"
+            style="height: 100%; position: absolute; top: 0; left: 0; width: 100%"
+          />
+        </section>
+      </div>
+    </b-modal>
   </div>
 </template>
 <script lang="ts">
