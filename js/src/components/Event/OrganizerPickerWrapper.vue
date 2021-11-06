@@ -51,7 +51,7 @@
           <p class="modal-card-title">{{ $t("Pick a profile or a group") }}</p>
         </header>
         <section class="modal-card-body">
-          <div>
+          <div class="actor-picker">
             <organizer-picker
               v-model="selectedActor"
               @input="relay"
@@ -92,23 +92,6 @@ const MEMBER_ROLES = [
 @Component({
   components: { OrganizerPicker },
   apollo: {
-    members: {
-      query: GROUP_MEMBERS,
-      variables() {
-        return {
-          name: usernameWithDomain(this.selectedActor),
-          page: this.membersPage,
-          limit: 10,
-          roles: MEMBER_ROLES.join(","),
-        };
-      },
-      update: (data) => data.group.members,
-      skip() {
-        return (
-          !this.selectedActor || this.selectedActor.type !== ActorType.GROUP
-        );
-      },
-    },
     currentActor: CURRENT_ACTOR_CLIENT,
     userMemberships: {
       query: LOGGED_USER_MEMBERSHIPS,
@@ -201,11 +184,8 @@ export default class OrganizerPickerWrapper extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.modal-card-body .columns .column {
-  &.actor-picker,
-  &.contact-picker {
-    overflow-y: auto;
-    max-height: 400px;
-  }
+.modal-card {
+  overflow-y: auto;
+  max-height: 60vh;
 }
 </style>
