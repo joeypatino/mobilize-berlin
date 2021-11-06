@@ -268,8 +268,12 @@ a.card {
 
     .event-subtitle {
       font-size: 0.85rem;
+<<<<<<< HEAD
       display: inline-flex;
       flex-wrap: wrap;
+=======
+
+>>>>>>> 71bbdddc (Css updates)
       color: #ffffff;
 
       span {
