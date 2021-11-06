@@ -289,11 +289,11 @@ import RouteName from "../router/name";
 })
 export default class NavBar extends Vue {
   isComponentModalActive = false;
-
+  
   closeDialog(): void {
     this.isComponentModalActive = false;
   }
-
+  
   currentActor!: IPerson;
 
   config!: IConfig;
