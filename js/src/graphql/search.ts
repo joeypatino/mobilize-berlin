@@ -1,15 +1,20 @@
 import gql from "graphql-tag";
 import { ACTOR_FRAGMENT } from "./actor";
+import { ADDRESS_FRAGMENT } from "./address";
+import { EVENT_OPTIONS_FRAGMENT } from "./event_options";
+import { TAG_FRAGMENT } from "./tags";
 
-export const SEARCH_EVENTS = gql`
-  query SearchEvents(
+export const SEARCH_EVENTS_AND_GROUPS = gql`
+  query SearchEventsAndGroups(
     $location: String
     $radius: Float
     $tags: String
     $term: String
+    $type: EventType
     $beginsOn: DateTime
     $endsOn: DateTime
-    $page: Int
+    $eventPage: Int
+    $groupPage: Int
     $limit: Int
   ) {
     searchEvents(
@@ -17,9 +22,10 @@ export const SEARCH_EVENTS = gql`
       radius: $radius
       tags: $tags
       term: $term
+      type: $type
       beginsOn: $beginsOn
       endsOn: $endsOn
-      page: $page
+      page: $eventPage
       limit: $limit
     ) {
       total
@@ -33,36 +39,52 @@ export const SEARCH_EVENTS = gql`
           url
         }
         tags {
-          slug
-          title
+          ...TagFragment
+        }
+        physicalAddress {
+          ...AdressFragment
+        }
+        organizerActor {
+          ...ActorFragment
+        }
+        attributedTo {
+          ...ActorFragment
+        }
+        options {
+          ...EventOptions
         }
         __typename
       }
     }
-  }
-`;
-
-export const SEARCH_GROUPS = gql`
-  query SearchGroups(
-    $term: String
-    $location: String
-    $radius: Float
-    $page: Int
-    $limit: Int
-  ) {
     searchGroups(
       term: $term
       location: $location
       radius: $radius
-      page: $page
+      page: $groupPage
       limit: $limit
     ) {
       total
       elements {
         ...ActorFragment
+        banner {
+          id
+          url
+        }
+        members(roles: "member,moderator,administrator,creator") {
+          total
+        }
+        followers(approved: true) {
+          total
+        }
+        physicalAddress {
+          ...AdressFragment
+        }
       }
     }
   }
+  ${EVENT_OPTIONS_FRAGMENT}
+  ${TAG_FRAGMENT}
+  ${ADDRESS_FRAGMENT}
   ${ACTOR_FRAGMENT}
 `;
 

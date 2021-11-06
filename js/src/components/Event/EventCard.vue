@@ -1,7 +1,7 @@
 <template>
   <router-link
     class="card"
-    :to="{ name: 'Event', params: { uuid: event.uuid } }"
+    :to="{ name: RouteName.EVENT, params: { uuid: event.uuid } }"
   >
     <div class="card-image">
       <figure class="image is-16by9">
@@ -39,34 +39,36 @@
           />
         </div>
         <div class="media-content">
-          <p class="event-title" :title="event.title">{{ event.title }}</p>
-          <div class="event-organizer">
-            <figure
-              class="image is-24x24"
-              v-if="organizer(event) && organizer(event).avatar"
+          <h3 class="event-title" :title="event.title">{{ event.title }}</h3>
+          <div class="content-end">
+            <div class="event-organizer">
+              <figure
+                class="image is-24x24"
+                v-if="organizer(event) && organizer(event).avatar"
+              >
+                <img
+                  class="is-rounded"
+                  :src="organizer(event).avatar.url"
+                  alt=""
+                />
+              </figure>
+              <b-icon v-else icon="account-circle" />
+              <span class="organizer-name">
+                {{ organizerDisplayName(event) }}
+              </span>
+            </div>
+            <inline-address
+              v-if="event.physicalAddress"
+              class="event-subtitle"
+              :physical-address="event.physicalAddress"
+            />
+            <div
+              class="event-subtitle"
+              v-else-if="event.options && event.options.isOnline"
             >
-              <img
-                class="is-rounded"
-                :src="organizer(event).avatar.url"
-                alt=""
-              />
-            </figure>
-            <b-icon v-else icon="account-circle" />
-            <span class="organizer-name">
-              {{ organizerDisplayName(event) }}
-            </span>
-          </div>
-          <event-address
-            v-if="event.physicalAddress"
-            class="event-subtitle"
-            :physical-address="event.physicalAddress"
-          />
-          <div
-            class="event-subtitle"
-            v-else-if="event.options && event.options.isOnline"
-          >
-            <b-icon icon="video" />
-            <span>{{ $t("Online") }}</span>
+              <b-icon icon="video" />
+              <span>{{ $t("Online") }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -87,13 +89,13 @@ import LazyImageWrapper from "@/components/Image/LazyImageWrapper.vue";
 import { Actor, Person } from "@/types/actor";
 import { EventStatus, ParticipantRole } from "@/types/enums";
 import RouteName from "../../router/name";
-import EventAddress from "@/components/Event/EventAddress.vue";
+import InlineAddress from "@/components/Address/InlineAddress.vue";
 
 @Component({
   components: {
     DateCalendarIcon,
     LazyImageWrapper,
-    EventAddress,
+    InlineAddress,
   },
 })
 export default class EventCard extends Vue {
@@ -201,12 +203,14 @@ a.card {
   }
 
   .card-content {
+    height: 100%;
     padding: 0.5rem;
 
     & > .media {
       position: relative;
       display: flex;
       flex-direction: column;
+      height: 100%;
 
       & > .media-left {
         margin-top: -15px;
@@ -222,6 +226,9 @@ a.card {
         flex: 1;
         width: 100%;
         overflow-x: inherit;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
     }
 

@@ -44,6 +44,15 @@ defmodule Mobilizon.GraphQL.Schema.SearchType do
     end)
   end
 
+  enum :event_type do
+    value(:in_person,
+      description:
+        "The event will happen in person. It can also be livestreamed, but has a physical address"
+    )
+
+    value(:online, description: "The event will only happen online. It has no physical address")
+  end
+
   object :search_queries do
     @desc "Search persons"
     field :search_persons, :persons do
@@ -58,6 +67,14 @@ defmodule Mobilizon.GraphQL.Schema.SearchType do
     field :search_groups, :groups do
       arg(:term, :string, default_value: "", description: "Search term")
       arg(:location, :string, description: "A geohash for coordinates")
+
+      arg(:exclude_my_groups, :boolean,
+        description: "Whether to include the groups the current actor is member or follower"
+      )
+
+      arg(:minimum_visibility, :group_visibility,
+        description: "The minimum visibility the group must have"
+      )
 
       arg(:radius, :float,
         default_value: 50,
@@ -75,6 +92,7 @@ defmodule Mobilizon.GraphQL.Schema.SearchType do
       arg(:term, :string, default_value: "")
       arg(:tags, :string, description: "A comma-separated string listing the tags")
       arg(:location, :string, description: "A geohash for coordinates")
+      arg(:type, :event_type, description: "Whether the event is online or in person")
 
       arg(:radius, :float,
         default_value: 50,

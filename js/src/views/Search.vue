@@ -9,56 +9,84 @@
     <section class="hero is-light" v-else>
       <div class="hero-body">
         <form @submit.prevent="submit()">
-          <b-field :label="$t('Key words')" label-for="search" expanded>
+          <b-field
+            class="searchQuery"
+            :label="$t('Key words')"
+            label-for="search"
+          >
             <b-input
               icon="magnify"
               type="search"
               id="search"
-              size="is-large"
-              expanded
-              v-model="search"
+              :value="search"
+              @input="debouncedUpdateSearchQuery"
               :placeholder="
                 $t('For instance: London, Taekwondo, Architecture…')
               "
             />
           </b-field>
-          <b-field grouped group-multiline position="is-right" expanded>
-            <b-field :label="$t('Location')" label-for="location">
-              <address-auto-complete
-                v-model="location"
-                id="location"
-                ref="aac"
-                :placeholder="$t('For instance: London')"
-                @input="locchange"
-              />
-            </b-field>
-            <b-field :label="$t('Radius')" label-for="radius">
-              <b-select v-model="radius" id="radius" expanded>
-                <option
-                  v-for="(radiusOption, index) in radiusOptions"
-                  :key="index"
-                  :value="radiusOption"
-                >
-                  {{ radiusString(radiusOption) }}
-                </option>
-              </b-select>
-            </b-field>
-            <b-field :label="$t('Date')" label-for="date">
-              <b-select
-                v-model="when"
-                id="date"
-                :disabled="activeTab !== 0"
-                expanded
+          <full-address-auto-complete
+            class="searchLocation"
+            :label="$t('Location')"
+            v-model="location"
+            id="location"
+            ref="aac"
+            :placeholder="$t('For instance: London')"
+            @input="locchange"
+          />
+          <b-field
+            :label="$t('Radius')"
+            label-for="radius"
+            class="searchRadius"
+          >
+            <b-select expanded v-model="radius" id="radius">
+              <option
+                v-for="(radiusOption, index) in radiusOptions"
+                :key="index"
+                :value="radiusOption"
               >
-                <option
-                  v-for="(option, index) in options"
-                  :key="index"
-                  :value="index"
-                >
-                  {{ option.label }}
-                </option>
-              </b-select>
-            </b-field>
+                {{ radiusString(radiusOption) }}
+              </option>
+            </b-select>
+          </b-field>
+          <b-field :label="$t('Date')" label-for="date" class="searchDate">
+            <b-select
+              expanded
+              v-model="when"
+              id="date"
+              :disabled="activeTab !== 0"
+            >
+              <option
+                v-for="(option, index) in dateOptions"
+                :key="index"
+                :value="index"
+              >
+                {{ option.label }}
+              </option>
+            </b-select>
+          </b-field>
+          <b-field
+            expanded
+            :label="$t('Type')"
+            label-for="type"
+            class="searchType"
+          >
+            <b-select
+              expanded
+              v-model="type"
+              id="type"
+              :disabled="activeTab !== 0"
+            >
+              <option :value="null">
+                {{ $t("Any type") }}
+              </option>
+              <option :value="'ONLINE'">
+                {{ $t("Online") }}
+              </option>
+              <option :value="'IN_PERSON'">
+                {{ $t("In person") }}
+              </option>
+            </b-select>
           </b-field>
         </form>
       </div>
@@ -70,15 +98,7 @@
       <b-loading :active.sync="$apollo.loading"></b-loading>
       <h2 class="title">{{ $t("Featured events") }}</h2>
       <div v-if="events.elements.length > 0">
-        <div class="columns is-multiline">
-          <div
-            class="column is-one-third-desktop"
-            v-for="event in events.elements"
-            :key="event.uuid"
-          >
-            <EventCard :event="event" />
-          </div>
-        </div>
+        <multi-card :events="events.elements" />
         <div class="pagination" v-if="events.total > EVENT_PAGE_LIMIT">
           <b-pagination
             :total="events.total"
@@ -98,7 +118,7 @@
         >{{ $t("No events found") }}</b-message
       >
     </section>
-    <b-tabs v-else v-model="activeTab" type="is-boxed" class="searchTabs">
+    <b-tabs v-else v-model="activeTab" type="is-boxed" class="mt-3 searchTabs">
       <b-loading :active.sync="$apollo.loading"></b-loading>
       <b-tab-item>
         <template slot="header">
@@ -109,15 +129,7 @@
           </span>
         </template>
         <div v-if="searchEvents.total > 0">
-          <div class="columns is-multiline">
-            <div
-              class="column is-one-third-desktop"
-              v-for="event in searchEvents.elements"
-              :key="event.uuid"
-            >
-              <EventCard :event="event" />
-            </div>
-          </div>
+          <multi-card class="my-4" :events="searchEvents.elements" />
           <div class="pagination" v-if="searchEvents.total > EVENT_PAGE_LIMIT">
             <b-pagination
               :total="searchEvents.total"
@@ -146,15 +158,7 @@
           {{ $t("Groups are not enabled on this instance.") }}
         </b-message>
         <div v-else-if="searchGroups.total > 0">
-          <div class="columns is-multiline">
-            <div
-              class="column is-one-third-desktop"
-              v-for="group in searchGroups.elements"
-              :key="group.uuid"
-            >
-              <group-card :group="group" />
-            </div>
-          </div>
+          <multi-group-card class="my-4" :groups="searchGroups.elements" />
           <div class="pagination">
             <b-pagination
               :total="searchGroups.total"
@@ -193,18 +197,19 @@ import {
   eachWeekendOfInterval,
 } from "date-fns";
 import { SearchTabs } from "@/types/enums";
-import EventCard from "../components/Event/EventCard.vue";
+import MultiCard from "../components/Event/MultiCard.vue";
 import { FETCH_EVENTS } from "../graphql/event";
-import { IEvent } from "../types/event.model";
+import { EventType, IEvent } from "../types/event.model";
 import RouteName from "../router/name";
 import { IAddress, Address } from "../types/address.model";
-import AddressAutoComplete from "../components/Event/AddressAutoComplete.vue";
-import { SEARCH_EVENTS, SEARCH_GROUPS } from "../graphql/search";
+import FullAddressAutoComplete from "../components/Event/FullAddressAutoComplete.vue";
+import { SEARCH_EVENTS_AND_GROUPS } from "../graphql/search";
 import { Paginate } from "../types/paginate";
 import { IGroup } from "../types/actor";
-import GroupCard from "../components/Group/GroupCard.vue";
+import MultiGroupCard from "../components/Group/MultiGroupCard.vue";
 import { CONFIG } from "../graphql/config";
 import { REVERSE_GEOCODE } from "../graphql/address";
+import debounce from "lodash/debounce";
 
 interface ISearchTimeOption {
   label: string;
@@ -222,13 +227,11 @@ const DEFAULT_ZOOM = 11; // zoom on a city
 
 const GEOHASH_DEPTH = 9; // put enough accuracy, radius will be used anyway
 
-const THROTTLE = 2000; // minimum interval in ms between two requests
-
 @Component({
   components: {
-    EventCard,
-    AddressAutoComplete,
-    GroupCard,
+    MultiCard,
+    FullAddressAutoComplete,
+    MultiGroupCard,
   },
   apollo: {
     config: CONFIG,
@@ -241,8 +244,8 @@ const THROTTLE = 2000; // minimum interval in ms between two requests
         };
       },
     },
-    searchEvents: {
-      query: SEARCH_EVENTS,
+    searchElements: {
+      query: SEARCH_EVENTS_AND_GROUPS,
       fetchPolicy: "cache-and-network",
       variables() {
         return {
@@ -252,30 +255,15 @@ const THROTTLE = 2000; // minimum interval in ms between two requests
           beginsOn: this.start,
           endsOn: this.end,
           radius: this.radius,
-          page: this.eventPage,
+          eventPage: this.eventPage,
+          groupPage: this.groupPage,
           limit: EVENT_PAGE_LIMIT,
+          type: this.type,
         };
       },
-      throttle: THROTTLE,
-      skip() {
-        return !this.canSearchEvents;
-      },
-    },
-    searchGroups: {
-      query: SEARCH_GROUPS,
-      fetchPolicy: "cache-and-network",
-      variables() {
-        return {
-          term: this.search,
-          location: this.geohash,
-          radius: this.radius,
-          page: this.groupPage,
-          limit: GROUP_PAGE_LIMIT,
-        };
-      },
-      throttle: THROTTLE,
-      skip() {
-        return !this.canSearchGroups;
+      update(data) {
+        this.searchEvents = data.searchEvents;
+        this.searchGroups = data.searchGroups;
       },
     },
   },
@@ -301,11 +289,9 @@ export default class Search extends Vue {
 
   searchGroups: Paginate<IGroup> = { total: 0, elements: [] };
 
-  groupPage = 1;
-
   location: IAddress = new Address();
 
-  options: Record<string, ISearchTimeOption> = {
+  dateOptions: Record<string, ISearchTimeOption> = {
     today: {
       label: this.$t("Today") as string,
       start: new Date(),
@@ -355,8 +341,14 @@ export default class Search extends Vue {
   GROUP_PAGE_LIMIT = GROUP_PAGE_LIMIT;
 
   $refs!: {
-    aac: AddressAutoComplete;
+    aac: FullAddressAutoComplete;
   };
+
+  data(): Record<string, unknown> {
+    return {
+      debouncedUpdateSearchQuery: debounce(this.updateSearchQuery, 200),
+    };
+  }
 
   mounted(): void {
     this.prepareLocation(this.$route.query.geohash as string);
@@ -375,6 +367,10 @@ export default class Search extends Vue {
     this.$apollo.queries.searchEvents.refetch();
   }
 
+  updateSearchQuery(searchQuery: string): void {
+    this.search = searchQuery;
+  }
+
   get eventPage(): number {
     return parseInt(this.$route.query.eventPage as string, 10) || 1;
   }
@@ -383,6 +379,17 @@ export default class Search extends Vue {
     this.$router.push({
       name: this.$route.name || RouteName.SEARCH,
       query: { ...this.$route.query, eventPage: page.toString() },
+    });
+  }
+
+  get groupPage(): number {
+    return parseInt(this.$route.query.groupPage as string, 10) || 1;
+  }
+
+  set groupPage(page: number) {
+    this.$router.push({
+      name: this.$route.name || RouteName.SEARCH,
+      query: { ...this.$route.query, groupPage: page.toString() },
     });
   }
 
@@ -451,6 +458,23 @@ export default class Search extends Vue {
     });
   }
 
+  get type(): EventType {
+    return this.$route.query.type as EventType;
+  }
+
+  set type(type: EventType) {
+    const query = { ...this.$route.query, type };
+    if (type == null) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete query.type;
+    }
+    this.$router.replace({
+      name: RouteName.SEARCH,
+      query,
+    });
+  }
+
   get weekend(): { start: Date; end: Date } {
     const now = new Date();
     const endOfWeekDate = endOfWeek(now, { locale: this.$dateFnsLocale });
@@ -493,22 +517,24 @@ export default class Search extends Vue {
     if (this.radius === undefined || this.radius === null) {
       this.radius = DEFAULT_RADIUS;
     }
-    if (e.geom) {
+    if (e?.geom) {
       const [lon, lat] = e.geom.split(";");
       this.geohash = ngeohash.encode(lat, lon, GEOHASH_DEPTH);
+    } else {
+      this.geohash = undefined;
     }
   };
 
   get start(): Date | undefined {
-    if (this.options[this.when]) {
-      return this.options[this.when].start;
+    if (this.dateOptions[this.when]) {
+      return this.dateOptions[this.when].start;
     }
     return undefined;
   }
 
   get end(): Date | undefined | null {
-    if (this.options[this.when]) {
-      return this.options[this.when].end;
+    if (this.dateOptions[this.when]) {
+      return this.dateOptions[this.when].end;
     }
     return undefined;
   }
@@ -524,6 +550,7 @@ export default class Search extends Vue {
     return (
       this.stringExists(this.search) ||
       this.stringExists(this.tag) ||
+      this.stringExists(this.type) ||
       (this.stringExists(this.geohash) && this.valueExists(this.radius)) ||
       this.valueExists(this.end)
     );
@@ -534,13 +561,14 @@ export default class Search extends Vue {
     return value !== undefined && value !== null;
   }
 
-  private stringExists(value: string | undefined): boolean {
+  private stringExists(value: string | null | undefined): boolean {
     return this.valueExists(value) && (value as string).length > 0;
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import "~bulma/sass/utilities/mixins.sass";
 main > .container {
   background: $white;
 
@@ -566,19 +594,73 @@ h3.title {
 }
 
 form {
-  ::v-deep .field label.label {
-    margin-bottom: 0;
+  // ::v-deep .field label.label {
+  //   margin-bottom: 0;
+  // }
+
+  // .field.is-expanded:last-child > .field-body > .field.is-grouped {
+  //   flex-wrap: wrap;
+  //   flex: 1;
+  //   .field {
+  //     flex: 1 0 auto;
+  //     &:first-child {
+  //       flex: 3 0 300px;
+  //     }
+  //   }
+  // }
+  display: grid;
+  grid-gap: 0 15px;
+  grid-template-areas: "query" "location" "radius" "date" "type";
+
+  & > * {
+    margin-bottom: 0 !important;
   }
 
-  .field.is-expanded:last-child > .field-body > .field.is-grouped {
-    flex-wrap: wrap;
-    flex: 1;
-    .field {
-      flex: 1 0 auto;
-      &:first-child {
-        flex: 3 0 300px;
-      }
+  @include tablet {
+    grid-template-columns: max-content max-content max-content auto;
+    grid-template-areas: "query . ." "location . ." "radius date type";
+  }
+
+  @include desktop {
+    grid-template-columns: max-content max-content max-content 1fr 3fr;
+    grid-template-areas: "query . location" "radius date type";
+  }
+
+  .searchQuery {
+    grid-area: query;
+    @include tablet {
+      grid-column: span 4;
     }
+    @include desktop {
+      grid-column-start: 1;
+      grid-column-end: 4;
+    }
+  }
+
+  .searchLocation {
+    grid-area: location;
+    :v-deep .column {
+      padding-bottom: 0;
+    }
+    @include tablet {
+      grid-column: span 4;
+    }
+    @include desktop {
+      grid-column-start: 4;
+      grid-column-end: 7;
+    }
+  }
+
+  .searchRadius {
+    grid-area: radius;
+  }
+
+  .searchDate {
+    grid-area: date;
+  }
+
+  .searchType {
+    grid-area: type;
   }
 }
 </style>
