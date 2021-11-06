@@ -73,6 +73,41 @@
         </div>
       </div>
     </div>
+    <!--    <div class="date-and-title">-->
+    <!--      <div class="date-component">-->
+    <!--        <date-calendar-icon v-if="!mergedOptions.hideDate" :date="event.beginsOn" />-->
+    <!--      </div>-->
+    <!--      <div class="title-wrapper">-->
+    <!--        <h4>{{ event.title }}</h4>-->
+    <!--        <div class="organizer-place-wrapper has-text-grey">-->
+    <!--          <span>{{ $t('By @{username}', { username: actor.preferredUsername }) }}</span>-->
+    <!--           ·-->
+    <!--          <span v-if="event.physicalAddress">-->
+    <!--            {{ event.physicalAddress.description }}, {{ event.physicalAddress.locality }}-->
+    <!--          </span>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div v-if="!mergedOptions.hideDetails" class="details">-->
+    <!--      <div v-if="event.participants.length > 0 &&-->
+    <!--      mergedOptions.loggedPerson &&-->
+    <!--      event.participants[0].actor.id === mergedOptions.loggedPerson.id">-->
+    <!--        <b-tag type="is-info"><translate>Organizer</translate></b-tag>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="event.participants.length === 1">-->
+    <!--        <translate-->
+    <!--                :translate-params="{name: event.participants[0].actor.preferredUsername}"-->
+    <!--        >{name} organizes this event</translate>-->
+    <!--      </div>-->
+    <!--      <div v-else>-->
+    <!--        <span v-for="participant in event.participants" :key="participant.actor.uuid">-->
+    <!--          {{ participant.actor.preferredUsername }}-->
+    <!--          <span v-if="participant.role === ParticipantRole.CREATOR">(organizer)</span>,-->
+    <!--          &lt;!&ndash; <translate-->
+    <!--            :translate-params="{name: participant.actor.preferredUsername}"-->
+    <!--          >&nbsp;{name} is in,</translate>&ndash;&gt;-->
+    <!--        </span>-->
+    <!--      </div>-->
   </router-link>
 </template>
 
@@ -139,19 +174,6 @@ export default class EventCard extends Vue {
       this.event?.physicalAddress?.description !== undefined
     );
   }
-
-  get eventDescriptionWithLocality(): string {
-    if (
-      this.event !== null &&
-      this.event?.physicalAddress !== null &&
-      this.event?.physicalAddress?.locality &&
-      this.event?.physicalAddress?.locality.length > 0
-    ) {
-      return `${this.event?.physicalAddress?.description}, ${this.event?.physicalAddress?.locality}`;
-    } else {
-      return `${this.event?.physicalAddress?.description}`;
-    }
-  }
 }
 </script>
 
@@ -162,6 +184,7 @@ export default class EventCard extends Vue {
 a.card {
   display: block;
   background: $secondary;
+  color: #3c376e;
   color: #ffffff;
 
   &:hover {
@@ -274,12 +297,13 @@ a.card {
 
       span {
         width: 14rem;
-        margin-right: 12px;
+        display: block;
         overflow: hidden;
 
         flex-grow: 1;
 
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
 
