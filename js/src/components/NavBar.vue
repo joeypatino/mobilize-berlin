@@ -46,10 +46,11 @@
       >
         <b-button
           v-if="!hideCreateEventsButton"
-          type="is-primary" @click="isComponentModalActive = true"
-          >{{
-          $t("Create")
-        }}</b-button>
+          type="is-primary"
+          @click="isComponentModalActive = true"
+        >
+          {{ $t("Create") }}</b-button
+        >
       </b-navbar-item>
       <b-navbar-item
         v-if="config && config.features.koenaConnect"
