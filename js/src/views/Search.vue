@@ -6,98 +6,140 @@
         <b-tag slot="tag" type="is-light">{{ $t("#{tag}", { tag }) }}</b-tag>
       </i18n>
     </section>
-    <section class="hero is-light" v-else>
-      <div class="hero-body">
-        <form @submit.prevent="submit()">
-          <b-field
-            class="searchQuery"
-            :label="$t('Key words')"
-            label-for="search"
-          >
-            <b-input
-              icon="magnify"
-              type="search"
-              id="search"
-              ref="autocompleteSearchInput"
-              :value="search"
-              @input="debouncedUpdateSearchQuery"
-              dir="auto"
-              :placeholder="
-                $t('For instance: London, Taekwondo, Architecture…')
+    <b-tabs v-else v-model="exploreTab" type="is-boxed" class="mt-3 searchTabs">
+      <b-tab-item v-on:click="exploreTab = 0">
+        <template slot="header">
+          <b-icon icon="balloon"></b-icon>
+          <span>
+            {{ $t("explore the events") }}
+          </span>
+        </template>
+        <section class="hero is-light">
+          <div class="hero-body">
+            <form @submit.prevent="submit()">
+              <b-field
+                class="searchQuery"
+                :label="$t('Key words')"
+                label-for="search"
+              >
+                <b-input
+                  icon="magnify"
+                  type="search"
+                  id="search"
+                  :value="search"
+                  @input="debouncedUpdateSearchQuery"
+                  dir="auto"
+                  :placeholder="
+                    $t('For instance: London, Taekwondo, Architecture…')
+                  "
+                />
+              </b-field>
+              <full-address-auto-complete
+                class="searchLocation"
+                :label="$t('Location')"
+                v-model="location"
+                id="location"
+                ref="aac"
+                :placeholder="$t('For instance: London')"
+                @input="locchange"
+                :hideMap="true"
+                :hideSelected="true"
+              />
+              <b-field
+                :label="$t('Radius')"
+                label-for="radius"
+                class="searchRadius"
+              >
+                <b-select expanded v-model="radius" id="radius">
+                  <option
+                    v-for="(radiusOption, index) in radiusOptions"
+                    :key="index"
+                    :value="radiusOption"
+                  >
+                    {{ radiusString(radiusOption) }}
+                  </option>
+                </b-select>
+              </b-field>
+              <b-field :label="$t('Date')" label-for="date" class="searchDate">
+                <b-select
+                  expanded
+                  v-model="when"
+                  id="date"
+                  :disabled="activeTab !== 0"
+                >
+                  <option
+                    v-for="(option, index) in dateOptions"
+                    :key="index"
+                    :value="index"
+                  >
+                    {{ option.label }}
+                  </option>
+                </b-select>
+              </b-field>
+              <b-field
+                expanded
+                :label="$t('Type')"
+                label-for="type"
+                class="searchType"
+              >
+                <b-select
+                  expanded
+                  v-model="type"
+                  id="type"
+                  :disabled="activeTab !== 0"
+                >
+                  <option :value="null">
+                    {{ $t("Any type") }}
+                  </option>
+                  <option :value="'ONLINE'">
+                    {{ $t("Online") }}
+                  </option>
+                  <option :value="'IN_PERSON'">
+                    {{ $t("In person") }}
+                  </option>
+                </b-select>
+              </b-field>
+            </form>
+          </div>
+        </section>
+      </b-tab-item>
+      <b-tab-item v-on:click="exploreTab = 1">
+        <template slot="header">
+          <b-icon icon="spider-web"></b-icon>
+          <span>
+            {{ $t("explore the groups") }}
+          </span>
+        </template>
+        <p>
+          Explore the groups by clicking on the avatar to see its neighbors. You
+          with <code>Ctrl + click</code> you can select multiple nodes of the
+          network.<br />
+          Shown is a network of mobilizon groups. Groups are connected by edges
+          if they have followers in common. The thicker the edges are the more
+          follower they have in common. Double click on the group icon opens the
+          group page.
+        </p>
+        <div>
+          <div style="position: relative; padding-top: 66.25%">
+            <iframe
+              v-if="exploreTab === 1"
+              src="https://network.mobilize.berlin"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
               "
-            />
-          </b-field>
-          <full-address-auto-complete
-            class="searchLocation"
-            :label="$t('Location')"
-            v-model="location"
-            id="location"
-            ref="aac"
-            :placeholder="$t('For instance: London')"
-            @input="locchange"
-            :hideMap="true"
-            :hideSelected="true"
-          />
-          <b-field
-            :label="$t('Radius')"
-            label-for="radius"
-            class="searchRadius"
-          >
-            <b-select expanded v-model="radius" id="radius">
-              <option
-                v-for="(radiusOption, index) in radiusOptions"
-                :key="index"
-                :value="radiusOption"
-              >
-                {{ radiusString(radiusOption) }}
-              </option>
-            </b-select>
-          </b-field>
-          <b-field :label="$t('Date')" label-for="date" class="searchDate">
-            <b-select
-              expanded
-              v-model="when"
-              id="date"
-              :disabled="activeTab !== 0"
-            >
-              <option
-                v-for="(option, index) in dateOptions"
-                :key="index"
-                :value="index"
-              >
-                {{ option.label }}
-              </option>
-            </b-select>
-          </b-field>
-          <b-field
-            expanded
-            :label="$t('Type')"
-            label-for="type"
-            class="searchType"
-          >
-            <b-select
-              expanded
-              v-model="type"
-              id="type"
-              :disabled="activeTab !== 0"
-            >
-              <option :value="null">
-                {{ $t("Any type") }}
-              </option>
-              <option :value="'ONLINE'">
-                {{ $t("Online") }}
-              </option>
-              <option :value="'IN_PERSON'">
-                {{ $t("In person") }}
-              </option>
-            </b-select>
-          </b-field>
-        </form>
-      </div>
-    </section>
+              title="Wow, nice plot!"
+            ></iframe>
+          </div>
+        </div>
+      </b-tab-item>
+    </b-tabs>
     <section
       class="events-featured"
-      v-if="!canSearchEvents && !canSearchGroups"
+      v-if="!canSearchEvents && !canSearchGroups && exploreTab === 0"
     >
       <b-loading :active.sync="$apollo.loading"></b-loading>
       <h2 class="title">{{ $t("Featured events") }}</h2>
@@ -122,7 +164,12 @@
         >{{ $t("No events found") }}</b-message
       >
     </section>
-    <b-tabs v-else v-model="activeTab" type="is-boxed" class="mt-3 searchTabs">
+    <b-tabs
+      v-else-if="(canSearchEvents || canSearchGroups) && exploreTab === 0"
+      v-model="activeTab"
+      type="is-boxed"
+      class="mt-3 searchTabs"
+    >
       <b-loading :active.sync="$apollo.loading"></b-loading>
       <b-tab-item>
         <template slot="header">
@@ -294,6 +341,8 @@ const GEOHASH_DEPTH = 9; // put enough accuracy, radius will be used anyway
 export default class Search extends Vue {
   @Prop({ type: String, required: false }) tag!: string;
 
+  exploreTab = 0;
+
   events: Paginate<IEvent> = {
     total: 0,
     elements: [],
@@ -452,7 +501,6 @@ export default class Search extends Vue {
       query: { ...this.$route.query, searchType: value.toString() },
     });
   }
-
   get geohash(): string | undefined {
     if (this.location?.geom) {
       const [lon, lat] = this.location.geom.split(";");

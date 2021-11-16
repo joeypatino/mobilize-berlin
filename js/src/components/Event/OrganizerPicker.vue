@@ -17,7 +17,7 @@
           <img
             class="image is-rounded"
             :src="availableActor.avatar.url"
-            alt=""
+            :alt="availableActor.avatar.alt || ''"
           />
         </figure>
         <b-icon

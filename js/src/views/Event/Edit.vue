@@ -117,10 +117,7 @@
 
         <div v-if="config && config.features.groups && organizerActor.id">
           <b-field>
-            <organizer-picker-wrapper
-              v-model="organizerActor"
-              :contacts.sync="event.contacts"
-            />
+            <organizer-picker-wrapper v-model="organizerActor" />
           </b-field>
           <p v-if="!attributedToAGroup && organizerActorEqualToCurrentActor">
             {{

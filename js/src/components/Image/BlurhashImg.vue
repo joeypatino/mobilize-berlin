@@ -9,7 +9,6 @@ import { Component, Prop, Ref, Vue, Watch } from "vue-property-decorator";
 @Component
 export default class BlurhashImg extends Vue {
   @Prop({ type: String, required: true }) hash!: string;
-  @Prop({ type: Number, default: 1 }) aspectRatio!: string;
 
   @Ref("canvas") readonly canvas!: any;
 
