@@ -67,59 +67,16 @@
           alt="Contact accessibilité"
         />
       </b-navbar-item>
-      <b-modal :active.sync="isComponentModalActive" has-modal-card>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">{{ $t("Warning") }}</p>
-          </header>
-          <section class="modal-card-body">
-            <p style="color: red">
-              <b
-                >If you want to build an audience on mobilize.berlin, we
-                strongly advice you to create a group and publish your events on
-                behalf of that group.</b
-              >
-            </p>
-            <p style="color: black">
-              <br />From mobilizon version 2.0 mobilizon users will be able to
-              follow your group (but not your user account!). For any question
-              or assistance you can contact
-              <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.
-            </p>
-            <p style="color: black">
-              <br />For more information see
-              <a
-                href="https://docs.mobilize.berlin/organizer.html"
-                target="_blank"
-                >docs.mobilize.berlin/organizer.html</a
-              >.
-            </p>
-          </section>
-          <footer class="modal-card-foot">
-            <div
-              style="display: flex; justify-content: space-between; width: 100%"
-            >
-              <b-button
-                type="is-primary"
-                tag="router-link"
-                :to="{ name: RouteName.CREATE_EVENT }"
-                exact
-                v-on:click.native="closeDialog()"
-              >
-                {{ $t("Create") }}
-              </b-button>
-              <b-button
-                type="is-primary"
-                tag="router-link"
-                :to="{ name: RouteName.CREATE_GROUP }"
-                exact
-                v-on:click.native="closeDialog()"
-              >
-                {{ $t("Create group") }}
-              </b-button>
-            </div>
-          </footer>
-        </div>
+      <b-modal
+        :active.sync="isComponentModalActive"
+        has-modal-card
+        :close-button-aria-label="$t('Close')"
+        class="map-modal"
+        :can-cancel="['escape', 'outside']"
+      >
+        <template #default="props">
+          <create-event-dialoge @close="props.close" />
+        </template>
       </b-modal>
     </template>
     <template slot="end">
@@ -193,11 +150,6 @@
           :to="{ name: RouteName.UPDATE_IDENTITY }"
           >{{ $t("My account") }}</b-navbar-item
         >
-
-        <!--          <b-navbar-item tag="router-link" :to="{ name: RouteName.CREATE_GROUP }">-->
-        <!--            {{ $t('Create group') }}-->
-        <!--          </b-navbar-item>-->
-
         <b-navbar-item
           v-if="currentUser.role === ICurrentUserRole.ADMINISTRATOR"
           tag="router-link"
@@ -249,12 +201,13 @@ import {
   IDENTITIES,
   UPDATE_DEFAULT_ACTOR,
 } from "../graphql/actor";
-import { IPerson, Person } from "../types/actor";
+import { displayName, IPerson, Person } from "../types/actor";
 import { CONFIG } from "../graphql/config";
 import { IConfig } from "../types/config.model";
 import { ICurrentUser, IUser } from "../types/current-user.model";
 import SearchField from "./SearchField.vue";
 import RouteName from "../router/name";
+import CreateEventDialoge from "./Event/CreateEventDialoge.vue";
 
 @Component({
   apollo: {
@@ -277,21 +230,18 @@ import RouteName from "../router/name";
     loggedUser: {
       query: USER_SETTINGS,
       skip() {
-        return this.currentUser.isLoggedIn === false;
+        return !this.currentUser || this.currentUser.isLoggedIn === false;
       },
     },
   },
   components: {
     Logo,
     SearchField,
+    CreateEventDialoge,
   },
 })
 export default class NavBar extends Vue {
   isComponentModalActive = false;
-
-  closeDialog(): void {
-    this.isComponentModalActive = false;
-  }
 
   currentActor!: IPerson;
 
@@ -325,18 +275,24 @@ export default class NavBar extends Vue {
       query: IDENTITIES,
     });
     if (data) {
-      this.identities = data.identities.map((identity) => new Person(identity));
+      this.identities = data.identities.map(
+        (identity: IPerson) => new Person(identity)
+      );
 
       // If we don't have any identities, the user has validated their account,
       // is logging for the first time but didn't create an identity somehow
       if (this.identities.length === 0) {
-        await this.$router.push({
-          name: RouteName.REGISTER_PROFILE,
-          params: {
-            email: this.currentUser.email,
-            userAlreadyActivated: "true",
-          },
-        });
+        try {
+          await this.$router.push({
+            name: RouteName.REGISTER_PROFILE,
+            params: {
+              email: this.currentUser.email,
+              userAlreadyActivated: "true",
+            },
+          });
+        } catch (err) {
+          return undefined;
+        }
       }
     }
   }
@@ -344,6 +300,7 @@ export default class NavBar extends Vue {
   @Watch("loggedUser")
   setSavedLanguage(): void {
     if (this.loggedUser?.locale) {
+      console.debug("Setting locale from navbar");
       loadLanguageAsync(this.loggedUser.locale);
     }
   }
@@ -393,10 +350,12 @@ nav {
     a.button {
       font-weight: bold;
     }
+
     svg {
       height: 2rem;
     }
   }
+
   .navbar-dropdown .navbar-item {
     cursor: pointer;
     background: $greyish;

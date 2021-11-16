@@ -76,15 +76,14 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { IMember } from "@/types/actor/member.model";
-import { IActor, IGroup, IPerson, usernameWithDomain } from "../../types/actor";
+import { IActor, IGroup, IPerson } from "../../types/actor";
 import OrganizerPicker from "./OrganizerPicker.vue";
 import {
   CURRENT_ACTOR_CLIENT,
   LOGGED_USER_MEMBERSHIPS,
 } from "../../graphql/actor";
 import { Paginate } from "../../types/paginate";
-import { GROUP_MEMBERS } from "@/graphql/member";
-import { ActorType, MemberRole } from "@/types/enums";
+import { MemberRole } from "@/types/enums";
 
 const MEMBER_ROLES = [
   MemberRole.CREATOR,
@@ -96,23 +95,6 @@ const MEMBER_ROLES = [
 @Component({
   components: { OrganizerPicker },
   apollo: {
-    members: {
-      query: GROUP_MEMBERS,
-      variables() {
-        return {
-          name: usernameWithDomain(this.selectedActor),
-          page: this.membersPage,
-          limit: 10,
-          roles: MEMBER_ROLES.join(","),
-        };
-      },
-      update: (data) => data.group.members,
-      skip() {
-        return (
-          !this.selectedActor || this.selectedActor.type !== ActorType.GROUP
-        );
-      },
-    },
     currentActor: CURRENT_ACTOR_CLIENT,
     userMemberships: {
       query: LOGGED_USER_MEMBERSHIPS,
@@ -133,24 +115,9 @@ export default class OrganizerPickerWrapper extends Vue {
 
   isComponentModalActive = false;
 
-  @Prop({ type: Array, required: false, default: () => [] })
-  contacts!: IActor[];
-  members: Paginate<IMember> = { elements: [], total: 0 };
-
   membersPage = 1;
 
   userMemberships: Paginate<IMember> = { elements: [], total: 0 };
-
-  get actualContacts(): (string | undefined)[] {
-    return this.contacts.map(({ id }) => id);
-  }
-
-  set actualContacts(contactsIds: (string | undefined)[]) {
-    this.$emit(
-      "update:contacts",
-      this.actorMembers.filter(({ id }) => contactsIds.includes(id))
-    );
-  }
 
   @Watch("userMemberships")
   setInitialActor(): void {
@@ -180,19 +147,11 @@ export default class OrganizerPickerWrapper extends Vue {
   }
 
   async relay(group: IGroup): Promise<void> {
-    this.actualContacts = [];
     this.selectedActor = group;
   }
 
   pickActor(): void {
     this.isComponentModalActive = false;
-  }
-
-  get actorMembers(): IActor[] {
-    if (this.selectedActor?.type === ActorType.GROUP) {
-      return this.members.elements.map(({ actor }: { actor: IActor }) => actor);
-    }
-    return [];
   }
 }
 </script>
