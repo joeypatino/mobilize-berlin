@@ -133,21 +133,11 @@
       >
       <span v-else>{{ extra.value }}</span>
     </event-metadata-block>
-    <div v-if="event.picture">
-      <h2>{{ $t("Headline picture") }}</h2>
-      <div style="position: relative" @click="showImage = true">
+    <event-metadata-block v-if="event.picture" :title="$t('Headline picture')">
+      <div style="position: relative" @click="$emit('showHeadlineModal', true)">
         <img :src="event.picture.url" style="width: 100%; cursor: zoom-in" />
       </div>
-    </div>
-    <b-modal v-if="event.picture" :active.sync="showImage">
-      <div>
-        <header class="modal-card-head">{{ $t("Headline picture") }}</header>
-        <section style="background-color: white">
-          <img :src="event.picture.url" />
-        </section>
-        <footer class="modal-card-foot"></footer>
-      </div>
-    </b-modal>
+    </event-metadata-block>
   </div>
 </template>
 <script lang="ts">
@@ -161,7 +151,6 @@ import RouteName from "../../router/name";
 import { usernameWithDomain } from "../../types/actor";
 import EventMetadataBlock from "./EventMetadataBlock.vue";
 import EventFullDate from "./EventFullDate.vue";
-import LazyImageWrapper from "../Image/LazyImageWrapper.vue";
 import PopoverActorCard from "../Account/PopoverActorCard.vue";
 import ActorCard from "../../components/Account/ActorCard.vue";
 import AddressInfo from "../../components/Address/AddressInfo.vue";
@@ -176,7 +165,6 @@ import { IUser } from "@/types/current-user.model";
   components: {
     EventMetadataBlock,
     EventFullDate,
-    LazyImageWrapper,
     PopoverActorCard,
     ActorCard,
     AddressInfo,
@@ -187,6 +175,7 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ type: Object as PropType<IConfig>, required: true }) config!: IConfig;
   @Prop({ required: true }) user!: IUser | undefined;
   @Prop({ required: false, default: false }) showMap!: boolean;
+  @Prop({ required: false, default: false }) showImage!: boolean;
 
   showImage = false;
 
