@@ -6,7 +6,6 @@
     </header>
     <div class="modal-card-body">
       <section style="background-color: white">
-        <p>bla{{ src }}</p>
         <img :src="image" />
       </section>
     </div>
@@ -14,8 +13,9 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 
+@Component
 export default class EventHeadline extends Vue {
   @Prop({ required: true, type: String }) image!: string;
 }
