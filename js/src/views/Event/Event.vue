@@ -283,6 +283,7 @@
               :config="config"
               :user="loggedUser"
               @showMapModal="showMap = true"
+              @showHeadlineModal="showImage = true"
             />
           </div>
         </aside>
@@ -439,6 +440,18 @@
       <b-modal
         :close-button-aria-label="$t('Close')"
         class="map-modal"
+        v-if="event.picture"
+        :active.sync="showImage"
+        has-modal-card
+        :can-cancel="['escape', 'outside']"
+      >
+        <template #default="props">
+          <event-headline :image="event.picture.url" @close="props.close" />
+        </template>
+      </b-modal>
+      <b-modal
+        :close-button-aria-label="$t('Close')"
+        class="map-modal"
         v-if="event.physicalAddress && event.physicalAddress.geom"
         :active.sync="showMap"
         has-modal-card
@@ -501,6 +514,7 @@ import Tag from "../../components/Tag.vue";
 import EventMetadataSidebar from "../../components/Event/EventMetadataSidebar.vue";
 import EventBanner from "../../components/Event/EventBanner.vue";
 import EventMap from "../../components/Event/EventMap.vue";
+import EventHeadline from "../../components/Event/EventHeadline.vue";
 import PopoverActorCard from "../../components/Account/PopoverActorCard.vue";
 import { IParticipant } from "../../types/participant.model";
 import { ApolloCache, FetchResult } from "@apollo/client/core";
@@ -525,6 +539,7 @@ import { IUser } from "@/types/current-user.model";
     EventBanner,
     EventMetadataSidebar,
     EventMap,
+    EventHeadline,
     ShareEventModal: () =>
       import(
         /* webpackChunkName: "shareEventModal" */ "../../components/Event/ShareEventModal.vue"
@@ -1129,6 +1144,8 @@ export default class Event extends EventMixin {
   }
 
   showMap = false;
+
+  showImage = false;
 
   get routingType(): string | undefined {
     return this.config?.maps?.routing?.type;
