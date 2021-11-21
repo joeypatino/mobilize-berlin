@@ -67,59 +67,16 @@
           alt="Contact accessibilité"
         />
       </b-navbar-item>
-      <b-modal :active.sync="isComponentModalActive" has-modal-card>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">{{ $t("Warning") }}</p>
-          </header>
-          <section class="modal-card-body">
-            <p style="color: red">
-              <b
-                >If you want to build an audience on mobilize.berlin, we
-                strongly advice you to create a group and publish your events on
-                behalf of that group.</b
-              >
-            </p>
-            <p style="color: black">
-              <br />From mobilizon version 2.0 mobilizon users will be able to
-              follow your group (but not your user account!). For any question
-              or assistance you can contact
-              <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.
-            </p>
-            <p style="color: black">
-              <br />For more information see
-              <a
-                href="https://docs.mobilize.berlin/organizer.html"
-                target="_blank"
-                >docs.mobilize.berlin/organizer.html</a
-              >.
-            </p>
-          </section>
-          <footer class="modal-card-foot">
-            <div
-              style="display: flex; justify-content: space-between; width: 100%"
-            >
-              <b-button
-                type="is-primary"
-                tag="router-link"
-                :to="{ name: RouteName.CREATE_EVENT }"
-                exact
-                v-on:click.native="closeDialog()"
-              >
-                {{ $t("Create") }}
-              </b-button>
-              <b-button
-                type="is-primary"
-                tag="router-link"
-                :to="{ name: RouteName.CREATE_GROUP }"
-                exact
-                v-on:click.native="closeDialog()"
-              >
-                {{ $t("Create group") }}
-              </b-button>
-            </div>
-          </footer>
-        </div>
+      <b-modal
+        :active.sync="isComponentModalActive"
+        has-modal-card
+        :close-button-aria-label="$t('Close')"
+        class="map-modal"
+        :can-cancel="['escape', 'outside']"
+      >
+        <template #default="props">
+          <create-event-dialoge @close="props.close" />
+        </template>
       </b-modal>
     </template>
     <template slot="end">
@@ -250,6 +207,7 @@ import { IConfig } from "../types/config.model";
 import { ICurrentUser, IUser } from "../types/current-user.model";
 import SearchField from "./SearchField.vue";
 import RouteName from "../router/name";
+import CreateEventDialoge from "./Event/CreateEventDialoge.vue";
 
 @Component({
   apollo: {
@@ -279,14 +237,11 @@ import RouteName from "../router/name";
   components: {
     Logo,
     SearchField,
+    CreateEventDialoge,
   },
 })
 export default class NavBar extends Vue {
   isComponentModalActive = false;
-
-  closeDialog(): void {
-    this.isComponentModalActive = false;
-  }
 
   currentActor!: IPerson;
 

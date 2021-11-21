@@ -36,7 +36,19 @@
                     :actor="event.attributedTo"
                     :inline="true"
                   >
-                    <i18n path="By {group}" dir="auto">
+                    <i18n
+                      path="By {group}"
+                      dir="auto"
+                      tag="router-link"
+                      :to="{
+                        name: RouteName.GROUP,
+                        params: {
+                          preferredUsername: usernameWithDomain(
+                            event.attributedTo
+                          ),
+                        },
+                      }"
+                    >
                       <span dir="ltr" slot="group"
                         >@{{ usernameWithDomain(event.attributedTo) }}</span
                       >
