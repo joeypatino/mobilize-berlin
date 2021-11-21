@@ -138,15 +138,6 @@
         <img :src="event.picture.url" style="width: 100%; cursor: zoom-in" />
       </div>
     </event-metadata-block>
-    <!--b-modal v-if="event.picture" :active.sync="showImage" >
-      <div>
-        <header class="modal-card-head">{{ $t("Headline picture") }}</header>
-        <section style="background-color: white">
-          <img :src="event.picture.url" />
-        </section>
-        <footer class="modal-card-foot"></footer>
-      </div>
-    </b-modal-->
   </div>
 </template>
 <script lang="ts">
