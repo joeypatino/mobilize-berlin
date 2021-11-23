@@ -177,8 +177,6 @@ export default class EventMetadataSidebar extends Vue {
   @Prop({ required: false, default: false }) showMap!: boolean;
   @Prop({ required: false, default: false }) showImage!: boolean;
 
-  showImage = false;
-
   RouteName = RouteName;
 
   usernameWithDomain = usernameWithDomain;
