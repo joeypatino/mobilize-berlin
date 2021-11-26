@@ -22,6 +22,7 @@ erl_crash.dump
 /doc
 priv/static/*
 !priv/static/.gitkeep
+!priv/static/group_net
 priv/data/*
 !priv/data/.gitkeep
 priv/errors/*

@@ -77,7 +77,7 @@ defmodule Mobilizon.Federation.ActivityPub.Permission do
 
   @spec can_manage_group_object?(
           existing_object_permissions(),
-          Actor.t(),
+          %Actor{url: String.t()},
           object()
         ) :: boolean()
   defp can_manage_group_object?(permission, %Actor{url: actor_url} = actor, object) do

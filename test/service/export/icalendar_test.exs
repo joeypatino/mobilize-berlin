@@ -19,7 +19,7 @@ defmodule Mobilizon.Service.ICalendarTest do
       VERSION:2.0
       PRODID:-//Elixir ICalendar//Mobilizon #{Mobilizon.Config.instance_version()}//EN
       BEGIN:VEVENT
-      CATEGORIES:#{Enum.map_join(event.tags, ",", & &1.title)}
+      CATEGORIES:#{event.tags |> Enum.map(& &1.title) |> Enum.join(",")}
       DESCRIPTION:Ceci est une description avec une première phrase assez longue\\,\\n      puis sur une seconde ligne
       DTEND:#{Value.to_ics(event.ends_on)}Z
       DTSTAMP:#{Value.to_ics(event.publish_at)}Z

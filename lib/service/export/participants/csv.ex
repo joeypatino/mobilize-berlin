@@ -41,7 +41,7 @@ defmodule Mobilizon.Service.Export.Participants.CSV do
                |> Repo.stream()
                |> Stream.map(&to_list/1)
                |> NimbleCSV.RFC4180.dump_to_iodata()
-               |> add_header_column()
+               |> (fn stream -> Stream.concat([Enum.join(columns(), ","), "\n"], stream) end).()
                |> Stream.each(fn line -> IO.write(file, line) end)
                |> Stream.run()
 
@@ -61,10 +61,6 @@ defmodule Mobilizon.Service.Export.Participants.CSV do
     else
       {:error, :export_dependency_not_installed}
     end
-  end
-
-  defp add_header_column(stream) do
-    Stream.concat([Enum.join(columns(), ","), "\n"], stream)
   end
 
   @spec save_csv_upload(String.t(), String.t(), Event.t()) ::

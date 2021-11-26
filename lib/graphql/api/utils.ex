@@ -21,17 +21,13 @@ defmodule Mobilizon.GraphQL.API.Utils do
     text
     |> Formatter.html_escape("text/plain")
     |> Formatter.linkify(options)
-    |> inject_new_lines()
+    |> (fn {text, mentions, tags} -> {String.replace(text, ~r/\r?\n/, "<br>"), mentions, tags} end).()
   end
 
   def format_input(text, "text/html", options) do
     text
     |> Formatter.html_escape("text/html")
     |> Formatter.linkify(options)
-  end
-
-  defp inject_new_lines({text, mentions, tags}) do
-    {String.replace(text, ~r/\r?\n/, "<br>"), mentions, tags}
   end
 
   @doc """

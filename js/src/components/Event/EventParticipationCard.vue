@@ -45,22 +45,6 @@
         </div>
         <div class="list-card-content">
           <div class="title-wrapper" dir="auto">
-            <b-tag
-              type="is-info"
-              class="mr-1 mb-1"
-              size="is-medium"
-              v-if="participation.event.status === EventStatus.TENTATIVE"
-            >
-              {{ $t("Tentative") }}
-            </b-tag>
-            <b-tag
-              type="is-danger"
-              class="mr-1 mb-1"
-              size="is-medium"
-              v-if="participation.event.status === EventStatus.CANCELLED"
-            >
-              {{ $t("Cancelled") }}
-            </b-tag>
             <router-link
               :to="{
                 name: RouteName.EVENT,
@@ -273,7 +257,7 @@ import { Component, Prop } from "vue-property-decorator";
 import DateCalendarIcon from "@/components/Event/DateCalendarIcon.vue";
 import { mixins } from "vue-class-component";
 import { RawLocation, Route } from "vue-router";
-import { EventStatus, EventVisibility, ParticipantRole } from "@/types/enums";
+import { EventVisibility, ParticipantRole } from "@/types/enums";
 import { IParticipant } from "../../types/participant.model";
 import {
   IEventCardOptions,
@@ -341,8 +325,6 @@ export default class EventParticipationCard extends mixins(
   organizer = organizer;
 
   RouteName = RouteName;
-
-  EventStatus = EventStatus;
 
   get mergedOptions(): IEventCardOptions {
     return { ...defaultOptions, ...this.options };

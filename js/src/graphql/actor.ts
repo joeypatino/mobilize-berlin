@@ -41,7 +41,6 @@ export const FETCH_PERSON = gql`
           uuid
           title
           beginsOn
-          status
         }
       }
     }
@@ -85,7 +84,6 @@ export const GET_PERSON = gql`
           uuid
           title
           beginsOn
-          status
         }
       }
       participations(page: $participationPage, limit: $participationLimit) {
@@ -97,7 +95,6 @@ export const GET_PERSON = gql`
             uuid
             title
             beginsOn
-            status
           }
         }
       }
@@ -216,7 +213,6 @@ export const LOGGED_USER_DRAFTS = gql`
           alt
         }
         beginsOn
-        status
         visibility
         attributedTo {
           ...ActorFragment

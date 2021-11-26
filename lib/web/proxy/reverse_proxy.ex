@@ -294,22 +294,20 @@ defmodule Mobilizon.Web.ReverseProxy do
     headers
     |> downcase_headers()
     |> Enum.filter(fn {k, _} -> k in @keep_req_headers end)
-    |> maybe_keep_user_agent(opts)
-  end
+    |> (fn headers ->
+          headers = headers ++ Keyword.get(opts, :req_headers, [])
 
-  defp maybe_keep_user_agent(headers, opts) do
-    headers = headers ++ Keyword.get(opts, :req_headers, [])
-
-    if Keyword.get(opts, :keep_user_agent, false) do
-      List.keystore(
-        headers,
-        "user-agent",
-        0,
-        {"user-agent", Mobilizon.user_agent()}
-      )
-    else
-      headers
-    end
+          if Keyword.get(opts, :keep_user_agent, false) do
+            List.keystore(
+              headers,
+              "user-agent",
+              0,
+              {"user-agent", Mobilizon.user_agent()}
+            )
+          else
+            headers
+          end
+        end).()
   end
 
   @spec build_resp_headers(list(tuple()), Keyword.t()) :: list(tuple())
@@ -318,11 +316,7 @@ defmodule Mobilizon.Web.ReverseProxy do
     |> Enum.filter(fn {k, _} -> k in @keep_resp_headers end)
     |> build_resp_cache_headers(opts)
     |> build_resp_content_disposition_header(opts)
-    |> maybe_add_headers_from_opts(opts)
-  end
-
-  defp maybe_add_headers_from_opts(headers, opts) do
-    headers ++ Keyword.get(opts, :resp_headers, [])
+    |> (fn headers -> headers ++ Keyword.get(opts, :resp_headers, []) end).()
   end
 
   @spec build_resp_cache_headers(list(tuple()), Keyword.t()) :: list(tuple())

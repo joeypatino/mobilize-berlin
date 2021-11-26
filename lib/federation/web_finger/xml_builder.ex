@@ -39,7 +39,9 @@ defmodule Mobilizon.Federation.WebFinger.XmlBuilder do
   defp to_xml(content) when is_binary(content), do: to_string(content)
 
   defp to_xml(content) when is_list(content) do
-    Enum.map_join(content, &to_xml/1)
+    content
+    |> Enum.map(&to_xml/1)
+    |> Enum.join()
   end
 
   defp to_xml(%NaiveDateTime{} = time), do: NaiveDateTime.to_iso8601(time)
@@ -47,7 +49,9 @@ defmodule Mobilizon.Federation.WebFinger.XmlBuilder do
   @spec make_open_tag(tag :: atom, attributes :: map()) :: String.t()
   defp make_open_tag(tag, attributes) do
     attributes_string =
-      Enum.map_join(attributes, " ", fn {attribute, value} -> "#{attribute}=\"#{value}\"" end)
+      attributes
+      |> Enum.map(fn {attribute, value} -> "#{attribute}=\"#{value}\"" end)
+      |> Enum.join(" ")
 
     [to_string(tag), attributes_string] |> Enum.join(" ") |> String.trim()
   end

@@ -38,7 +38,6 @@ export const SEARCH_EVENTS_AND_GROUPS = gql`
           id
           url
         }
-        status
         tags {
           ...TagFragment
         }
@@ -109,7 +108,6 @@ export const INTERACT = gql`
         title
         uuid
         beginsOn
-        status
         picture {
           id
           url

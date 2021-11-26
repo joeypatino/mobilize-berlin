@@ -56,6 +56,8 @@ defmodule Mobilizon.Service.Workers.BuildSearch do
   end
 
   defp get_tags_string(%Event{tags: tags}) do
-    Enum.map_join(tags, " ", & &1.title)
+    tags
+    |> Enum.map(& &1.title)
+    |> Enum.join(" ")
   end
 end

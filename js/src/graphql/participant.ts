@@ -32,7 +32,6 @@ export const LOGGED_USER_PARTICIPATIONS = gql`
               alt
             }
             beginsOn
-            status
             visibility
             organizerActor {
               ...ActorFragment
@@ -99,7 +98,6 @@ export const LOGGED_USER_UPCOMING_EVENTS = gql`
               alt
             }
             beginsOn
-            status
             visibility
             organizerActor {
               ...ActorFragment
@@ -146,7 +144,6 @@ export const LOGGED_USER_UPCOMING_EVENTS = gql`
             uuid
             title
             beginsOn
-            status
             picture {
               url
             }

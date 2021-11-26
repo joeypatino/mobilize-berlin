@@ -195,18 +195,10 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { Editor, EditorContent, BubbleMenu } from "@tiptap/vue-2";
-import Blockquote from "@tiptap/extension-blockquote";
-import BulletList from "@tiptap/extension-bullet-list";
-import Heading from "@tiptap/extension-heading";
+import StarterKit from "@tiptap/starter-kit";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Strike from "@tiptap/extension-strike";
 import Text from "@tiptap/extension-text";
-import Dropcursor from "@tiptap/extension-dropcursor";
-import Gapcursor from "@tiptap/extension-gapcursor";
-import History from "@tiptap/extension-history";
 import { IActor, IPerson, usernameWithDomain } from "../types/actor";
 import CustomImage from "./Editor/Image";
 import { UPLOAD_MEDIA } from "../graphql/upload";
@@ -218,6 +210,7 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
+import CharacterCount from "@tiptap/extension-character-count";
 import { AutoDir } from "./Editor/Autodir";
 import sanitizeHtml from "sanitize-html";
 
@@ -276,9 +269,7 @@ export default class EditorComponent extends Vue {
         transformPastedHTML: this.transformPastedHTML,
       },
       extensions: [
-        Blockquote,
-        BulletList,
-        Heading,
+        StarterKit,
         Document,
         Paragraph,
         Text,
@@ -288,14 +279,11 @@ export default class EditorComponent extends Vue {
         CustomImage,
         AutoDir,
         Underline,
-        Bold,
-        Italic,
-        Strike,
-        Dropcursor,
-        Gapcursor,
-        History,
         Link.configure({
           HTMLAttributes: { target: "_blank", rel: "noopener noreferrer ugc" },
+        }),
+        CharacterCount.configure({
+          limit: this.maxSize,
         }),
       ],
       injectCSS: false,
