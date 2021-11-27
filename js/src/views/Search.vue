@@ -116,7 +116,8 @@
           network.<br />
           Shown is a network of mobilizon groups. Groups are connected by edges
           if they have followers in common. The thicker the edges are the more
-          follower they have in common. Double click on the group icon opens the group page.
+          follower they have in common. Double click on the group icon opens the
+          group page.
         </p>
         <div>
           <div style="position: relative; padding-top: 66.25%">
