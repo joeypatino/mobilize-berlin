@@ -21,6 +21,7 @@ erl_crash.dump
 .elixir_ls
 /doc
 priv/static/*
+!priv/static/group_net
 !priv/static/.gitkeep
 priv/data/*
 !priv/data/.gitkeep
