@@ -123,7 +123,7 @@
           <div style="position: relative; padding-top: 66.25%">
             <iframe
               v-if="exploreTab === 1"
-              src="/group_net/net.html"
+              src="https://network.mobilize.berlin"
               style="
                 position: absolute;
                 top: 0;
