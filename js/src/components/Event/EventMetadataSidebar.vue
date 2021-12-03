@@ -256,23 +256,6 @@ export default class EventMetadataSidebar extends Vue {
   }
 }
 
-h2 {
-  font-size: 1.8rem;
-  font-weight: 500;
-  color: $violet;
-}
-
-.banner-container {
-  width: 60vw;
-  height: 60vh;
-}
-
-.object-cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 div.address-wrapper {
   display: flex;
   flex: 1;

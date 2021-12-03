@@ -129,7 +129,13 @@
           <span>
             <div class="media-left">
               <figure class="image is-32x32" v-if="identity.avatar">
-                <img class="is-rounded" :src="identity.avatar.url" alt />
+                <img
+                  class="is-rounded"
+                  loading="lazy"
+                  :src="identity.avatar.url"
+                  alt
+                />
+
               </figure>
               <b-icon v-else size="is-medium" icon="account-circle" />
             </div>
