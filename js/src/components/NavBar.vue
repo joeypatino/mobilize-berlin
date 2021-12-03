@@ -135,7 +135,6 @@
                   :src="identity.avatar.url"
                   alt
                 />
-
               </figure>
               <b-icon v-else size="is-medium" icon="account-circle" />
             </div>
