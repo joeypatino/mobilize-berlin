@@ -141,8 +141,8 @@
             </div>
 
             <div class="media-content">
-              <span>{{ identity.displayName() }}</span>
-              <span class="has-text-grey" v-if="identity.name"
+              <span>{{ displayName(identity) }}</span>
+              <span class="has-text-grey-dark" v-if="identity.name"
                 >@{{ identity.preferredUsername }}</span
               >
             </div>
