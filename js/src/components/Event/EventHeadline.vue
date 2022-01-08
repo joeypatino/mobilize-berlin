@@ -20,7 +20,6 @@ export default class EventHeadline extends Vue {
 </script>
 <style lang="scss" scoped>
 @use "@/styles/_mixins" as *;
-
 button.delete {
   margin-left: auto;
   @include margin-right(1rem);

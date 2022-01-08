@@ -8,15 +8,15 @@
 ## to merge POT files into PO files.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-02-12 14:14+0000\n"
-"Last-Translator: Balázs Meskó <mesko.balazs@fsf.hu>\n"
+"PO-Revision-Date: 2021-11-25 01:22+0000\n"
+"Last-Translator: Balázs Úr <balazs@urbalazs.hu>\n"
 "Language-Team: Hungarian <https://weblate.framasoft.org/projects/mobilizon/"
 "backend/hu/>\n"
 "Language: hu\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #, elixir-format
 #: lib/web/templates/email/password_reset.html.heex:48
@@ -29,7 +29,7 @@ msgstr ""
 #, elixir-format
 #: lib/web/templates/email/report.html.heex:74
 msgid "%{title} by %{creator}"
-msgstr "%{title}, készítette: %{creator}"
+msgstr "%{title} – %{creator}"
 
 #, elixir-format
 #: lib/web/templates/email/registration_confirmation.html.heex:58
@@ -56,7 +56,7 @@ msgstr "Esemény"
 #, elixir-format
 #: lib/web/email/user.ex:49
 msgid "Instructions to reset your password on %{instance}"
-msgstr "Utasítások a jelszó visszaállításához a(z) %{instance} oldalon"
+msgstr "Utasítások a(z) %{instance} példányon lévő jelszó visszaállításához"
 
 #, elixir-format
 #: lib/web/templates/email/report.text.eex:21
@@ -79,7 +79,8 @@ msgstr ""
 #: lib/web/email/user.ex:28
 msgid "Instructions to confirm your Mobilizon account on %{instance}"
 msgstr ""
-"Utasítások a Mobilizon-fiókjának megerősítéséhez a(z) %{instance} oldalon"
+"Utasítások a(z) %{instance} példányon lévő Mobilizon-fiókjának "
+"megerősítéséhez"
 
 #, elixir-format
 #: lib/web/email/admin.ex:24
@@ -90,7 +91,7 @@ msgstr "Új jelentés a(z) %{instance} Mobilizon-példányról"
 #: lib/web/templates/email/before_event_notification.html.heex:51
 #: lib/web/templates/email/before_event_notification.text.eex:4
 msgid "Go to event page"
-msgstr "Ugrás az események oldalhoz"
+msgstr "Ugrás az esemény oldalára"
 
 #, elixir-format
 #: lib/web/templates/email/report.text.eex:1
@@ -106,7 +107,7 @@ msgstr "Részvétel jóváhagyva"
 #: lib/web/templates/email/password_reset.html.heex:13
 #: lib/web/templates/email/password_reset.text.eex:1
 msgid "Password reset"
-msgstr "Jelszóvisszaállítás"
+msgstr "Jelszó visszaállítása"
 
 #, elixir-format
 #: lib/web/templates/email/password_reset.text.eex:7
@@ -120,23 +121,23 @@ msgstr ""
 msgid "You created an account on %{host} with this email address. You are one click away from activating it. If this wasn't you, please ignore this email."
 msgstr ""
 "Új fiókot hozott létre a(z) %{host} oldalon ezzel az e-mail-címmel. Egy "
-"kattintásnyira van az aktiválástól. Ha ez nem Ön volt, hagyja figyelmen "
-"kívül a levelet."
+"kattintásnyira van az aktiválástól. Ha ez nem Ön volt, akkor hagyja "
+"figyelmen kívül ezt a levelet."
 
 #, elixir-format
 #: lib/web/email/participation.ex:111
 msgid "Your participation to event %{title} has been approved"
-msgstr "Jóváhagyták a részvételét a(z) %{title} eseményen"
+msgstr "A(z) %{title} eseményen való részvételét jóváhagyták"
 
 #, elixir-format
 #: lib/web/email/participation.ex:68
 msgid "Your participation to event %{title} has been rejected"
-msgstr "Elutasították a részvételét a(z) %{title} eseményen"
+msgstr "A(z) %{title} eseményen való részvételét visszautasították"
 
 #, elixir-format
 #: lib/web/email/event.ex:46
 msgid "Event %{title} has been updated"
-msgstr "A(z) %{title} esemény frissítésre került"
+msgstr "A(z) %{title} esemény frissítve lett"
 
 #, elixir-format
 #: lib/web/templates/email/event_updated.text.eex:7
@@ -156,7 +157,7 @@ msgstr "Figyelmeztetés"
 #, elixir-format
 #: lib/web/email/participation.ex:135
 msgid "Confirm your participation to event %{title}"
-msgstr "Erősítse meg a részvételét a(z) %{title} eseményen"
+msgstr "Erősítse meg a(z) %{title} eseményen való részvételét"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:75
@@ -174,8 +175,7 @@ msgstr "Belső felhasználói azonosító"
 #: lib/web/templates/api/privacy.html.heex:37
 msgctxt "terms"
 msgid "Any of the information we collect from you may be used in the following ways:"
-msgstr ""
-"Minden általunk gyűjtött információ a következő módokon lehet felhasználva:"
+msgstr "Az Öntől gyűjtött információkat a következő módokon használhatjuk fel:"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:9
@@ -193,7 +193,7 @@ msgstr "Ne osszon meg veszélyes információkat a Mobilizonon."
 #: lib/web/templates/api/privacy.html.heex:90
 msgctxt "terms"
 msgid "Do we disclose any information to outside parties?"
-msgstr "Osztunk-e meg információkat külső felekkel?"
+msgstr "Átadunk-e bármilyen információt külső feleknek?"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:68
@@ -224,22 +224,22 @@ msgstr "Közzétett események és hozzászólások"
 msgctxt "terms"
 msgid "Retain the IP addresses associated with registered users no more than 12 months."
 msgstr ""
-"Legfeljebb 12 hónapig megőrizzük a regisztrált felhasználókhoz kötődő IP-"
-"címeket."
+"A regisztrált felhasználókhoz tartozó IP-címeket legfeljebb 12 hónapig "
+"őrizzük meg."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:76
 msgctxt "terms"
 msgid "Tokens to authenticate you"
-msgstr "Az Ön hitelesítéséhez használt tokenek"
+msgstr "Tokenek az Ön hitelesítéséhez"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:31
 msgctxt "terms"
 msgid "We also may retain server logs which include the IP address of every request to our server."
 msgstr ""
-"Olyan kiszolgáló-naplófájlokat is megtarthatunk, amelyek a kiszolgálónak "
-"küldött kéréseiben szereplő IP-címét tartalmazzák."
+"Olyan kiszolgáló-naplófájlokat is megtarthatunk, amelyek tartalmazzák a "
+"kiszolgálónkhoz érkezett minden egyes kérés IP-címét."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:70
@@ -263,49 +263,49 @@ msgstr "Mire használjuk az információit?"
 #: lib/web/templates/api/privacy.html.heex:57
 msgctxt "terms"
 msgid "What is our data retention policy?"
-msgstr "Mi az adatmegőrzési házirendünk?"
+msgstr "Mi az adatmegőrzési irányelvünk?"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:67
 msgctxt "terms"
 msgid "You may irreversibly delete your account at any time."
-msgstr "Bármikor visszavonhatatlanul törölhetjük a fiókját."
+msgstr "Bármikor visszavonhatatlanul törölheti a fiókját."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:115
 msgctxt "terms"
 msgid "Changes to our Privacy Policy"
-msgstr "Változások az adatvédelmi irányelvekben"
+msgstr "Változások az adatvédelmi irányelvünkben"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:106
 msgctxt "terms"
 msgid "If this server is in the EU or the EEA: Our site, products and services are all directed to people who are at least 16 years old. If you are under the age of 16, per the requirements of the GDPR (<a href=\"https://en.wikipedia.org/wiki/General_Data_Protection_Regulation\">General Data Protection Regulation</a>) do not use this site."
 msgstr ""
-"Ha ez a kiszolgáló az EU vagy az EGT területén található: Az oldalunk, "
-"termékeink és szolgáltatásaink legalább 16 éves személyeket céloznak. Ha "
-"nincs 16 éves, akkor a GDPR (<a href=\"https://hu.wikipedia.org/wiki/"
+"Ha ez a kiszolgáló az EU vagy az EGT területén található: az oldalunk, a "
+"termékeink és a szolgáltatásaink legalább 16 éves személyeket céloznak. Ha "
+"16 évnél fiatalabb, akkor a GDPR (<a href=\"https://hu.wikipedia.org/wiki/"
 "%C3%81ltal%C3%A1nos_adatv%C3%A9delmi_rendelet\">Általános adatvédelmi "
-"rendelet</a>) követelményeinek megfelelően, ne használja az oldalt."
+"rendelet</a>) követelményeinek megfelelően ne használja ezt az oldalt."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:109
 msgctxt "terms"
 msgid "If this server is in the USA: Our site, products and services are all directed to people who are at least 13 years old. If you are under the age of 13, per the requirements of COPPA (<a href=\"https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act\">Children's Online Privacy Protection Act</a>) do not use this site."
 msgstr ""
-"Ha ez a kiszolgáló az USA területén található: Az oldalunk, termékeink és "
-"szolgáltatásaink legalább 13 éves személyeket céloznak. Ha nincs 13 éves, "
-"akkor a COPPA (<a href=\"https://en.wikipedia.org/wiki/Children%"
+"Ha ez a kiszolgáló az USA területén található: az oldalunk, a termékeink és "
+"a szolgáltatásaink legalább 13 éves személyeket céloznak. Ha 13 évnél "
+"fiatalabb, akkor a COPPA (<a href=\"https://en.wikipedia.org/wiki/Children%"
 "27s_Online_Privacy_Protection_Act\">Children's Online Privacy Protection "
-"Act</a>) követelményeinek megfelelően, ne használja az oldalt."
+"Act</a>) követelményeinek megfelelően ne használja ezt az oldalt."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:117
 msgctxt "terms"
 msgid "If we decide to change our privacy policy, we will post those changes on this page."
 msgstr ""
-"Ha úgy döntünk, hogy módosítjuk az adatvédelmi irányelveinket, akkor ezen az "
-"oldalon fogjuk közzétenni ezeket a változásokat."
+"Ha úgy döntünk, hogy megváltoztatjuk az adatvédelmi irányelvünket, akkor "
+"ezen az oldalon fogjuk közzétenni ezeket a változásokat."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:112
@@ -326,30 +326,28 @@ msgstr "Gyermekek oldalhasználata"
 msgctxt "terms"
 msgid "The email address you provide may be used to send you information, updates and notifications about other people\n    interacting with your content or sending you messages and to respond to inquiries, and/or other requests or\n    questions."
 msgstr ""
-"A megadott e-mail-címet arra használhatjuk, hogy információkat, híreket és "
-"értesítéseket küldjünk más emberek,\n"
-"    az Ön tartalmával kapcsolatos interakcióiról, vagy üzeneteket "
-"küldhessünk és válaszolhasson a megkeresésekre,\n"
-"    kérésekre vagy kérdésekre."
+"Az Ön által megadott e-mail-címet arra használhatjuk, hogy információkat, "
+"frissítéseket és értesítéseket küldjünk Önnek arról, hogy mások interakcióba "
+"lépnek az Ön tartalmával, vagy üzeneteket küldenek Önnek, valamint hogy "
+"válaszoljunk a megkeresésekre és/vagy egyéb kérésekre vagy kérdésekre."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:45
 msgctxt "terms"
 msgid "To aid moderation of the community, for example comparing your IP address with other known ones to determine ban\n    evasion or other violations."
 msgstr ""
-"Segítsen nekünk a közösség moderációjában, például összehasonlíthassuk az IP-"
-"címét másokéval, hogy\n"
-"    kiszűrjük a tiltáselkerülést vagy más visszaéléseket."
+"A közösség moderálásának segítéséhez, például az Ön IP-címének "
+"összehasonlítása más ismert IP-címekkel a tiltás megkerülésének vagy más "
+"jogsértések megállapítása érdekében."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:43
 msgctxt "terms"
 msgid "To provide the core functionality of Mobilizon. Depending on this instance's policy you may only be able to\n    interact with other people's content and post your own content if you are logged in."
 msgstr ""
-"Biztosítsa a Mobilizon fő funkcióit. A példány házirendjétől függően lehet, "
-"hogy csak akkor tud más emberek\n"
-"    tartalmával interakcióba lépni vagy saját tartalmat megosztani, ha be "
-"van jelentkezve."
+"A Mobilizon alapvető funkcióinak biztosításához. Ezen példány irányelvétől "
+"függően csak akkor tud mások tartalmaival interakcióba lépni, illetve saját "
+"tartalmat beküldeni, ha be van jelentkezve."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:6
@@ -360,32 +358,32 @@ msgstr "Milyen információkat gyűjtünk?"
 #, elixir-format
 #: lib/web/email/user.ex:178
 msgid "Mobilizon on %{instance}: confirm your email address"
-msgstr "Mobilizon itt: %{instance}: erősítse meg az e-mail-címét"
+msgstr "Mobilizon a(z) %{instance} példányon: erősítse meg az e-mail-címét"
 
 #, elixir-format
 #: lib/web/email/user.ex:157
 msgid "Mobilizon on %{instance}: email changed"
-msgstr "Mobilizon itt: %{instance}: e-mail-cím megváltozott"
+msgstr "Mobilizon a(z) %{instance} példányon: e-mail-cím megváltoztatva"
 
 #, elixir-format
 #: lib/web/email/notification.ex:51
 msgid "One event planned today"
 msgid_plural "%{nb_events} events planned today"
-msgstr[0] "Egy tervezett esemény ma"
-msgstr[1] "%{nb_events} tervezett esemény ma"
+msgstr[0] "Egy esemény van tervezve mára"
+msgstr[1] "%{nb_events} esemény van tervezve mára"
 
 #, elixir-format
 #: lib/web/templates/email/on_day_notification.html.heex:38
 #: lib/web/templates/email/on_day_notification.text.eex:3
 msgid "You have one event today:"
 msgid_plural "You have %{total} events today:"
-msgstr[0] "Egy eseménye van ma:"
-msgstr[1] "%{total} eseménye van ma:"
+msgstr[0] "Egy eseménye van mára:"
+msgstr[1] "%{total} eseménye van mára:"
 
 #, elixir-format
 #: lib/web/templates/email/group_invite.text.eex:3
 msgid "%{inviter} just invited you to join their group %{group}"
-msgstr "%{inviter} meghívta, hogy csatlakozzon a csoportjába: %{group}"
+msgstr "%{inviter} meghívta, hogy csatlakozzon a(z) %{group} csoportjába"
 
 #, elixir-format
 #: lib/web/templates/email/group_invite.html.heex:13
@@ -413,12 +411,12 @@ msgstr "Saját csoportok megtekintése"
 #: lib/web/templates/email/group_invite.html.heex:45
 #: lib/web/templates/email/group_invite.text.eex:5
 msgid "To accept this invitation, head over to your groups."
-msgstr "A meghívás elfogadásához ugorjon a csoportjaihoz."
+msgstr "A meghívás elfogadásához menjen a csoportjaihoz."
 
 #, elixir-format
 #: lib/web/templates/email/before_event_notification.text.eex:5
 msgid "View the event on: %{link}"
-msgstr "Esemény megtekintése itt: %{link}"
+msgstr "Az esemény megtekintése itt: %{link}"
 
 #, elixir-format
 #: lib/web/email/member.ex:31
@@ -429,30 +427,30 @@ msgstr "%{inviter} meghívta, hogy csatlakozzon a(z) %{group} csoporthoz"
 #: lib/web/email/notification.ex:78
 msgid "One event planned this week"
 msgid_plural "%{nb_events} events planned this week"
-msgstr[0] "Egy esemény tervezve a héten"
-msgstr[1] "%{nb_events} esemény tervezve a héten"
+msgstr[0] "Egy esemény van tervezve erre a hétre"
+msgstr[1] "%{nb_events} esemény van tervezve erre a hétre"
 
 #, elixir-format
 #: lib/web/email/notification.ex:102
 msgid "One participation request for event %{title} to process"
 msgid_plural "%{number_participation_requests} participation requests for event %{title} to process"
-msgstr[0] "Egy feldolgozandó részvételi kérés a következő eseménynél: %{title}"
+msgstr[0] "Egy feldolgozandó részvételi kérés a(z) %{title} eseménynél"
 msgstr[1] ""
-"%{number_participation_requests} feldolgozandó részvételi kérés a következő "
-"eseménynél: %{title}"
+"%{number_participation_requests} feldolgozandó részvételi kérés a(z) %{title}"
+" eseménynél"
 
 #, elixir-format
 #: lib/web/templates/email/notification_each_week.html.heex:38
 #: lib/web/templates/email/notification_each_week.text.eex:3
 msgid "You have one event this week:"
 msgid_plural "You have %{total} events this week:"
-msgstr[0] "Egy eseménye van a héten:"
-msgstr[1] "%{total} eseménye van a héten:"
+msgstr[0] "Egy eseménye van ezen héten:"
+msgstr[1] "%{total} eseménye van ezen héten:"
 
 #, elixir-format
 #: lib/service/metadata/utils.ex:53
 msgid "The event organizer didn't add any description."
-msgstr "Az eseményszervező nem adott meg leírást."
+msgstr "Az esemény szervezője nem adott hozzá semmilyen leírást."
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:54
@@ -560,19 +558,19 @@ msgstr ""
 #: lib/web/templates/api/terms.html.heex:39
 msgctxt "terms"
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Adatvédelmi irányelv"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:95
 msgctxt "terms"
 msgid "Questions & Contact Information"
-msgstr ""
+msgstr "Kérdések és elérhetőségek"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:87
 msgctxt "terms"
 msgid "Termination"
-msgstr ""
+msgstr "Megszüntetés"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:62
@@ -584,7 +582,7 @@ msgstr ""
 #: lib/web/templates/api/terms.html.heex:47
 msgctxt "terms"
 msgid "Your Content & Conduct"
-msgstr ""
+msgstr "Az Ön tartalma és viselkedése"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:84
@@ -609,6 +607,11 @@ msgstr ""
 msgctxt "terms"
 msgid "Here are the important things you need to know about accessing and using the <b>%{instance_name}</b> (<a href=\"https://%{instance_url}\">%{instance_url}</a>) website and service (collectively, \"Service\"). These are our terms of service (\"Terms\"). Please read them carefully."
 msgstr ""
+"Itt azok a fontos információk érhetők el, amelyeket tudnia kell a(z) "
+"<b>%{instance_name}</b> (<a href=\"https://%{instance_url}\""
+">%{instance_url}</a>) weboldala és szolgáltatása (együttesen „szolgáltatás”) "
+"hozzáférésével és használatával kapcsolatban. Ezek a mi használati "
+"feltételeink („feltételek”). Olvassa el figyelmesen."
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:33
@@ -687,6 +690,8 @@ msgstr ""
 msgctxt "terms"
 msgid "<b>%{instance_name}</b> will not use or transmit or resell your personal data"
 msgstr ""
+"A(z) <b>%{instance_name}</b> nem fogja felhasználni, átadni vagy "
+"újraértékesíteni a személyes adatait"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:44
@@ -716,13 +721,15 @@ msgstr ""
 #: lib/web/templates/api/terms.html.heex:3
 msgctxt "terms"
 msgid "Short version"
-msgstr ""
+msgstr "Rövid verzió"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:9
 msgctxt "terms"
 msgid "The service is provided without warranties and these terms may change in the future"
 msgstr ""
+"A szolgáltatásnyújtás garancia nélkül történik, és ezek a használati "
+"feltételek megváltozhatnak a jövőben"
 
 #, elixir-format
 #: lib/web/templates/api/privacy.html.heex:118
@@ -741,18 +748,21 @@ msgstr ""
 msgctxt "terms"
 msgid "You must respect other people and <b>%{instance_name}</b>'s rules when using the service"
 msgstr ""
+"Tekintettel kell lennie más emberekre és a(z) <b>%{instance_name}</b> "
+"szabályaira, ha a szolgáltatást használja"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:7
 msgctxt "terms"
 msgid "You must respect the law when using <b>%{instance_name}</b>"
 msgstr ""
+"Be kell tartania a jogszabályokat a(z) <b>%{instance_name}</b> használatakor"
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:5
 msgctxt "terms"
 msgid "Your content is yours"
-msgstr ""
+msgstr "Az Ön tartalma az Öné"
 
 #, elixir-format
 #: lib/web/templates/email/anonymous_participation_confirmation.html.heex:51
@@ -911,13 +921,13 @@ msgstr "Hely"
 #, elixir-format
 #: lib/web/templates/email/event_updated.html.heex:104
 msgid "Location address was removed"
-msgstr "A hely eltávolításra került"
+msgstr "A hely címe el lett távolítva"
 
 #, elixir-format
 #: lib/web/templates/email/pending_participation_notification.html.heex:56
 #: lib/web/templates/email/pending_participation_notification.text.eex:8
 msgid "Manage pending requests"
-msgstr "Függő kérések kezelése"
+msgstr "Függőben lévő kérések kezelése"
 
 #, elixir-format
 #: lib/web/templates/email/registration_confirmation.html.heex:13
@@ -929,7 +939,7 @@ msgstr "Majdnem kész!"
 #: lib/web/templates/email/email_changed_old.html.heex:13
 #: lib/web/templates/email/email_changed_old.text.eex:1
 msgid "New email confirmation"
-msgstr "Új e-mail-cím megerősítés"
+msgstr "Új e-mail-cím megerősítése"
 
 #, elixir-format
 #: lib/web/templates/email/report.html.heex:106
@@ -940,8 +950,8 @@ msgstr "Jelentés okai"
 #: lib/web/templates/email/report.html.heex:39
 msgid "Someone on <b>%{instance}</b> reported the following content for you to analyze:"
 msgstr ""
-"Valaki a(z) <b>%{instance}</b> példányon jelentette a következő tartalmat, "
-"hogy megvizsgálja:"
+"Valaki a(z) <b>%{instance}</b> példányon a következő tartalmat jelentette "
+"Önnek, hogy megvizsgálja:"
 
 #, elixir-format
 #: lib/web/templates/email/event_participation_rejected.html.heex:13
@@ -986,7 +996,7 @@ msgstr ""
 #, elixir-format
 #: lib/web/templates/email/email_changed_new.html.heex:51
 msgid "Verify your email address"
-msgstr "E-mail cím ellenőrzése"
+msgstr "E-mail-cím ellenőrzése"
 
 #, elixir-format
 #: lib/web/templates/email/report.html.heex:126
@@ -1175,6 +1185,9 @@ msgstr ""
 msgctxt "terms"
 msgid "Some terms, technical or otherwise, used in the text below may cover concepts that are difficult to grasp. We have provided <a href=\"/glossary\">a glossary</a> to help you understand them better."
 msgstr ""
+"Az alábbi szövegben használt egyes műszaki vagy egyéb kifejezések nehezen "
+"megfogható fogalmakra terjedhetnek ki. Biztosítottunk egy <a href=\"/"
+"glossary\">szószedetet</a>, hogy segítsen jobban megérteni azokat."
 
 #, elixir-format
 #: lib/web/templates/api/terms.html.heex:45
@@ -1368,7 +1381,7 @@ msgstr ""
 #: lib/web/templates/email/email.html.heex:91
 #: lib/web/templates/email/email.text.eex:4
 msgid "This is a demonstration site to test Mobilizon."
-msgstr ""
+msgstr "Ez egy bemutató oldal a Mobilizon kipróbálásához."
 
 #, elixir-format
 #: lib/service/metadata/actor.ex:91 lib/service/metadata/actor.ex:99
@@ -1404,7 +1417,7 @@ msgstr ""
 #, elixir-format
 #: lib/web/templates/error/500_page.html.heex:68
 msgid "Technical details"
-msgstr ""
+msgstr "Műszaki részletek"
 
 #, elixir-format
 #: lib/web/templates/error/500_page.html.heex:52
@@ -1452,113 +1465,113 @@ msgstr ""
 #. File name template for exported list of participants. Should NOT contain spaces. Make sure the output is going to be something standardized that is acceptable as a file name on most systems.
 #. File name template for exported list of participants. Should NOT contain spaces. Make sure the output is going to be something standardized that is acceptable as a file name on most systems.
 #, elixir-format
-#: lib/service/export/participants/csv.ex:73
-#: lib/service/export/participants/ods.ex:77 lib/service/export/participants/pdf.ex:91
+#: lib/service/export/participants/csv.ex:81
+#: lib/service/export/participants/ods.ex:86 lib/service/export/participants/pdf.ex:96
 msgid "%{event}_participants"
-msgstr ""
+msgstr "%{event}_resztvevoi"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:61
 msgid "Participant message"
-msgstr ""
+msgstr "Résztvevő üzenete"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:61
 msgid "Participant name"
-msgstr "Részvétel jóváhagyva"
+msgstr "Résztvevő neve"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:61
 msgid "Participant status"
-msgstr ""
+msgstr "Résztvevő állapota"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:52
 msgid "Administrator"
-msgstr ""
+msgstr "Adminisztrátor"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:55
 msgid "Creator"
-msgstr ""
+msgstr "Létrehozó"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:49
 msgid "Moderator"
-msgstr ""
+msgstr "Moderátor"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:37
 msgid "Not approved"
-msgstr ""
+msgstr "Nincs jóváhagyva"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:40
 msgid "Not confirmed"
-msgstr ""
+msgstr "Nincs megerősítve"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:46
 msgid "Participant"
-msgstr "Részvétel jóváhagyva"
+msgstr "Résztvevő"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:43
 msgid "Rejected"
-msgstr ""
+msgstr "Visszautasítva"
 
 #, elixir-format
 #: lib/web/templates/export/event_participants.html.heex:122
 msgid "Begins on"
-msgstr ""
+msgstr "Ekkor kezdődik"
 
 #, elixir-format
 #: lib/web/templates/export/event_participants.html.heex:125
 msgid "Ends on"
-msgstr "Befejezés"
+msgstr "Ekkor fejeződik be"
 
 #, elixir-format
 #: lib/web/templates/export/event_participants.html.heex:132
 msgid "Number of participants"
-msgstr ""
+msgstr "Résztvevők száma"
 
 #, elixir-format
 #: lib/web/templates/export/event_participants.html.heex:120
 msgid "Participants for %{event}"
-msgstr "Részvétel jóváhagyva"
+msgstr "A(z) %{event} résztvevői"
 
 #, elixir-format
 #: lib/service/export/participants/common.ex:88
 msgid "Anonymous participant"
-msgstr ""
+msgstr "Névtelen részvétel"
 
 #, elixir-format
 #: lib/web/templates/email/date/event_tz_date.html.heex:6
 #: lib/web/templates/email/date/event_tz_date_range.html.heex:7 lib/web/templates/email/date/event_tz_date_range.html.heex:12
 #: lib/web/templates/email/date/event_tz_date_range.text.eex:1 lib/web/templates/email/date/event_tz_date_range.text.eex:1
 msgid "🌐 %{timezone} %{offset}"
-msgstr ""
+msgstr "🌐 %{timezone} %{offset}"
 
 #, elixir-format
 #: lib/web/templates/email/date/event_tz_date.text.eex:1
 msgid "%{date_time} (%{timezone} %{offset})"
-msgstr ""
+msgstr "%{date_time} (%{timezone} %{offset})"
 
 #, elixir-format
 #: lib/web/templates/email/date/event_tz_date.text.eex:1
 msgid "%{date_time} (in your timezone %{timezone} %{offset})"
-msgstr ""
+msgstr "%{date_time} (az Ön időzónájában: %{timezone} %{offset})"
 
 #, elixir-format
 #: lib/web/templates/email/notification_each_week.html.heex:13
 #: lib/web/templates/email/notification_each_week.text.eex:1
 msgid "On the agenda this week"
-msgstr "Egy esemény tervezve a héten"
+msgstr "Az e heti napirend"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.html.heex:58
 msgid "Details"
-msgstr ""
+msgstr "Részletek"
 
 #, elixir-format
 #: lib/web/templates/email/date/event_tz_date_range.html.heex:10
@@ -1601,17 +1614,17 @@ msgstr ""
 #, elixir-format
 #: lib/web/templates/email/participation/card/_metadata.text.eex:2
 msgid "Address:"
-msgstr ""
+msgstr "Cím:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/card/_metadata.text.eex:1
 msgid "Date:"
-msgstr ""
+msgstr "Dátum:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:7
 msgid "Details:"
-msgstr ""
+msgstr "Részletek:"
 
 #, elixir-format
 #: lib/web/templates/email/email.html.heex:147
@@ -1632,22 +1645,22 @@ msgstr ""
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.html.heex:42
 msgid "Participate"
-msgstr "Részvétel jóváhagyva"
+msgstr "Részvétel"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:5
 msgid "Participate:"
-msgstr "Részvétel jóváhagyva"
+msgstr "Részvétel:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:9
 msgid "Read more : %{url}"
-msgstr ""
+msgstr "Olvasson tovább : %{url}"
 
 #, elixir-format
 #: lib/web/templates/email/participation/card/_title.text.eex:1
 msgid "Title: %{title}"
-msgstr ""
+msgstr "Cím: %{title}"
 
 #, elixir-format
 #: lib/web/email/group.ex:44
@@ -1662,7 +1675,7 @@ msgstr ""
 #, elixir-format
 #: lib/web/templates/email/event_updated.text.eex:10
 msgid "New location:"
-msgstr "Hely"
+msgstr "Új hely:"
 
 #, elixir-format
 #: lib/web/templates/email/event_updated.text.eex:8
@@ -1684,7 +1697,7 @@ msgstr ""
 #: lib/web/templates/email/group_membership_approval.html.heex:13
 #: lib/web/templates/email/group_membership_approval.text.eex:1
 msgid "You're in!"
-msgstr ""
+msgstr "Bejutott!"
 
 #, elixir-format
 #: lib/web/email/member.ex:60

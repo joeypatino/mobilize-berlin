@@ -273,7 +273,7 @@ package-app:
   only:
     - tags@framasoft/mobilizon
   artifacts:
-    expire_in: 30 days
+    expire_in: 2 days
     paths:
       - ${APP_ASSET}
 
@@ -322,7 +322,7 @@ multi-arch-release:
   tags:
     - "privileged"
   artifacts:
-    expire_in: 30 days
+    expire_in: 2 days
     paths:
       - ${APP_ASSET}
   parallel:
@@ -338,7 +338,7 @@ multi-arch-release:
 # Release
 release-upload:
   stage: upload
-  image: framasoft/yakforms-assets-deploy:latest
+  image: framasoft/upload-packages:latest
   variables:
     APP_ASSET: "${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${ARCH}.tar.gz"
   rules: *tag-rules

@@ -98,9 +98,11 @@ const MEMBER_ROLES = [
     currentActor: CURRENT_ACTOR_CLIENT,
     userMemberships: {
       query: LOGGED_USER_MEMBERSHIPS,
-      variables: {
-        page: 1,
-        limit: 100,
+      variables() {
+        return {
+          page: 1,
+          limit: 10,
+        };
       },
       update: (data) => data.loggedUser.memberships,
     },

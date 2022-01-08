@@ -501,18 +501,6 @@ export default class Search extends Vue {
       query: { ...this.$route.query, searchType: value.toString() },
     });
   }
-
-  /*  get activeExplore(): SearchTabs {
-    return parseInt(this.$route.query.searchType as string, 10);
-  }
-
-  set activeExplore(value: SearchTabs) {
-    this.$router.replace({
-      name: RouteName.SEARCH,
-      query: { ...this.$route.query, searchType: value.toString() },
-    });
-  }
-*/
   get geohash(): string | undefined {
     if (this.location?.geom) {
       const [lon, lat] = this.location.geom.split(";");

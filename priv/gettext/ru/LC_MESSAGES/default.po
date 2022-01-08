@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:40+0000\n"
-"PO-Revision-Date: 2021-10-27 22:21+0000\n"
+"PO-Revision-Date: 2021-12-07 14:27+0000\n"
 "Last-Translator: deadmorose <cornerot@gmail.com>\n"
 "Language-Team: Russian <https://weblate.framasoft.org/projects/mobilizon/"
 "backend/ru/>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+"X-Generator: Weblate 4.9.1\n"
 
 #, elixir-format
 #: lib/web/templates/email/password_reset.html.heex:48
@@ -1740,8 +1740,8 @@ msgstr "Ваше участие в %{event} на %{instance} было отмен
 #. File name template for exported list of participants. Should NOT contain spaces. Make sure the output is going to be something standardized that is acceptable as a file name on most systems.
 #. File name template for exported list of participants. Should NOT contain spaces. Make sure the output is going to be something standardized that is acceptable as a file name on most systems.
 #, elixir-format
-#: lib/service/export/participants/csv.ex:73
-#: lib/service/export/participants/ods.ex:77 lib/service/export/participants/pdf.ex:91
+#: lib/service/export/participants/csv.ex:81
+#: lib/service/export/participants/ods.ex:86 lib/service/export/participants/pdf.ex:96
 msgid "%{event}_participants"
 msgstr "%{event}_участники"
 
@@ -1879,53 +1879,53 @@ msgstr "Онлайн-мероприятие"
 #, elixir-format
 #: lib/web/templates/email/event_group_follower_notification.html.heex:13
 msgid "%{group} scheduled a new event"
-msgstr ""
+msgstr "%{group} запланировала новое мероприятие"
 
 #, elixir-format
 #: lib/web/templates/email/event_group_follower_notification.text.eex:1
 msgid "%{group} scheduled a new event:"
-msgstr ""
+msgstr "%{group} запланировала новое мероприятие:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/card/_metadata.text.eex:2
 msgid "Address:"
-msgstr ""
+msgstr "Адрес:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/card/_metadata.text.eex:1
 msgid "Date:"
-msgstr ""
+msgstr "Дата:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:7
 msgid "Details:"
-msgstr "Подробности"
+msgstr "Подробности:"
 
 #, elixir-format
 #: lib/web/templates/email/email.html.heex:147
 msgid "Manage your notification settings"
-msgstr ""
+msgstr "Управление настройками уведомлений"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:5
 msgid "Manage your participation:"
-msgstr "Управление своим участием"
+msgstr "Управление своим участием:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/card/_title.text.eex:3
 #: lib/web/templates/email/participation/card/_title.text.eex:3
 msgid "Organizer: %{organizer}"
-msgstr ""
+msgstr "Организатор: %{organizer}"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.html.heex:42
 msgid "Participate"
-msgstr "Участие одобрено"
+msgstr "Участвовать"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:5
 msgid "Participate:"
-msgstr "Участие одобрено"
+msgstr "Участвовать:"
 
 #, elixir-format
 #: lib/web/templates/email/participation/event_card.text.eex:9
@@ -1935,38 +1935,38 @@ msgstr "Подробнее"
 #, elixir-format
 #: lib/web/templates/email/participation/card/_title.text.eex:1
 msgid "Title: %{title}"
-msgstr ""
+msgstr "Заголовок: %{title}"
 
 #, elixir-format
 #: lib/web/email/group.ex:44
 msgid "📅 Just scheduled by %{group}: %{event}"
-msgstr ""
+msgstr "📅 Только что запланировано %{group}: %{event}"
 
 #, elixir-format
 #: lib/web/templates/email/event_updated.text.eex:9
 msgid "New end date:"
-msgstr ""
+msgstr "Новая дата окончания:"
 
 #, elixir-format
 #: lib/web/templates/email/event_updated.text.eex:10
 msgid "New location:"
-msgstr "Местонахождение"
+msgstr "Новое местонахождение:"
 
 #, elixir-format
 #: lib/web/templates/email/event_updated.text.eex:8
 msgid "New start date:"
-msgstr ""
+msgstr "Новая дата начала:"
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_rejection.html.heex:13
 #: lib/web/templates/email/group_membership_rejection.text.eex:1
 msgid "Sorry, not this time!"
-msgstr ""
+msgstr "Извините, не в этот раз!"
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_approval.html.heex:52
 msgid "View the group"
-msgstr ""
+msgstr "Посмотреть группу"
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_approval.html.heex:13
@@ -1977,32 +1977,36 @@ msgstr "Вы примете участие!"
 #, elixir-format
 #: lib/web/email/member.ex:60
 msgid "Your membership request for group %{group} has been approved"
-msgstr ""
+msgstr "Ваш запрос на членство в группе %{group} был одобрен"
 
 #, elixir-format
 #: lib/web/email/member.ex:89
 msgid "Your membership request for group %{group} has been rejected"
-msgstr ""
+msgstr "Ваш запрос на членство в группе %{group} был отклонен"
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_rejection.text.eex:3
 msgid "Your membership request for group %{group} has been rejected."
-msgstr ""
+msgstr "Ваш запрос на членство в группе %{group} был отклонен."
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_rejection.html.heex:38
 msgid "Your membership request for group %{link_start}<b>%{group}</b>%{link_end} has been rejected."
 msgstr ""
+"Ваш запрос на вступление в группу %{link_start}<b>%{group}</b>%{link_end} "
+"был отклонен."
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_approval.text.eex:3
 msgid "Your membership request for group %{group} has been approved."
-msgstr ""
+msgstr "Ваш запрос на членство в группе %{group} был одобрен."
 
 #, elixir-format
 #: lib/web/templates/email/group_membership_approval.html.heex:38
 msgid "Your membership request for group %{link_start}<b>%{group}</b>%{link_end} has been approved."
 msgstr ""
+"Ваш запрос на вступление в группу %{link_start}<b>%{group}</b>%{link_end} "
+"был одобрен."
 
 #, elixir-format
 #: lib/web/templates/email/pending_participation_notification.html.heex:38
