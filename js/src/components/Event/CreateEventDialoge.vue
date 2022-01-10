@@ -56,41 +56,6 @@
         </b-button>
       </div>
     </footer>
-    <b-modal
-      :active.sync="isComponentModalActive"
-      has-modal-card
-      :close-button-aria-label="$t('Close')"
-    >
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">{{ $t("Pick a profile or a group") }}</p>
-        </header>
-        <section class="modal-card-body">
-          <div>
-            <organizer-picker
-              v-model="selectedActor"
-              @input="relay"
-              :restrict-moderator-level="true"
-              :groupsOnly="true"
-            />
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <b-button
-            class="button is-primary"
-            type="button"
-            v-on:click.native="pickActor && $emit('close')"
-            tag="router-link"
-            :to="{
-              name: RouteName.CREATE_EVENT,
-              query: { actorId: selectedActor.id },
-            }"
-          >
-            {{ $t("Pick") }}
-          </b-button>
-        </footer>
-      </div>
-    </b-modal>
   </div>
 </template>
 <script lang="ts">
@@ -100,13 +65,12 @@ import { Paginate } from "@/types/paginate";
 import { IMember } from "@/types/actor/member.model";
 import { ActorType, MemberRole } from "@/types/enums";
 import RouteName from "../../router/name";
-import OrganizerPicker from "./OrganizerPicker.vue";
 import OrganizerPickerWrapper from "./OrganizerPickerWrapper.vue";
 import { IActor, IGroup, IPerson } from "../../types/actor";
 import { CURRENT_ACTOR_CLIENT } from "../../graphql/actor";
 
 @Component({
-  components: { OrganizerPicker, OrganizerPickerWrapper },
+  components: { OrganizerPickerWrapper },
   apollo: {
     groupMemberships: {
       query: LOGGED_USER_MEMBERSHIPS,
@@ -116,8 +80,6 @@ import { CURRENT_ACTOR_CLIENT } from "../../graphql/actor";
   },
 })
 export default class CreateEventDialoge extends Vue {
-  @Prop({ type: Object, required: false }) value!: IActor;
-
   @Prop({ type: Object, required: false }) orgActor!: IActor;
 
   groupMemberships: Paginate<IMember> = { elements: [], total: 0 };
@@ -138,27 +100,6 @@ export default class CreateEventDialoge extends Vue {
       ).length > 0
     );
   }
-  pickActor(): void {
-    this.isComponentModalActive = false;
-  }
-
-  get selectedActor(): IActor | undefined {
-    if (this.value?.id) {
-      return this.value;
-    }
-    if (this.currentActor) {
-      return this.currentActor;
-    }
-    return undefined;
-  }
-
-  set selectedActor(selectedActor: IActor | undefined) {
-    this.$emit("input", selectedActor);
-  }
-
-  async relay(group: IGroup): Promise<void> {
-    this.selectedActor = group;
-  }
 
   get organizerActor(): IActor {
     if (this.orgActor) {
@@ -167,11 +108,11 @@ export default class CreateEventDialoge extends Vue {
     return this.currentActor;
   }
 
-  set organizerActor(actor: IActor) {
-    if (actor?.type === ActorType.GROUP) {
-      this.orgActor = actor as IGroup;
+  set organizerActor(organizerActor: IActor) {
+    if (organizerActor?.type === ActorType.GROUP) {
+      this.orgActor = organizerActor as IGroup;
     } else {
-      this.orgActor = actor;
+      this.orgActor = organizerActor;
     }
   }
 }
