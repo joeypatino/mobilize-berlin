@@ -120,20 +120,48 @@
           group page.
         </p>
         <div>
-          <div style="position: relative; padding-top: 66.25%">
-            <iframe
-              v-if="exploreTab === 1"
-              src="https://network.mobilize.berlin"
-              style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-              "
-              title="Wow, nice plot!"
-            ></iframe>
-          </div>
+          <fullscreen v-model="isFullscreen">
+            <div style="position: relative; padding-top: 66.25%">
+              <iframe
+                v-if="exploreTab === 1"
+                src="https://network.mobilize.berlin"
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                "
+                title="Wow, nice plot!"
+                id="iframe"
+                allowfullscreen
+              ></iframe>
+              <img
+                v-if="isFullscreen"
+                src="/img/exit_fullscreen_icon.png"
+                style="
+                  position: absolute;
+                  top: 30px;
+                  right: 15px;
+                  width: 20px;
+                  height: 20px;
+                "
+                v-on:click="toggle"
+              />
+              <img
+                v-else
+                src="/img/fullscreen_icon.png"
+                style="
+                  position: absolute;
+                  top: 30px;
+                  right: 15px;
+                  width: 20px;
+                  height: 20px;
+                "
+                v-on:click="toggle"
+              />
+            </div>
+          </fullscreen>
         </div>
       </b-tab-item>
     </b-tabs>
@@ -270,6 +298,8 @@ import { REVERSE_GEOCODE } from "../graphql/address";
 import debounce from "lodash/debounce";
 import { CURRENT_USER_CLIENT } from "@/graphql/user";
 import { ICurrentUser } from "@/types/current-user.model";
+import fullscreen from "vue-fullscreen";
+Vue.use(fullscreen);
 
 interface ISearchTimeOption {
   label: string;
@@ -339,6 +369,11 @@ const GEOHASH_DEPTH = 9; // put enough accuracy, radius will be used anyway
   },
 })
 export default class Search extends Vue {
+  isFullscreen = false;
+  toggle(): void {
+    this.isFullscreen = !this.isFullscreen;
+  }
+
   @Prop({ type: String, required: false }) tag!: string;
 
   exploreTab = 0;
