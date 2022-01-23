@@ -138,7 +138,7 @@
               ></iframe>
               <img
                 v-if="isFullscreen"
-                src="/img/exit_fullscreen_icon.png"
+                src="/img/icons/exit_fullscreen_icon.png"
                 style="
                   position: absolute;
                   top: 30px;
@@ -150,7 +150,7 @@
               />
               <img
                 v-else
-                src="/img/fullscreen_icon.png"
+                src="/img/icons/fullscreen_icon.png"
                 style="
                   position: absolute;
                   top: 30px;
