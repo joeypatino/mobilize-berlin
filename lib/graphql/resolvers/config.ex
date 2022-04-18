@@ -4,6 +4,8 @@ defmodule Mobilizon.GraphQL.Resolvers.Config do
   """
 
   alias Mobilizon.Config
+  alias Mobilizon.Events.Categories
+  alias Mobilizon.Service.FrontEndAnalytics
 
   @doc """
   Gets config.
@@ -55,6 +57,17 @@ defmodule Mobilizon.GraphQL.Resolvers.Config do
       end
 
     {:ok, %{body_html: body_html, type: type, url: url}}
+  end
+
+  @spec event_categories(any(), map(), Absinthe.Resolution.t()) :: {:ok, [map()]}
+  def event_categories(_parent, _args, _resolution) do
+    categories =
+      Categories.list()
+      |> Enum.map(fn %{id: id, label: label} ->
+        %{id: id |> to_string |> String.upcase(), label: label}
+      end)
+
+    {:ok, categories}
   end
 
   @spec config_cache :: map()
@@ -131,8 +144,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Config do
       timezones: Tzdata.zone_list(),
       features: %{
         groups: Config.instance_group_feature_enabled?(),
-        event_creation: Config.instance_event_creation_enabled?(),
-        koena_connect: Config.get([:instance, :koena_connect_link], false)
+        event_creation: Config.instance_event_creation_enabled?()
       },
       restrictions: %{
         only_admin_can_create_groups: Config.only_admin_can_create_groups?(),
@@ -158,7 +170,8 @@ defmodule Mobilizon.GraphQL.Resolvers.Config do
         public_key:
           get_in(Application.get_env(:web_push_encryption, :vapid_details), [:public_key])
       },
-      export_formats: Config.instance_export_formats()
+      export_formats: Config.instance_export_formats(),
+      analytics: FrontEndAnalytics.config()
     }
   end
 end

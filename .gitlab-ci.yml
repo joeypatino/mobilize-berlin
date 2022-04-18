@@ -59,8 +59,11 @@ lint-elixir:
     - mix deps.get
   script:
     - export EXITVALUE=0
+    - git fetch origin ${CI_DEFAULT_BRANCH}
+    - TARGET_SHA1=$(git show-ref -s ${CI_DEFAULT_BRANCH})
+    - echo "$TARGET_SHA1"
     - mix format --check-formatted --dry-run || export EXITVALUE=1
-    - mix credo --strict -a || export EXITVALUE=1
+    - mix credo diff --from-git-merge-base $TARGET_SHA1 --strict -a || export EXITVALUE=1
     - mix sobelow --config || export EXITVALUE=1
     - exit $EXITVALUE
 
@@ -107,7 +110,7 @@ deps:
 exunit:
   stage: test
   services:
-    - name: postgis/postgis:13-3.1
+    - name: postgis/postgis:14-3.2
       alias: postgres
   variables:
     MIX_ENV: test
@@ -180,7 +183,7 @@ pages:
 
 .docker: &docker
   stage: docker
-  image: docker:stable
+  image: docker:20.10.12
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_HOST: tcp://docker:2376
@@ -188,13 +191,13 @@ pages:
     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
     DOCKER_DRIVER: overlay2
   services:
-    - docker:stable-dind
+    - docker:20.10.12-dind
   cache: {}
   before_script:
     # Install buildx
-    - wget https://github.com/docker/buildx/releases/download/v0.6.3/buildx-v0.6.3.linux-amd64
+    - wget https://github.com/docker/buildx/releases/download/v0.8.1/buildx-v0.8.1.linux-amd64
     - mkdir -p ~/.docker/cli-plugins/
-    - mv buildx-v0.6.3.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    - mv buildx-v0.8.1.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     - chmod a+x ~/.docker/cli-plugins/docker-buildx
     # Create env
     - docker context create tls-environment
@@ -235,9 +238,15 @@ build-docker-tag:
 
 # Packaging app for amd64
 package-app:
+  image: mobilizon/buildpack:1.13.4-erlang-24.3.3-${OS}
   stage: package
+  before_script:
+    - apt-get update && apt-get install -yq build-essential git curl cmake
   variables: &release-variables
     MIX_ENV: "prod"
+    DEBIAN_FRONTEND: noninteractive
+    TZ: Etc/UTC
+    APP_ASSET: "${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${ARCH}_${OS}.tar.gz"
   script: &release-script
     - mix local.hex --force
     - mix local.rebar --force
@@ -256,6 +265,9 @@ package-app:
     expire_in: 2 days
     paths:
       - ${APP_ASSET}
+  parallel:
+    matrix:
+      - OS: ["debian-bullseye", "debian-buster", "ubuntu-focal", "ubuntu-bionic", "fedora-35", "fedora-36", "alpine-3.14.5", "alpine-3.15.3"]
 
 package-app-dev:
   stage: package
@@ -271,22 +283,24 @@ package-app-dev:
 # Packaging app for multi-arch
 multi-arch-release:
   stage: package
-  image: docker:stable
+  image: docker:20.10.12
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_VERIFY: 1
     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
     DOCKER_DRIVER: overlay2
-    APP_ASSET: "${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${ARCH}.tar.gz"
+    APP_ASSET: "${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${ARCH}_${OS}.tar.gz"
+    # For now, arm and arm64 are only build for debian bullseye version
+    OS: debian-bullseye
   services:
-    - docker:stable-dind
+    - docker:20.10.12-dind
   cache: {}
   before_script:
     # Install buildx
-    - wget https://github.com/docker/buildx/releases/download/v0.6.3/buildx-v0.6.3.linux-amd64
+    - wget https://github.com/docker/buildx/releases/download/v0.8.1/buildx-v0.8.1.linux-amd64
     - mkdir -p ~/.docker/cli-plugins/
-    - mv buildx-v0.6.3.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    - mv buildx-v0.8.1.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     - chmod a+x ~/.docker/cli-plugins/docker-buildx
     # Create env
     - docker context create tls-environment

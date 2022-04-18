@@ -1,3 +1,63 @@
+# Upgrading from 2.0 to 2.1
+
+## Distro-specific packages
+
+Elixir releases are precompiled binaries and are therefore dependent on the host they've been compiled to be compatible with your system (architecture, libc version, …) ([read more](https://hexdocs.pm/mix/Mix.Tasks.Release.html#module-requirements)). For instance, the release build on Debian Bullseye (with libc 2.31) cannot be run on Debian Buster (which only provides libc 2.28). Another example is Red Hat-relative distributions (Fedora, CentOS, …) which have an OpenSSL library version that's not compatible with the version compiled (because of [potential patent issues with Elliptic curves](https://github.com/kerl/kerl#compiling-crypto-on-red-hat-systems)).
+
+In order to make sure the releases package we redistribute , we now build distro-version-specific packages.
+The list of packages built for version 2.1.0 with the amd64 (x86_64) architecture is the following:
+  - Debian Buster (10)
+  - Debian Bullseye (11)
+  - Ubuntu Bionic (18.04)
+  - Ubuntu Focal (20.04)
+  - Fedora 35
+  - Fedora 36
+  - Alpine 3.14.5
+  - Alpine 3.15.3
+
+As building for non-`amd64` architectures is quite difficult (because of the time and extra resources cross-compiling takes), these architectures are only built against Debian Bullseye (11) at the moment.
+
+We want to expand this list in the future to make sure it covers most uses, so feel free to give us feedback from what you need.
+
+Note: Docker images are also built for `amd64`/`arm`/`arm64` architectures, and of course you can always install Mobilizon from source on pretty much any unix-compatible system.
+
+## Mailer library change
+
+### Docker
+
+The change is already applied. You may remove the `MOBILIZON_SMTP_HOSTNAME` environment key which is not used anymore.
+
+### Release and source mode
+
+In your configuration file under `config :mobilizon, Mobilizon.Web.Email.Mailer`,
+* Change `Bamboo.SMTPAdapter` to `Swoosh.Adapters.SMTP`,
+* rename the `server` key to `relay`
+* remove the `hostname` key,
+* the default value of the username and password fields is an empty string and no longer `nil`.
+
+```diff
+ config :mobilizon, Mobilizon.Web.Email.Mailer,
+-   adapter: Bamboo.SMTPAdapter,
++   adapter: Swoosh.Adapters.SMTP,
+-   server: "localhost",
++   relay: "localhost",
+-   hostname: "localhost",
+   # usually 25, 465 or 587
+   port: 25,
+-   username: nil,
++   username: "",
+-   password: nil,
++   password: "",
+   # can be `:always` or `:never`
+   tls: :if_available,
+   allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
+   retries: 1,
+   # can be `true`
+   no_mx_lookups: false,
+   # can be `:always`. If your smtp relay requires authentication set it to `:always`.
+   auth: :if_available
+```
+
 # Upgrading from 1.3 to 2.0
 
 Requirements dependencies depend on the way Mobilizon is installed.

@@ -58,6 +58,8 @@ defmodule Mobilizon.Actors do
   @moderator_roles [:moderator] ++ @administrator_roles
   @member_roles [:member] ++ @moderator_roles
 
+  @associations_to_preload [:organized_events, :followers, :followings, :user, :physical_address]
+
   @doc """
   Gets a single actor.
   """
@@ -143,7 +145,7 @@ defmodule Mobilizon.Actors do
   @doc """
   Gets an actor by name.
   """
-  @spec get_actor_by_name(String.t(), ActorType.t() | nil) :: Actor.t() | nil
+  @spec get_actor_by_name(String.t(), atom() | nil) :: Actor.t() | nil
   def get_actor_by_name(name, type \\ nil) do
     Actor
     |> filter_by_type(type)
@@ -169,7 +171,7 @@ defmodule Mobilizon.Actors do
   def get_local_actor_by_name_with_preload(name) do
     name
     |> get_local_actor_by_name()
-    |> Repo.preload([:organized_events, :followers, :followings])
+    |> Repo.preload(@associations_to_preload)
   end
 
   @doc """
@@ -179,7 +181,7 @@ defmodule Mobilizon.Actors do
   def get_actor_by_name_with_preload(name, type \\ nil) do
     name
     |> get_actor_by_name(type)
-    |> Repo.preload([:organized_events, :user, :physical_address])
+    |> Repo.preload(@associations_to_preload)
   end
 
   @doc """
@@ -246,7 +248,7 @@ defmodule Mobilizon.Actors do
   @spec update_actor(Actor.t(), map) :: {:ok, Actor.t()} | {:error, Ecto.Changeset.t()}
   def update_actor(%Actor{} = actor, attrs) do
     actor
-    |> Repo.preload([:physical_address])
+    |> Repo.preload(@associations_to_preload)
     |> Actor.update_changeset(attrs)
     |> delete_files_if_media_changed()
     |> Repo.update()
@@ -271,7 +273,7 @@ defmodule Mobilizon.Actors do
 
     case insert do
       {:ok, actor} ->
-        actor = if preload, do: Repo.preload(actor, [:followers]), else: actor
+        actor = if preload, do: Repo.preload(actor, @associations_to_preload), else: actor
 
         {:ok, actor}
 
@@ -315,7 +317,7 @@ defmodule Mobilizon.Actors do
           boolean,
           integer | nil,
           integer | nil
-        ) :: Page.t()
+        ) :: Page.t(Actor.t())
   def list_actors(
         type \\ :Person,
         preferred_username \\ "",
@@ -450,7 +452,7 @@ defmodule Mobilizon.Actors do
           Keyword.t(),
           integer | nil,
           integer | nil
-        ) :: Page.t()
+        ) :: Page.t(Actor.t())
   def search_actors(
         term,
         options \\ [],
@@ -459,6 +461,7 @@ defmodule Mobilizon.Actors do
       ) do
     term
     |> build_actors_by_username_or_name_page_query(options)
+    |> maybe_exclude_stale_actors(Keyword.get(options, :exclude_stale_actors, false))
     |> maybe_exclude_my_groups(
       Keyword.get(options, :exclude_my_groups, false),
       Keyword.get(options, :current_actor_id)
@@ -474,6 +477,17 @@ defmodule Mobilizon.Actors do
   end
 
   defp maybe_exclude_my_groups(query, _, _), do: query
+
+  @spec maybe_exclude_stale_actors(Ecto.Queryable.t(), boolean()) :: Ecto.Query.t()
+  defp maybe_exclude_stale_actors(query, true) do
+    actor_stale_period =
+      Application.get_env(:mobilizon, :activitypub)[:stale_actor_search_exclusion_after]
+
+    stale_date = DateTime.utc_now() |> DateTime.add(-actor_stale_period)
+    where(query, [a], is_nil(a.domain) or a.last_refreshed_at >= ^stale_date)
+  end
+
+  defp maybe_exclude_stale_actors(query, false), do: query
 
   @spec build_actors_by_username_or_name_page_query(
           String.t(),
@@ -891,6 +905,17 @@ defmodule Mobilizon.Actors do
   end
 
   @doc """
+  Returns the number of followers for a group
+  """
+  @spec count_members_for_group(Actor.t()) :: integer()
+  def count_members_for_group(%Actor{id: actor_id}) do
+    actor_id
+    |> members_for_group_query()
+    # |> where([m], m.role in @member_roles)
+    |> Repo.aggregate(:count)
+  end
+
+  @doc """
   Gets a single bot.
   Raises `Ecto.NoResultsError` if the bot does not exist.
   """
@@ -1078,7 +1103,7 @@ defmodule Mobilizon.Actors do
   Returns the paginated list of external followers for an actor.
   """
   @spec list_external_followers_for_actor_paginated(Actor.t(), integer | nil, integer | nil) ::
-          Page.t()
+          Page.t(Actor.t())
   def list_external_followers_for_actor_paginated(%Actor{id: actor_id}, page \\ nil, limit \\ nil) do
     actor_id
     |> list_external_followers_for_actor_query()
@@ -1088,7 +1113,7 @@ defmodule Mobilizon.Actors do
   @doc """
   Build a page struct for followers of an actor.
   """
-  @spec build_followers_for_actor(Actor.t(), integer | nil, integer | nil) :: Page.t()
+  @spec build_followers_for_actor(Actor.t(), integer | nil, integer | nil) :: Page.t(Follower.t())
   def build_followers_for_actor(%Actor{id: actor_id}, page \\ nil, limit \\ nil) do
     actor_id
     |> follower_actors_for_actor_query()
@@ -1110,7 +1135,7 @@ defmodule Mobilizon.Actors do
   Returns a paginated list of followers for an actor.
   """
   @spec list_paginated_followers_for_actor(Actor.t(), boolean | nil, integer | nil, integer | nil) ::
-          Page.t()
+          Page.t(Follower.t())
   def list_paginated_followers_for_actor(
         %Actor{id: actor_id},
         approved \\ nil,
@@ -1140,7 +1165,7 @@ defmodule Mobilizon.Actors do
   Returns the list of external followings for an actor.
   """
   @spec list_external_followings_for_actor_paginated(Actor.t(), integer | nil, integer | nil) ::
-          Page.t()
+          Page.t(Follower.t())
   def list_external_followings_for_actor_paginated(
         %Actor{id: actor_id},
         page \\ nil,
@@ -1154,7 +1179,8 @@ defmodule Mobilizon.Actors do
   @doc """
   Build a page struct for followings of an actor.
   """
-  @spec build_followings_for_actor(Actor.t(), integer | nil, integer | nil) :: Page.t()
+  @spec build_followings_for_actor(Actor.t(), integer | nil, integer | nil) ::
+          Page.t(Follower.t())
   def build_followings_for_actor(%Actor{id: actor_id}, page \\ nil, limit \\ nil) do
     actor_id
     |> followings_actors_for_actor_query()
@@ -1176,7 +1202,7 @@ defmodule Mobilizon.Actors do
     if followed.suspended do
       {:error, :followed_suspended}
     else
-      case is_following(follower, followed) do
+      case check_follow(follower, followed) do
         %Follower{} ->
           {:error, :already_following}
 
@@ -1202,7 +1228,7 @@ defmodule Mobilizon.Actors do
   @spec unfollow(Actor.t(), Actor.t()) ::
           {:ok, Follower.t()} | {:error, Ecto.Changeset.t() | String.t()}
   def unfollow(%Actor{} = followed, %Actor{} = follower) do
-    case {:already_following, is_following(follower, followed)} do
+    case {:already_following, check_follow(follower, followed)} do
       {:already_following, %Follower{} = follow} ->
         delete_follower(follow)
 
@@ -1214,8 +1240,8 @@ defmodule Mobilizon.Actors do
   @doc """
   Checks whether an actor is following another actor.
   """
-  @spec is_following(Actor.t(), Actor.t()) :: Follower.t() | nil
-  def is_following(%Actor{} = follower_actor, %Actor{} = followed_actor) do
+  @spec check_follow(Actor.t(), Actor.t()) :: Follower.t() | nil
+  def check_follow(%Actor{} = follower_actor, %Actor{} = followed_actor) do
     get_follower_by_followed_and_following(followed_actor, follower_actor)
   end
 
@@ -1256,6 +1282,16 @@ defmodule Mobilizon.Actors do
     :ok
   end
 
+  @spec has_relay?(String.t()) :: boolean()
+  def has_relay?(domain) do
+    Actor
+    |> where(
+      [a],
+      a.preferred_username == "relay" and a.domain == ^domain and a.type == :Application
+    )
+    |> Repo.exists?()
+  end
+
   @spec delete_files_if_media_changed(Ecto.Changeset.t()) :: Ecto.Changeset.t()
   defp delete_files_if_media_changed(%Ecto.Changeset{changes: changes, data: data} = changeset) do
     Enum.each([:avatar, :banner], fn key ->
@@ -1283,7 +1319,7 @@ defmodule Mobilizon.Actors do
   defp actor_with_preload_query(actor_id, true) do
     Actor
     |> where([a], a.id == ^actor_id)
-    |> preload([a], [:organized_events, :followers, :followings])
+    |> preload([a], ^@associations_to_preload)
   end
 
   @spec actor_by_username_query(String.t()) :: Ecto.Query.t()
@@ -1465,7 +1501,7 @@ defmodule Mobilizon.Actors do
     |> where([_q, ..., a], like(a.name, ^"%#{name}%") or like(a.preferred_username, ^"%#{name}%"))
   end
 
-  @spec join_members_actor(Ecto.Query.t()) :: Ecto.Query.t()
+  @spec join_members_actor(Ecto.Queryable.t()) :: Ecto.Query.t()
   defp join_members_actor(query) do
     join(query, :inner, [q], a in Actor, on: q.actor_id == a.id)
   end
@@ -1599,7 +1635,7 @@ defmodule Mobilizon.Actors do
     |> preload([f, a], [:target_actor, :actor])
   end
 
-  @spec filter_by_type(Ecto.Queryable.t(), ActorType.t() | nil) :: Ecto.Queryable.t()
+  @spec filter_by_type(Ecto.Queryable.t(), atom() | nil) :: Ecto.Queryable.t()
   defp filter_by_type(query, type)
        when type in [:Person, :Group, :Application, :Service, :Organisation] do
     from(a in query, where: a.type == ^type)

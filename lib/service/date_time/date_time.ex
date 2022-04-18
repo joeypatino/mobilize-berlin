@@ -8,17 +8,26 @@ defmodule Mobilizon.Service.DateTime do
 
   @spec datetime_to_string(DateTime.t(), String.t(), to_string_format()) :: String.t()
   def datetime_to_string(%DateTime{} = datetime, locale \\ "en", format \\ :medium) do
-    Mobilizon.Cldr.DateTime.to_string!(datetime, format: format, locale: locale_or_default(locale))
+    Mobilizon.Cldr.DateTime.to_string!(datetime,
+      format: format,
+      locale: Mobilizon.Cldr.locale_or_default(locale)
+    )
   end
 
   @spec datetime_to_time_string(DateTime.t(), String.t(), to_string_format()) :: String.t()
   def datetime_to_time_string(%DateTime{} = datetime, locale \\ "en", format \\ :short) do
-    Mobilizon.Cldr.Time.to_string!(datetime, format: format, locale: locale_or_default(locale))
+    Mobilizon.Cldr.Time.to_string!(datetime,
+      format: format,
+      locale: Mobilizon.Cldr.locale_or_default(locale)
+    )
   end
 
   @spec datetime_to_date_string(DateTime.t(), String.t(), to_string_format()) :: String.t()
   def datetime_to_date_string(%DateTime{} = datetime, locale \\ "en", format \\ :short) do
-    Mobilizon.Cldr.Date.to_string!(datetime, format: format, locale: locale_or_default(locale))
+    Mobilizon.Cldr.Date.to_string!(datetime,
+      format: format,
+      locale: Mobilizon.Cldr.locale_or_default(locale)
+    )
   end
 
   @spec datetime_tz_convert(DateTime.t(), String.t() | nil) :: DateTime.t()
@@ -38,16 +47,8 @@ defmodule Mobilizon.Service.DateTime do
   def datetime_relative(%DateTime{} = datetime, locale \\ "en") do
     Relative.to_string!(datetime, Mobilizon.Cldr,
       relative_to: DateTime.utc_now(),
-      locale: locale_or_default(locale)
+      locale: Mobilizon.Cldr.locale_or_default(locale)
     )
-  end
-
-  defp locale_or_default(locale) do
-    if Mobilizon.Cldr.known_locale_name(locale) do
-      locale
-    else
-      "en"
-    end
   end
 
   @spec is_first_day_of_week(Date.t(), String.t()) :: boolean()
@@ -181,7 +182,7 @@ defmodule Mobilizon.Service.DateTime do
     compare_to_day = Keyword.get(options, :compare_to_day, Date.utc_today())
     compare_to = Keyword.get(options, :compare_to_datetime, DateTime.utc_now())
     start_time = Keyword.get(options, :start_time, @start_time)
-    timezone = Keyword.get(options, :timezone, "Etc/UTC")
+    timezone = Keyword.get(options, :timezone, "Etc/UTC") || "Etc/UTC"
     end_time = Keyword.get(options, :end_time, @end_time)
 
     DateTime.compare(compare_to, DateTime.new!(compare_to_day, start_time, timezone)) in [

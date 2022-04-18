@@ -203,6 +203,16 @@ export default class App extends Vue {
     this.interval = undefined;
   }
 
+  @Watch("config")
+  async initializeStatistics(config: IConfig) {
+    if (config) {
+      const { statistics } = (await import("./services/statistics")) as {
+        statistics: (config: IConfig, environment: Record<string, any>) => void;
+      };
+      statistics(config, { router: this.$router, version: config.version });
+    }
+  }
+
   @Watch("$route", { immediate: true })
   updateAnnouncement(route: Route): void {
     const pageTitle = this.extractPageTitleFromRoute(route);
@@ -216,8 +226,12 @@ export default class App extends Vue {
     // Set the focus to the router view
     // https://marcus.io/blog/accessible-routing-vuejs
     setTimeout(() => {
-      const focusTarget = this.routerView?.$el as HTMLElement;
-      if (focusTarget) {
+      const focusTarget = (
+        this.routerView?.$refs?.componentFocusTarget !== undefined
+          ? this.routerView?.$refs?.componentFocusTarget
+          : this.routerView?.$el
+      ) as HTMLElement;
+      if (focusTarget && focusTarget instanceof Element) {
         // Make focustarget programmatically focussable
         focusTarget.setAttribute("tabindex", "-1");
 

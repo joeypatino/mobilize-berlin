@@ -69,6 +69,7 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
           "category" => "sc:category",
           "uuid" => "sc:identifier",
           "maximumAttendeeCapacity" => "sc:maximumAttendeeCapacity",
+          "remainingAttendeeCapacity" => "sc:remainingAttendeeCapacity",
           "location" => %{
             "@id" => "sc:location",
             "@type" => "sc:Place"
@@ -111,6 +112,18 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
           "participationMessage" => %{
             "@id" => "mz:participationMessage",
             "@type" => "sc:Text"
+          },
+          "participantCount" => %{
+            "@id" => "mz:participantCount",
+            "@type" => "sc:Integer"
+          },
+          "memberCount" => %{
+            "@id" => "mz:memberCount",
+            "@type" => "sc:Integer"
+          },
+          "isOnline" => %{
+            "@type" => "sc:Boolean",
+            "@id" => "mz:isOnline"
           },
           "PropertyValue" => "sc:PropertyValue",
           "value" => "sc:value",
@@ -324,8 +337,9 @@ defmodule Mobilizon.Federation.ActivityPub.Utils do
       message: "Object contains an actor object with invalid type: #{inspect(type)}"
   end
 
-  def get_actor(%{"actor" => nil, "attributedTo" => nil}) do
-    raise ArgumentError, message: "Object contains both actor and attributedTo fields being null"
+  def get_actor(%{"actor" => nil, "attributedTo" => nil} = object) do
+    raise ArgumentError,
+      message: "Object contains both actor and attributedTo fields being null: #{inspect(object)}"
   end
 
   def get_actor(%{"actor" => _}) do

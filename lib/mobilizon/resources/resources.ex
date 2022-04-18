@@ -18,7 +18,7 @@ defmodule Mobilizon.Resources do
   @doc """
   Returns the list of recent resources for a group
   """
-  @spec get_resources_for_group(Actor.t(), integer | nil, integer | nil) :: Page.t()
+  @spec get_resources_for_group(Actor.t(), integer | nil, integer | nil) :: Page.t(Resource.t())
   def get_resources_for_group(%Actor{id: group_id}, page \\ nil, limit \\ nil) do
     Resource
     |> where(actor_id: ^group_id)
@@ -30,7 +30,8 @@ defmodule Mobilizon.Resources do
   @doc """
   Returns the list of resources for a resource folder.
   """
-  @spec get_resources_for_folder(Resource.t(), integer | nil, integer | nil) :: Page.t()
+  @spec get_resources_for_folder(Resource.t(), integer | nil, integer | nil) ::
+          Page.t(Resource.t())
   def get_resources_for_folder(resource, page \\ nil, limit \\ nil)
 
   def get_resources_for_folder(
@@ -119,7 +120,11 @@ defmodule Mobilizon.Resources do
         {:ok, resource}
 
       {:error, operation, reason, _changes} ->
-        {:error, "Error while inserting resource when #{operation} because of #{inspect(reason)}"}
+        Logger.error(
+          "Error while inserting resource when #{operation} because of #{inspect(reason)}"
+        )
+
+        {:error, reason}
     end
   end
 

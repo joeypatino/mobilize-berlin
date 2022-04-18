@@ -272,23 +272,14 @@ defmodule Mobilizon.Users do
   @doc """
   Returns the list of users.
   """
-  @spec list_users(String.t(), integer | nil, integer | nil, atom, atom) ::
-          Page.t(User.t())
-  def list_users(email, page, limit \\ nil, sort, direction)
-
-  def list_users("", page, limit, sort, direction) do
+  @spec list_users(Keyword.t()) :: Page.t(User.t())
+  def list_users(options) do
     User
-    |> sort(sort, direction)
+    |> filter_by_email(Keyword.get(options, :email))
+    |> filter_by_ip(Keyword.get(options, :current_sign_in_ip))
+    |> sort(Keyword.get(options, :sort), Keyword.get(options, :direction))
     |> preload([u], [:actors, :feed_tokens, :settings, :default_actor])
-    |> Page.build_page(page, limit)
-  end
-
-  def list_users(email, page, limit, sort, direction) do
-    User
-    |> where([u], ilike(u.email, ^"%#{email}%"))
-    |> sort(sort, direction)
-    |> preload([u], [:actors, :feed_tokens, :settings, :default_actor])
-    |> Page.build_page(page, limit)
+    |> Page.build_page(Keyword.get(options, :page), Keyword.get(options, :limit))
   end
 
   @doc """
@@ -367,7 +358,7 @@ defmodule Mobilizon.Users do
   Get a paginated list of all of a user's subscriptions
   """
   @spec list_user_push_subscriptions(String.t() | integer(), integer() | nil, integer() | nil) ::
-          Page.t()
+          Page.t(PushSubscription.t())
   def list_user_push_subscriptions(user_id, page \\ nil, limit \\ nil) do
     PushSubscription
     |> where([p], p.user_id == ^user_id)
@@ -527,4 +518,16 @@ defmodule Mobilizon.Users do
   defp update_user_default_actor_query(user_id) do
     where(User, [u], u.id == ^user_id)
   end
+
+  @spec filter_by_email(Ecto.Queryable.t(), String.t() | nil) :: Ecto.Query.t()
+  defp filter_by_email(query, nil), do: query
+  defp filter_by_email(query, ""), do: query
+  defp filter_by_email(query, email), do: where(query, [q], ilike(q.email, ^"%#{email}%"))
+
+  @spec filter_by_ip(Ecto.Queryable.t(), String.t() | nil) :: Ecto.Query.t()
+  defp filter_by_ip(query, nil), do: query
+  defp filter_by_ip(query, ""), do: query
+
+  defp filter_by_ip(query, current_sign_in_ip),
+    do: where(query, [q], q.current_sign_in_ip == ^current_sign_in_ip)
 end

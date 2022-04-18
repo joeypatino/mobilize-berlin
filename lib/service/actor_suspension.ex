@@ -11,6 +11,7 @@ defmodule Mobilizon.Service.ActorSuspension do
   alias Mobilizon.Medias.File
   alias Mobilizon.Posts.Post
   alias Mobilizon.Resources.Resource
+  alias Mobilizon.Service.Export.Cachable
   alias Mobilizon.Storage.Repo
   alias Mobilizon.Users.User
   alias Mobilizon.Web.Email.Actor, as: ActorEmail
@@ -66,6 +67,7 @@ defmodule Mobilizon.Service.ActorSuspension do
     case Repo.transaction(multi) do
       {:ok, %{actor: %Actor{} = actor}} ->
         {:ok, true} = Cachex.del(:activity_pub, "actor_#{actor.preferred_username}")
+        Cachable.clear_all_caches(actor)
         Logger.info("Deleted actor #{actor.url}")
         {:ok, actor}
 
@@ -188,6 +190,29 @@ defmodule Mobilizon.Service.ActorSuspension do
 
   defp delete_discussions(%Multi{} = multi, %Actor{type: :Group, id: actor_id}) do
     Logger.debug("Delete group's discussions")
+
+    multi =
+      Multi.run(multi, :group_discussion_comments, fn _, _ ->
+        group_comments_ids =
+          Comment
+          |> join(:inner, [c], d in Discussion, on: c.discussion_id == d.id)
+          |> where([_c, d], d.actor_id == ^actor_id)
+          |> select([c], [c.id])
+          |> Repo.all()
+          |> Enum.concat()
+
+        {:ok, group_comments_ids}
+      end)
+
+    multi =
+      Multi.delete_all(
+        multi,
+        :delete_discussions_comments,
+        fn %{group_discussion_comments: group_discussion_comments} ->
+          where(Comment, [c], c.id in ^group_discussion_comments)
+        end
+      )
+
     Multi.delete_all(multi, :delete_discussions, where(Discussion, [e], e.actor_id == ^actor_id))
   end
 

@@ -357,12 +357,13 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
   @doc """
   Returns this person's group memberships
   """
-  @spec person_memberships(Actor.t(), map(), map()) :: {:ok, Page.t()} | {:error, String.t()}
-  def person_memberships(%Actor{id: actor_id} = person, %{group: group}, %{
+  @spec person_memberships(Actor.t(), map(), map()) ::
+          {:ok, Page.t(Member.t())} | {:error, String.t()}
+  def person_memberships(%Actor{id: actor_id} = person, args, %{
         context: %{current_user: %User{} = user}
       }) do
     if user_can_access_person_details?(person, user) do
-      with {:group, %Actor{id: group_id}} <- {:group, Actors.get_actor_by_name(group, :Group)},
+      with {:group, %Actor{id: group_id}} <- {:group, group_from_args(args)},
            {:ok, %Member{} = membership} <- Actors.get_member(actor_id, group_id) do
         {:ok,
          %Page{
@@ -373,6 +374,21 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
         {:error, :member_not_found} ->
           {:ok, %Page{total: 0, elements: []}}
 
+        {:group, :none} ->
+          with {:can_get_memberships, true} <-
+                 {:can_get_memberships, user_can_access_person_details?(person, user)},
+               memberships <-
+                 Actors.list_members_for_actor(
+                   person,
+                   Map.get(args, :page, 1),
+                   Map.get(args, :limit, 10)
+                 ) do
+            {:ok, memberships}
+          else
+            {:can_get_memberships, _} ->
+              {:error, dgettext("errors", "Profile is not owned by authenticated user")}
+          end
+
         {:group, nil} ->
           {:error, :group_not_found}
       end
@@ -381,27 +397,11 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
     end
   end
 
-  def person_memberships(
-        %Actor{} = person,
-        %{page: page, limit: limit},
-        %{
-          context: %{current_user: %User{} = user}
-        }
-      ) do
-    with {:can_get_memberships, true} <-
-           {:can_get_memberships, user_can_access_person_details?(person, user)},
-         memberships <- Actors.list_members_for_actor(person, page, limit) do
-      {:ok, memberships}
-    else
-      {:can_get_memberships, _} ->
-        {:error, dgettext("errors", "Profile is not owned by authenticated user")}
-    end
-  end
-
   @doc """
   Returns this person's group follows
   """
-  @spec person_follows(Actor.t(), map(), map()) :: {:ok, Page.t()} | {:error, String.t()}
+  @spec person_follows(Actor.t(), map(), map()) ::
+          {:ok, Page.t(Follower.t())} | {:error, String.t()}
   def person_follows(%Actor{} = person, %{group: group}, %{
         context: %{current_user: %User{} = user}
       }) do
@@ -498,4 +498,17 @@ defmodule Mobilizon.GraphQL.Resolvers.Person do
        do: actor_user_id == user_id
 
   defp user_can_access_person_details?(_, _), do: false
+
+  @spec group_from_args(map()) :: Actor.t() | nil
+  defp group_from_args(%{group: group}) do
+    Actors.get_actor_by_name(group, :Group)
+  end
+
+  defp group_from_args(%{group_id: group_id}) do
+    Actors.get_actor(group_id)
+  end
+
+  defp group_from_args(_) do
+    :none
+  end
 end

@@ -1,27 +1,17 @@
 <template>
   <div class="container is-widescreen">
     <div class="header">
-      <nav class="breadcrumb" :aria-label="$t('Breadcrumbs')">
-        <ul>
-          <li>
-            <router-link :to="{ name: RouteName.MY_GROUPS }">{{
-              $t("My groups")
-            }}</router-link>
-          </li>
-          <li class="is-active">
-            <router-link
-              aria-current-value="location"
-              v-if="group && group.preferredUsername"
-              :to="{
-                name: RouteName.GROUP,
-                params: { preferredUsername: usernameWithDomain(group) },
-              }"
-              >{{ group.name }}</router-link
-            >
-            <b-skeleton v-else :animated="true"></b-skeleton>
-          </li>
-        </ul>
-      </nav>
+      <breadcrumbs-nav
+        v-if="group"
+        :links="[
+          { name: RouteName.MY_GROUPS, text: $t('My groups') },
+          {
+            name: RouteName.GROUP,
+            params: { preferredUsername: usernameWithDomain(group) },
+            text: displayName(group),
+          },
+        ]"
+      />
       <b-loading :active.sync="$apollo.loading"></b-loading>
       <header class="block-container presentation" v-if="group">
         <div class="banner-container">
@@ -589,29 +579,47 @@
           </div>
           <empty-content v-else-if="group" icon="calendar" :inline="true">
             {{ $t("No public upcoming events") }}
-            <template #desc v-if="isCurrentActorFollowing">
-              <i18n
-                class="has-text-grey-dark"
-                path="You will receive notifications about this group's public activity depending on %{notification_settings}."
-              >
-                <router-link
-                  :to="{ name: RouteName.NOTIFICATIONS }"
-                  slot="notification_settings"
-                  >{{ $t("your notification settings") }}</router-link
+            <template #desc>
+              <template v-if="isCurrentActorFollowing">
+                <i18n
+                  class="has-text-grey-dark"
+                  path="You will receive notifications about this group's public activity depending on %{notification_settings}."
                 >
-              </i18n>
+                  <router-link
+                    :to="{ name: RouteName.NOTIFICATIONS }"
+                    slot="notification_settings"
+                    >{{ $t("your notification settings") }}</router-link
+                  >
+                </i18n>
+              </template>
+              <b-button
+                tag="router-link"
+                class="my-2"
+                type="is-text"
+                :to="{
+                  name: RouteName.GROUP_EVENTS,
+                  params: { preferredUsername: usernameWithDomain(group) },
+                  query: { future: false },
+                }"
+                >{{ $t("View past events") }}</b-button
+              >
             </template>
           </empty-content>
           <b-skeleton animated v-else-if="$apollo.loading"></b-skeleton>
-          <router-link
-            v-if="organizedEvents.total > 0"
-            :to="{
-              name: RouteName.GROUP_EVENTS,
-              params: { preferredUsername: usernameWithDomain(group) },
-              query: { future: organizedEvents.elements.length > 0 },
-            }"
-            >{{ $t("View all events") }}</router-link
-          >
+          <div class="flex justify-center">
+            <b-button
+              tag="router-link"
+              class="my-4"
+              type="is-text"
+              v-if="organizedEvents.total > 0"
+              :to="{
+                name: RouteName.GROUP_EVENTS,
+                params: { preferredUsername: usernameWithDomain(group) },
+                query: { future: organizedEvents.elements.length > 0 },
+              }"
+              >{{ $t("View all events") }}</b-button
+            >
+          </div>
         </section>
         <section>
           <subtitle>{{ $t("Latest posts") }}</subtitle>
@@ -775,6 +783,8 @@ export default class Group extends mixins(GroupMixin) {
   RouteName = RouteName;
 
   usernameWithDomain = usernameWithDomain;
+
+  displayName = displayName;
 
   PostVisibility = PostVisibility;
 

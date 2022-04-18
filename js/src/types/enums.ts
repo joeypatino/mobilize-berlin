@@ -72,14 +72,6 @@ export enum EventVisibilityJoinOptions {
   LIMITED = "LIMITED",
 }
 
-export enum Category {
-  BUSINESS = "business",
-  CONFERENCE = "conference",
-  BIRTHDAY = "birthday",
-  DEMONSTRATION = "demonstration",
-  MEETING = "meeting",
-}
-
 export enum LoginErrorCode {
   NEED_TO_LOGIN = "need_to_login",
 }
@@ -275,4 +267,16 @@ export enum EventMetadataCategories {
   DETAILS = "DETAILS",
   BOOKING = "BOOKING",
   VIDEO_CONFERENCE = "VIDEO_CONFERENCE",
+}
+
+export enum InstanceFilterFollowStatus {
+  ALL = "ALL",
+  FOLLOWING = "FOLLOWING",
+  FOLLOWED = "FOLLOWED",
+}
+
+export enum InstanceFollowStatus {
+  APPROVED = "APPROVED",
+  PENDING = "PENDING",
+  NONE = "NONE",
 }

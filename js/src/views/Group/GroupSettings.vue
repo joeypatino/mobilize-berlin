@@ -1,37 +1,25 @@
 <template>
   <div>
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <li>
-          <router-link
-            v-if="group"
-            :to="{
-              name: RouteName.GROUP,
-              params: { preferredUsername: usernameWithDomain(group) },
-            }"
-            >{{ group.name || usernameWithDomain(group) }}</router-link
-          >
-        </li>
-        <li>
-          <router-link
-            :to="{
-              name: RouteName.GROUP_SETTINGS,
-              params: { preferredUsername: usernameWithDomain(group) },
-            }"
-            >{{ $t("Settings") }}</router-link
-          >
-        </li>
-        <li class="is-active">
-          <router-link
-            :to="{
-              name: RouteName.GROUP_PUBLIC_SETTINGS,
-              params: { preferredUsername: usernameWithDomain(group) },
-            }"
-            >{{ $t("Group settings") }}</router-link
-          >
-        </li>
-      </ul>
-    </nav>
+    <breadcrumbs-nav
+      v-if="group"
+      :links="[
+        {
+          name: RouteName.GROUP,
+          params: { preferredUsername: usernameWithDomain(group) },
+          text: displayName(group),
+        },
+        {
+          name: RouteName.GROUP_SETTINGS,
+          params: { preferredUsername: usernameWithDomain(group) },
+          text: $t('Settings'),
+        },
+        {
+          name: RouteName.GROUP_PUBLIC_SETTINGS,
+          params: { preferredUsername: usernameWithDomain(group) },
+          text: $t('Group settings'),
+        },
+      ]"
+    />
     <b-loading :active="$apollo.loading" />
     <section
       class="container section"
@@ -197,7 +185,12 @@ import { mixins } from "vue-class-component";
 import GroupMixin from "@/mixins/group";
 import { GroupVisibility, Openness } from "@/types/enums";
 import { UPDATE_GROUP } from "../../graphql/group";
-import { Group, IGroup, usernameWithDomain } from "../../types/actor";
+import {
+  Group,
+  IGroup,
+  usernameWithDomain,
+  displayName,
+} from "../../types/actor";
 import { Address, IAddress } from "../../types/address.model";
 import { CONFIG } from "@/graphql/config";
 import { IConfig } from "@/types/config.model";
@@ -234,6 +227,8 @@ export default class GroupSettings extends mixins(GroupMixin) {
 
   usernameWithDomain = usernameWithDomain;
 
+  displayName = displayName;
+
   GroupVisibility = GroupVisibility;
 
   Openness = Openness;
@@ -264,17 +259,22 @@ export default class GroupSettings extends mixins(GroupMixin) {
 
   @Watch("group")
   async watchUpdateGroup(oldGroup: IGroup, newGroup: IGroup): Promise<void> {
-    if (
-      oldGroup?.avatar !== undefined &&
-      oldGroup?.avatar !== newGroup?.avatar
-    ) {
-      this.avatarFile = await buildFileFromIMedia(this.group.avatar);
-    }
-    if (
-      oldGroup?.banner !== undefined &&
-      oldGroup?.banner !== newGroup?.banner
-    ) {
-      this.bannerFile = await buildFileFromIMedia(this.group.banner);
+    try {
+      if (
+        oldGroup?.avatar !== undefined &&
+        oldGroup?.avatar !== newGroup?.avatar
+      ) {
+        this.avatarFile = await buildFileFromIMedia(this.group.avatar);
+      }
+      if (
+        oldGroup?.banner !== undefined &&
+        oldGroup?.banner !== newGroup?.banner
+      ) {
+        this.bannerFile = await buildFileFromIMedia(this.group.banner);
+      }
+    } catch (e) {
+      // Catch errors while building media
+      console.error(e);
     }
     this.editableGroup = { ...this.group };
   }

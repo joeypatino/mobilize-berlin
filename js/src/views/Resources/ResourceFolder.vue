@@ -1,80 +1,35 @@
 <template>
   <div class="container section" v-if="resource">
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <li>
-          <router-link
-            :to="{
-              name: RouteName.GROUP,
-              params: { preferredUsername: usernameWithDomain(resource.actor) },
-            }"
-            >{{ resource.actor.name }}</router-link
-          >
-        </li>
-        <li>
-          <router-link
-            :to="{
-              name: RouteName.RESOURCE_FOLDER_ROOT,
-              params: { preferredUsername: usernameWithDomain(resource.actor) },
-            }"
-            >{{ $t("Resources") }}</router-link
-          >
-        </li>
-        <li
-          :class="{
-            'is-active':
-              index + 1 === ResourceMixin.resourcePathArray(resource).length,
-          }"
-          v-for="(pathFragment, index) in filteredPath"
-          :key="pathFragment"
-        >
-          <router-link
-            :to="{
-              name: RouteName.RESOURCE_FOLDER,
-              params: {
-                path: ResourceMixin.resourcePathArray(resource).slice(
-                  0,
-                  index + 1
-                ),
-                preferredUsername: usernameWithDomain(resource.actor),
-              },
-            }"
-            >{{ pathFragment }}</router-link
-          >
-        </li>
-        <li>
-          <b-dropdown aria-role="list">
-            <b-button class="button is-primary" slot="trigger">+</b-button>
+    <breadcrumbs-nav :links="breadcrumbLinks">
+      <li>
+        <b-dropdown aria-role="list">
+          <b-button class="button is-primary" slot="trigger">+</b-button>
 
-            <b-dropdown-item aria-role="listitem" @click="createFolderModal">
-              <b-icon icon="folder" />
-              {{ $t("New folder") }}
-            </b-dropdown-item>
-            <b-dropdown-item
-              aria-role="listitem"
-              @click="createLinkResourceModal = true"
-            >
-              <b-icon icon="link" />
-              {{ $t("New link") }}
-            </b-dropdown-item>
-            <hr
-              role="presentation"
-              class="dropdown-divider"
-              v-if="resourceProviders.length"
-            />
-            <b-dropdown-item
-              aria-role="listitem"
-              v-for="resourceProvider in resourceProviders"
-              :key="resourceProvider.software"
-              @click="createResourceFromProvider(resourceProvider)"
-            >
-              <b-icon :icon="mapServiceTypeToIcon[resourceProvider.software]" />
-              {{ createSentenceForType(resourceProvider.software) }}
-            </b-dropdown-item>
-          </b-dropdown>
-        </li>
-      </ul>
-    </nav>
+          <b-dropdown-item aria-role="listitem" @click="createFolderModal">
+            <b-icon icon="folder" />
+            {{ $t("New folder") }}
+          </b-dropdown-item>
+          <b-dropdown-item aria-role="listitem" @click="createLinkModal">
+            <b-icon icon="link" />
+            {{ $t("New link") }}
+          </b-dropdown-item>
+          <hr
+            role="presentation"
+            class="dropdown-divider"
+            v-if="resourceProviders.length"
+          />
+          <b-dropdown-item
+            aria-role="listitem"
+            v-for="resourceProvider in resourceProviders"
+            :key="resourceProvider.software"
+            @click="createResourceFromProvider(resourceProvider)"
+          >
+            <b-icon :icon="mapServiceTypeToIcon[resourceProvider.software]" />
+            {{ createSentenceForType(resourceProvider.software) }}
+          </b-dropdown-item>
+        </b-dropdown>
+      </li>
+    </breadcrumbs-nav>
     <section>
       <p v-if="resource.path === '/'" class="module-description">
         {{
@@ -166,7 +121,11 @@
         <section class="modal-card-body">
           <form @submit.prevent="renameResource">
             <b-field :label="$t('Title')">
-              <b-input aria-required="true" v-model="updatedResource.title" />
+              <b-input
+                ref="resourceRenameInput"
+                aria-required="true"
+                v-model="updatedResource.title"
+              />
             </b-field>
 
             <b-button native-type="submit">{{
@@ -196,12 +155,17 @@
       :active.sync="createResourceModal"
       has-modal-card
       :close-button-aria-label="$t('Close')"
+      trap-focus
     >
       <div class="modal-card">
         <section class="modal-card-body">
+          <b-message type="is-danger" v-if="modalError">
+            {{ modalError }}
+          </b-message>
           <form @submit.prevent="createResource">
             <b-field :label="$t('Title')" label-for="new-resource-title">
               <b-input
+                ref="modalNewResourceInput"
                 aria-required="true"
                 v-model="newResource.title"
                 id="new-resource-title"
@@ -221,6 +185,7 @@
       class="link-resource-modal"
       aria-modal
       :close-button-aria-label="$t('Close')"
+      trap-focus
     >
       <div class="modal-card">
         <section class="modal-card-body">
@@ -235,6 +200,7 @@
                 required
                 v-model="newResource.resourceUrl"
                 @blur="previewResource"
+                ref="modalNewResourceLinkInput"
               />
             </b-field>
 
@@ -276,7 +242,7 @@ import ResourceItem from "@/components/Resource/ResourceItem.vue";
 import FolderItem from "@/components/Resource/FolderItem.vue";
 import Draggable from "vuedraggable";
 import { CURRENT_ACTOR_CLIENT } from "../../graphql/actor";
-import { IActor, usernameWithDomain } from "../../types/actor";
+import { displayName, IActor, usernameWithDomain } from "../../types/actor";
 import RouteName from "../../router/name";
 import {
   IResource,
@@ -397,6 +363,12 @@ export default class Resources extends Mixins(ResourceMixin) {
     put: true,
   };
 
+  $refs!: {
+    resourceRenameInput: any;
+    modalNewResourceInput: HTMLElement;
+    modalNewResourceLinkInput: HTMLElement;
+  };
+
   mapServiceTypeToIcon = mapServiceTypeToIcon;
 
   get page(): number {
@@ -500,15 +472,25 @@ export default class Resources extends Mixins(ResourceMixin) {
     }
   }
 
-  createFolderModal(): void {
-    this.newResource.type = "folder";
-    this.createResourceModal = true;
+  async createLinkModal(): Promise<void> {
+    this.createLinkResourceModal = true;
+    await this.$nextTick();
+    this.$refs.modalNewResourceLinkInput.focus();
   }
 
-  createResourceFromProvider(provider: IProvider): void {
+  async createFolderModal(): Promise<void> {
+    this.newResource.type = "folder";
+    this.createResourceModal = true;
+    await this.$nextTick();
+    this.$refs.modalNewResourceInput.focus();
+  }
+
+  async createResourceFromProvider(provider: IProvider): Promise<void> {
     this.newResource.resourceUrl = Resources.generateFullResourceUrl(provider);
     this.newResource.type = provider.software;
     this.createResourceModal = true;
+    await this.$nextTick();
+    this.$refs.modalNewResourceInput.focus();
   }
 
   static generateFullResourceUrl(provider: IProvider): string {
@@ -591,10 +573,12 @@ export default class Resources extends Mixins(ResourceMixin) {
     }
   }
 
-  handleRename(resource: IResource): void {
-    console.log("handleRename");
+  async handleRename(resource: IResource): Promise<void> {
     this.renameModal = true;
     this.updatedResource = { ...resource };
+    await this.$nextTick();
+    this.$refs.resourceRenameInput.focus();
+    this.$refs.resourceRenameInput.$el.querySelector("input").select();
   }
 
   handleMove(resource: IResource): void {
@@ -763,6 +747,40 @@ export default class Resources extends Mixins(ResourceMixin) {
         throw Error(e.toString());
       }
     }
+  }
+
+  get breadcrumbLinks() {
+    if (!this.resource?.actor) return [];
+    const resourceActor = this.resource.actor;
+    const links = [
+      {
+        name: RouteName.GROUP,
+        params: { preferredUsername: usernameWithDomain(this.resource.actor) },
+        text: displayName(this.resource.actor),
+      },
+      {
+        name: RouteName.RESOURCE_FOLDER_ROOT,
+        params: { preferredUsername: usernameWithDomain(this.resource.actor) },
+        text: this.$t("Resources") as string,
+      },
+    ];
+
+    links.push(
+      ...this.filteredPath.map((pathFragment, index) => {
+        return {
+          name: RouteName.RESOURCE_FOLDER,
+          params: {
+            path: ResourceMixin.resourcePathArray(this.resource).slice(
+              0,
+              index + 1
+            ) as unknown as string,
+            preferredUsername: usernameWithDomain(resourceActor),
+          },
+          text: pathFragment,
+        };
+      })
+    );
+    return links;
   }
 }
 </script>

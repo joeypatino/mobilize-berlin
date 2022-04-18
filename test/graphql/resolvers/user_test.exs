@@ -1,6 +1,5 @@
 defmodule Mobilizon.GraphQL.Resolvers.UserTest do
   use Mobilizon.Web.ConnCase
-  use Bamboo.Test
   use Oban.Testing, repo: Mobilizon.Storage.Repo
 
   import Mobilizon.Factory
@@ -15,6 +14,7 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
   alias Mobilizon.GraphQL.AbsintheHelpers
 
   alias Mobilizon.Web.Email
+  import Swoosh.TestAssertions
 
   @get_user_query """
   query GetUser($id: ID!) {
@@ -35,8 +35,22 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
   """
 
   @list_users_query """
-  query ListUsers($page: Int, $limit: Int, $sort: SortableUserField, $direction: SortDirection) {
-    users(page: $page, limit: $limit, sort: $sort, direction: $direction) {
+  query ListUsers(
+    $email: String
+    $currentSignInIp: String
+    $page: Int
+    $limit: Int
+    $sort: SortableUserField
+    $direction: SortDirection
+  ) {
+    users(
+      email: $email
+      currentSignInIp: $currentSignInIp
+      page: $page
+      limit: $limit
+      sort: $sort
+      direction: $direction
+    ) {
       total,
       elements {
         email
@@ -262,6 +276,62 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
                "riri@example.com"
              ]
     end
+
+    test "list_users/3 allows filtering the list of users by email", %{conn: conn} do
+      user = insert(:user, email: "donald@somewhere.fr", role: :moderator)
+      insert(:user, email: "riri@only.fr")
+      insert(:user, email: "fifi@we.fr")
+      insert(:user, email: "loulou@know.com")
+
+      res =
+        conn
+        |> auth_conn(user)
+        |> AbsintheHelpers.graphql_query(
+          query: @list_users_query,
+          variables: %{email: "e.fr"}
+        )
+
+      assert res["errors"] == nil
+      assert res["data"]["users"]["total"] == 2
+      assert res["data"]["users"]["elements"] |> length == 2
+
+      assert res["data"]["users"]["elements"]
+             |> Enum.map(& &1["email"]) == [
+               "fifi@we.fr",
+               "donald@somewhere.fr"
+             ]
+    end
+
+    test "list_users/3 allows filtering the list of users by currentSignInIp", %{conn: conn} do
+      user =
+        insert(:user,
+          email: "donald@somewhere.fr",
+          current_sign_in_ip: "144.76.131.212",
+          role: :moderator
+        )
+
+      insert(:user, email: "riri@only.fr", current_sign_in_ip: "94.130.212.178")
+      insert(:user, email: "fifi@we.fr", current_sign_in_ip: "2a01:4f8:221:131d::178")
+      insert(:user, email: "loulou@know.com", current_sign_in_ip: "144.76.131.212")
+
+      res =
+        conn
+        |> auth_conn(user)
+        |> AbsintheHelpers.graphql_query(
+          query: @list_users_query,
+          variables: %{currentSignInIp: "144.76.131.212"}
+        )
+
+      assert res["errors"] == nil
+      assert res["data"]["users"]["total"] == 2
+      assert res["data"]["users"]["elements"] |> length == 2
+
+      assert res["data"]["users"]["elements"]
+             |> Enum.map(& &1["email"]) == [
+               "loulou@know.com",
+               "donald@somewhere.fr"
+             ]
+    end
   end
 
   describe "Resolver: Create an user & actor" do
@@ -292,7 +362,7 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
 
       {:ok, user} = Users.get_user_by_email(@user_creation.email)
 
-      assert_delivered_email(Email.User.confirmation_email(user, @user_creation.locale))
+      assert_email_sent(to: user.email)
 
       res =
         conn
@@ -635,7 +705,7 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
         |> post("/api", AbsintheHelpers.mutation_skeleton(mutation))
 
       assert json_response(res, 200)["data"]["resendConfirmationEmail"] == user.email
-      assert_delivered_email(Email.User.confirmation_email(user))
+      assert_email_sent(to: user.email)
     end
 
     test "test resend_confirmation_email/3 with invalid email resends an validation email",
@@ -1209,8 +1279,8 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
       assert user.email == @old_email
       assert user.unconfirmed_email == @new_email
 
-      assert_delivered_email(Email.User.send_email_reset_old_email(user))
-      assert_delivered_email(Email.User.send_email_reset_new_email(user))
+      assert_email_sent(to: user.email)
+      assert_email_sent(to: user.unconfirmed_email)
 
       conn
       |> AbsintheHelpers.graphql_query(
@@ -1259,8 +1329,8 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
       assert user.email == @old_email
       assert user.unconfirmed_email == @new_email
 
-      assert_delivered_email(Email.User.send_email_reset_old_email(user))
-      assert_delivered_email(Email.User.send_email_reset_new_email(user))
+      assert_email_sent(to: user.email)
+      assert_email_sent(to: user.unconfirmed_email)
 
       res =
         conn
@@ -1408,7 +1478,8 @@ defmodule Mobilizon.GraphQL.Resolvers.UserTest do
 
       assert is_nil(Users.get_user(user.id))
 
-      assert %{success: 2, snoozed: 0, failure: 0} == Oban.drain_queue(queue: :background)
+      assert %{success: 2, snoozed: 0, failure: 0, discard: 0} ==
+               Oban.drain_queue(queue: :background)
 
       assert_raise Ecto.NoResultsError, fn ->
         Events.get_event!(event_id)

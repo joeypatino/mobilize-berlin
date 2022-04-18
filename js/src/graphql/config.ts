@@ -11,6 +11,10 @@ export const CONFIG = gql`
       demoMode
       countryCode
       languages
+      eventCategories {
+        id
+        label
+      }
       anonymous {
         participation {
           allowed
@@ -67,7 +71,6 @@ export const CONFIG = gql`
       features {
         groups
         eventCreation
-        koenaConnect
       }
       restrictions {
         onlyAdminCanCreateGroups
@@ -92,6 +95,15 @@ export const CONFIG = gql`
         enabled
         publicKey
       }
+      analytics {
+        id
+        enabled
+        configuration {
+          key
+          value
+          type
+        }
+      }
     }
   }
 `;
@@ -102,6 +114,10 @@ export const CONFIG_EDIT_EVENT = gql`
       timezones
       features {
         groups
+      }
+      eventCategories {
+        id
+        label
       }
       anonymous {
         participation {

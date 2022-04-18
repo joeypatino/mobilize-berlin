@@ -28,6 +28,7 @@ defmodule Mobilizon.Events do
     Track
   }
 
+  alias Mobilizon.Service.Export.Cachable
   alias Mobilizon.Service.Workers.BuildSearch
   alias Mobilizon.Service.Workers.EventDelayedNotificationWorker
   alias Mobilizon.Share
@@ -51,14 +52,6 @@ defmodule Mobilizon.Events do
     :tentative,
     :confirmed,
     :cancelled
-  ])
-
-  defenum(EventCategory, :event_category, [
-    :business,
-    :conference,
-    :birthday,
-    :demonstration,
-    :meeting
   ])
 
   defenum(ParticipantRole, :participant_role, [
@@ -301,7 +294,7 @@ defmodule Mobilizon.Events do
            end)
            |> Repo.transaction(),
          %Event{} = new_event <- Repo.preload(new_event, @event_preloads, force: true) do
-      Cachex.del(:ics, "event_#{new_event.uuid}")
+      Cachable.clear_all_caches(new_event)
 
       unless new_event.draft do
         %{
@@ -355,19 +348,15 @@ defmodule Mobilizon.Events do
   Deletes an event.
   """
   @spec delete_event(Event.t()) :: {:ok, Event.t()} | {:error, Changeset.t()}
-  def delete_event(%Event{} = event), do: Repo.delete(event)
-
-  @doc """
-  Deletes an event.
-  Raises an exception if it fails.
-  """
-  @spec delete_event!(Event.t()) :: Event.t()
-  def delete_event!(%Event{} = event), do: Repo.delete!(event)
+  def delete_event(%Event{} = event) do
+    Cachable.clear_all_caches(event)
+    Repo.delete(event)
+  end
 
   @doc """
   Returns the list of events.
   """
-  @spec list_events(integer | nil, integer | nil, atom, atom, boolean) :: Page.t()
+  @spec list_events(integer | nil, integer | nil, atom, atom, boolean) :: Page.t(Event.t())
   def list_events(
         page \\ nil,
         limit \\ nil,
@@ -421,7 +410,7 @@ defmodule Mobilizon.Events do
   @doc """
   Lists public events for the actor, with all associations loaded.
   """
-  @spec list_public_events_for_actor(Actor.t(), integer | nil, integer | nil) :: Page.t()
+  @spec list_public_events_for_actor(Actor.t(), integer | nil, integer | nil) :: Page.t(Event.t())
   def list_public_events_for_actor(actor, page \\ nil, limit \\ nil)
 
   def list_public_events_for_actor(%Actor{type: :Group} = group, page, limit),
@@ -453,7 +442,7 @@ defmodule Mobilizon.Events do
 
   @spec list_organized_events_for_group(
           Actor.t(),
-          EventVisibility.t() | :all,
+          atom(),
           DateTime.t() | nil,
           DateTime.t() | nil,
           integer | nil,
@@ -532,13 +521,14 @@ defmodule Mobilizon.Events do
   @doc """
   Builds a page struct for events by their name.
   """
-  @spec build_events_for_search(map(), integer | nil, integer | nil) :: Page.t()
+  @spec build_events_for_search(map(), integer | nil, integer | nil) :: Page.t(Event.t())
   def build_events_for_search(%{term: term} = args, page \\ nil, limit \\ nil) do
     term
     |> normalize_search_string()
     |> events_for_search_query()
     |> events_for_begins_on(args)
     |> events_for_ends_on(args)
+    |> events_for_category(args)
     |> events_for_tags(args)
     |> events_for_location(args)
     |> filter_online(args)
@@ -822,7 +812,7 @@ defmodule Mobilizon.Events do
   Default behaviour is to not return :not_approved or :not_confirmed participants
   """
   @spec list_participants_for_event(String.t(), list(atom()), integer | nil, integer | nil) ::
-          Page.t()
+          Page.t(Participant.t())
   def list_participants_for_event(
         id,
         roles \\ [],
@@ -859,7 +849,7 @@ defmodule Mobilizon.Events do
           DateTime.t() | nil,
           integer | nil,
           integer | nil
-        ) :: Page.t()
+        ) :: Page.t(Participant.t())
   def list_participations_for_user(user_id, after_datetime, before_datetime, page, limit) do
     user_id
     |> list_participations_for_user_query()
@@ -901,7 +891,8 @@ defmodule Mobilizon.Events do
   @doc """
   Returns the list of participations for an actor.
   """
-  @spec list_event_participations_for_actor(Actor.t(), integer | nil, integer | nil) :: Page.t()
+  @spec list_event_participations_for_actor(Actor.t(), integer | nil, integer | nil) ::
+          Page.t(Participant.t())
   def list_event_participations_for_actor(%Actor{id: actor_id}, page \\ nil, limit \\ nil) do
     actor_id
     |> event_participations_for_actor_query()
@@ -1316,6 +1307,13 @@ defmodule Mobilizon.Events do
     end
   end
 
+  @spec events_for_category(Ecto.Queryable.t(), map()) :: Ecto.Query.t()
+  defp events_for_category(query, %{category: category}) when is_valid_string(category) do
+    where(query, [q], q.category == ^category)
+  end
+
+  defp events_for_category(query, _args), do: query
+
   @spec events_for_tags(Ecto.Queryable.t(), map()) :: Ecto.Query.t()
   defp events_for_tags(query, %{tags: tags}) when is_valid_string(tags) do
     query
@@ -1333,12 +1331,15 @@ defmodule Mobilizon.Events do
   defp events_for_location(query, %{location: location, radius: radius})
        when is_valid_string(location) and not is_nil(radius) do
     with {lon, lat} <- Geohax.decode(location),
-         point <- Geo.WKT.decode!("SRID=4326;POINT(#{lon} #{lat})") do
+         point <- Geo.WKT.decode!("SRID=4326;POINT(#{lon} #{lat})"),
+         {{x_min, y_min}, {x_max, y_max}} <- search_box({lon, lat}, radius) do
       query
       |> join(:inner, [q], a in Address, on: a.id == q.physical_address_id, as: :address)
       |> where(
-        [q],
-        st_dwithin_in_meters(^point, as(:address).geom, ^(radius * 1000))
+        [q, ..., a],
+        st_x(a.geom) > ^x_min and st_x(a.geom) < ^x_max and
+          st_y(a.geom) > ^y_min and st_y(a.geom) < ^y_max and
+          st_dwithin_in_meters(^point, a.geom, ^(radius * 1000))
       )
     else
       _ -> query
@@ -1346,6 +1347,15 @@ defmodule Mobilizon.Events do
   end
 
   defp events_for_location(query, _args), do: query
+
+  @spec search_box({float(), float()}, float()) :: {{float, float}, {float, float}}
+  defp search_box({lon0, lat0}, radius) do
+    km_per_lat_deg = 111.195
+    lat_amp = radius / km_per_lat_deg
+    km_per_lon_deg_at_lat = Haversine.distance({0.0, lat0}, {1.0, lat0}) / 1000
+    lon_amp = radius / km_per_lon_deg_at_lat
+    {{lon0 - lon_amp, lat0 - lat_amp}, {lon0 + lon_amp, lat0 + lat_amp}}
+  end
 
   @spec filter_online(Ecto.Query.t(), map()) :: Ecto.Query.t()
   defp filter_online(query, %{type: :online}), do: is_online_fragment(query, true)

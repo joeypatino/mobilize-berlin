@@ -35,7 +35,7 @@ defmodule Mobilizon.Service.Workers.Notification do
         %Participant{participant | event: event, actor: actor},
         locale
       )
-      |> Mailer.send_email_later()
+      |> Mailer.send_email()
 
       :ok
     end
@@ -46,7 +46,7 @@ defmodule Mobilizon.Service.Workers.Notification do
       }) do
     with %User{locale: locale, settings: %Setting{timezone: timezone, notification_on_day: true}} =
            user <- Users.get_user_with_settings!(user_id),
-         {start, tomorrow} <- calculate_start_end(1, timezone),
+         {start, tomorrow} <- calculate_start_end(1, timezone || "Etc/UTC"),
          %Page{
            elements: participations,
            total: total
@@ -65,7 +65,7 @@ defmodule Mobilizon.Service.Workers.Notification do
            end) do
       user
       |> Notification.on_day_notification(participations, total, locale)
-      |> Mailer.send_email_later()
+      |> Mailer.send_email()
 
       :ok
     else
@@ -80,7 +80,7 @@ defmodule Mobilizon.Service.Workers.Notification do
            locale: locale,
            settings: %Setting{timezone: timezone, notification_each_week: true}
          } = user <- Users.get_user_with_settings!(user_id),
-         {start, end_week} <- calculate_start_end(7, timezone),
+         {start, end_week} <- calculate_start_end(7, timezone || "Etc/UTC"),
          %Page{
            elements: participations,
            total: total
@@ -99,7 +99,7 @@ defmodule Mobilizon.Service.Workers.Notification do
            end) do
       user
       |> Notification.weekly_notification(participations, total, locale)
-      |> Mailer.send_email_later()
+      |> Mailer.send_email()
 
       :ok
     else
@@ -121,7 +121,7 @@ defmodule Mobilizon.Service.Workers.Notification do
            Events.list_participants_for_event(event_id, [:not_approved]) do
       user
       |> Notification.pending_participation_notification(event, total)
-      |> Mailer.send_email_later()
+      |> Mailer.send_email()
 
       :ok
     else

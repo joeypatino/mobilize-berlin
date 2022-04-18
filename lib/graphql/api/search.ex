@@ -4,7 +4,7 @@ defmodule Mobilizon.GraphQL.API.Search do
   """
 
   alias Mobilizon.Actors
-  alias Mobilizon.Actors.{Actor, ActorType}
+  alias Mobilizon.Actors.Actor
   alias Mobilizon.Events
   alias Mobilizon.Events.Event
   alias Mobilizon.Storage.Page
@@ -18,8 +18,8 @@ defmodule Mobilizon.GraphQL.API.Search do
   @doc """
   Searches actors.
   """
-  @spec search_actors(map(), integer | nil, integer | nil, ActorType.t()) ::
-          {:ok, Page.t()} | {:error, String.t()}
+  @spec search_actors(map(), integer | nil, integer | nil, atom()) ::
+          {:ok, Page.t(Actor.t())} | {:error, String.t()}
   def search_actors(%{term: term} = args, page \\ 1, limit \\ 10, result_type) do
     term = String.trim(term)
 
@@ -49,7 +49,8 @@ defmodule Mobilizon.GraphQL.API.Search do
               location: Map.get(args, :location),
               minimum_visibility: Map.get(args, :minimum_visibility, :public),
               current_actor_id: Map.get(args, :current_actor_id),
-              exclude_my_groups: Map.get(args, :exclude_my_groups, false)
+              exclude_my_groups: Map.get(args, :exclude_my_groups, false),
+              exclude_stale_actors: true
             ],
             page,
             limit
@@ -63,7 +64,7 @@ defmodule Mobilizon.GraphQL.API.Search do
   Search events
   """
   @spec search_events(map(), integer | nil, integer | nil) ::
-          {:ok, Page.t()}
+          {:ok, Page.t(Event.t())}
   def search_events(%{term: term} = args, page \\ 1, limit \\ 10) do
     term = String.trim(term)
 
@@ -99,7 +100,7 @@ defmodule Mobilizon.GraphQL.API.Search do
   end
 
   # If the search string is an username
-  @spec process_from_username(String.t()) :: Page.t()
+  @spec process_from_username(String.t()) :: Page.t(Actor.t())
   defp process_from_username(search) do
     case ActivityPubActor.find_or_make_actor_from_nickname(search) do
       {:ok, %Actor{type: :Group} = actor} ->
@@ -117,7 +118,7 @@ defmodule Mobilizon.GraphQL.API.Search do
   end
 
   # If the search string is an URL
-  @spec process_from_url(String.t()) :: Page.t()
+  @spec process_from_url(String.t()) :: Page.t(struct())
   defp process_from_url(search) do
     case ActivityPub.fetch_object_from_url(search) do
       {:ok, object} ->

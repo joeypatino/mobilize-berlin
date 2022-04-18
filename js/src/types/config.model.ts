@@ -6,6 +6,18 @@ export interface IOAuthProvider {
   label: string;
 }
 
+export interface IKeyValueConfig {
+  key: string;
+  value: string;
+  type: "boolean" | "integer" | "string";
+}
+
+export interface IAnalyticsConfig {
+  id: string;
+  enabled: boolean;
+  configuration: IKeyValueConfig[];
+}
+
 export interface IConfig {
   name: string;
   description: string;
@@ -17,6 +29,7 @@ export interface IConfig {
   registrationsAllowlist: boolean;
   demoMode: boolean;
   countryCode: string;
+  eventCategories: { id: string; label: string }[];
   languages: string[];
   location: {
     latitude: number;
@@ -82,7 +95,6 @@ export interface IConfig {
   features: {
     eventCreation: boolean;
     groups: boolean;
-    koenaConnect: boolean;
   };
   restrictions: {
     onlyAdminCanCreateGroups: boolean;
@@ -109,4 +121,5 @@ export interface IConfig {
   exportFormats: {
     eventParticipants: string[];
   };
+  analytics: IAnalyticsConfig[];
 }

@@ -16,6 +16,13 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:contact, :string, description: "The instance's contact details")
 
     field(:languages, list_of(:string), description: "The instance's admins languages")
+
+    field(:event_categories, list_of(:event_category_option),
+      description: "The instance list of event categories possibilities"
+    ) do
+      resolve(&Config.event_categories/3)
+    end
+
     field(:registrations_open, :boolean, description: "Whether the registrations are opened")
 
     field(:registrations_allowlist, :boolean,
@@ -68,6 +75,10 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:web_push, :web_push, description: "Web Push settings for the instance")
 
     field(:export_formats, :export_formats, description: "The instance list of export formats")
+
+    field(:analytics, list_of(:analytics),
+      description: "Configuration for diverse analytics services"
+    )
   end
 
   @desc """
@@ -272,8 +283,6 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:event_creation, :boolean,
       description: "Whether event creation is allowed on this instance"
     )
-
-    field(:koena_connect, :boolean, description: "Activate link to Koena Connect")
   end
 
   @desc """
@@ -323,6 +332,28 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:public_key, :string, description: "The server's public WebPush VAPID key")
   end
 
+  object :analytics do
+    field(:id, :string, description: "ID of the analytics service")
+    field(:enabled, :boolean, description: "Whether the service is activated or not")
+
+    field(:configuration, list_of(:analytics_configuration),
+      description: "A list of key-values configuration"
+    )
+  end
+
+  enum :analytics_configuration_type do
+    value(:string, description: "A string")
+    value(:integer, description: "An integer")
+    value(:boolean, description: "A boolean")
+    value(:float, description: "A float")
+  end
+
+  object :analytics_configuration do
+    field(:key, :string, description: "The key for the analytics configuration element")
+    field(:value, :string, description: "The value for the analytics configuration element")
+    field(:type, :analytics_configuration_type, description: "The analytics configuration type")
+  end
+
   @desc """
   Export formats configuration
   """
@@ -330,6 +361,14 @@ defmodule Mobilizon.GraphQL.Schema.ConfigType do
     field(:event_participants, list_of(:string),
       description: "The list of formats the event participants can be exported to"
     )
+  end
+
+  @desc """
+  Event categories list configuration
+  """
+  object :event_category_option do
+    field(:id, :string, description: "The ID of the event category")
+    field(:label, :string, description: "The translated name of the event category")
   end
 
   object :config_queries do

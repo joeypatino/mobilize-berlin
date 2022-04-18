@@ -106,13 +106,16 @@ config :mobilizon, :media_proxy,
   ]
 
 config :mobilizon, Mobilizon.Web.Email.Mailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: "localhost",
-  hostname: "localhost",
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "localhost",
   # usually 25, 465 or 587
   port: 25,
-  username: nil,
-  password: nil,
+  username: "",
+  password: "",
+  # can be `:always` or `:never`
+  auth: :if_available,
+  # can be `true`
+  ssl: false,
   # can be `:always` or `:never`
   tls: :if_available,
   allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
@@ -185,6 +188,12 @@ config :phoenix, :filter_parameters, ["password", "token"]
 config :absinthe, schema: Mobilizon.GraphQL.Schema
 config :absinthe, Absinthe.Logger, filter_variables: ["token", "password", "secret"]
 
+config :codepagex, :encodings, [
+  :ascii,
+  ~r[iso8859]i,
+  :"VENDORS/MICSFT/WINDOWS/CP1252"
+]
+
 config :mobilizon, Mobilizon.Web.Gettext, split_module_by: [:locale, :domain]
 
 config :ex_cldr,
@@ -206,7 +215,8 @@ config :mobilizon, :activitypub,
   # One day
   actor_stale_period: 3_600 * 48,
   actor_key_rotation_delay: 3_600 * 48,
-  sign_object_fetches: true
+  sign_object_fetches: true,
+  stale_actor_search_exclusion_after: 3_600 * 24 * 7
 
 config :mobilizon, Mobilizon.Service.Geospatial, service: Mobilizon.Service.Geospatial.Nominatim
 
@@ -290,6 +300,7 @@ config :mobilizon, Oban,
      crontab: [
        {"@hourly", Mobilizon.Service.Workers.BuildSiteMap, queue: :background},
        {"17 4 * * *", Mobilizon.Service.Workers.RefreshGroups, queue: :background},
+       {"36 * * * *", Mobilizon.Service.Workers.RefreshInstances, queue: :background},
        {"@hourly", Mobilizon.Service.Workers.CleanOrphanMediaWorker, queue: :background},
        {"@hourly", Mobilizon.Service.Workers.CleanUnconfirmedUsersWorker, queue: :background},
        {"@hourly", Mobilizon.Service.Workers.ExportCleanerWorker, queue: :background},
@@ -333,6 +344,8 @@ config :mobilizon, :exports,
   formats: [
     Mobilizon.Service.Export.Participants.CSV
   ]
+
+config :mobilizon, :analytics, providers: []
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

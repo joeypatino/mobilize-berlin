@@ -1,6 +1,5 @@
 defmodule Mobilizon.Web.Resolvers.EventTest do
   use Mobilizon.Web.ConnCase
-  use Bamboo.Test, shared: true
   use Oban.Testing, repo: Mobilizon.Storage.Repo
 
   import Mobilizon.Factory
@@ -12,8 +11,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
   alias Mobilizon.Users.User
 
   alias Mobilizon.GraphQL.AbsintheHelpers
-
-  alias Mobilizon.Web.Email
+  import Swoosh.TestAssertions
 
   @event %{
     description: "some body",
@@ -21,7 +19,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
     begins_on: DateTime.utc_now() |> DateTime.truncate(:second),
     uuid: "b5126423-f1af-43e4-a923-002a03003ba4",
     url: "some url",
-    category: "meeting"
+    category: "MEETING"
   }
 
   @find_event_query """
@@ -75,7 +73,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
     @create_event_mutation """
     mutation CreateEvent(
       $title: String!,
-      $description: String,
+      $description: String!,
       $begins_on: DateTime!,
       $ends_on: DateTime,
       $status: EventStatus,
@@ -86,6 +84,10 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       $options: EventOptionsInput,
       $draft: Boolean,
       $language: String
+      $picture: MediaInput
+      $tags: [String]
+      $physicalAddress: AddressInput
+      $category: EventCategory
       ) {
       createEvent(
           title: $title,
@@ -99,7 +101,11 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
           online_address: $online_address,
           options: $options,
           draft: $draft,
+          picture: $picture
           language: $language
+          physicalAddress: $physicalAddress
+          category: $category
+          tags: $tags
       ) {
         id,
         uuid,
@@ -115,6 +121,12 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
         attributed_to {
           id
         },
+        physicalAddress {
+          id,
+          url,
+          geom,
+          street
+        }
         online_address,
         phone_address,
         category,
@@ -124,6 +136,14 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
           maximumAttendeeCapacity,
           showRemainingAttendeeCapacity,
           showEndTime
+        }
+        picture {
+          url
+          name
+        }
+        tags {
+          slug
+          title
         }
       }
     }
@@ -451,39 +471,32 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
     end
 
     test "create_event/3 creates an event with tags", %{conn: conn, actor: actor, user: user} do
-      mutation = """
-          mutation {
-              createEvent(
-                  title: "my event is referenced",
-                  description: "with tags!",
-                  begins_on: "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
-                  organizer_actor_id: "#{actor.id}",
-                  category: "birthday",
-                  tags: ["nicolas", "birthday", "bad tag"]
-              ) {
-                title,
-                uuid,
-                tags {
-                  title,
-                  slug
-                }
-              }
-            }
-      """
-
       res =
         conn
         |> auth_conn(user)
-        |> post("/api", AbsintheHelpers.mutation_skeleton(mutation))
+        |> AbsintheHelpers.graphql_query(
+          query: @create_event_mutation,
+          variables: %{
+            title: "my event is referenced",
+            description: "with tags!",
+            begins_on:
+              "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
+            organizer_actor_id: "#{actor.id}",
+            category: "PARTY",
+            tags: ["nicolas", "birthday", "bad tag"]
+          }
+        )
 
-      assert json_response(res, 200)["errors"] == nil
-      assert json_response(res, 200)["data"]["createEvent"]["title"] == "my event is referenced"
+      assert res["errors"] == nil
+      assert res["data"]["createEvent"]["title"] == "my event is referenced"
 
-      assert json_response(res, 200)["data"]["createEvent"]["tags"] == [
+      assert res["data"]["createEvent"]["tags"] == [
                %{"slug" => "nicolas", "title" => "nicolas"},
                %{"slug" => "birthday", "title" => "birthday"},
                %{"slug" => "bad-tag", "title" => "bad tag"}
              ]
+
+      assert res["data"]["createEvent"]["category"] == "PARTY"
     end
 
     test "create_event/3 creates an event with an address", %{
@@ -493,86 +506,64 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
     } do
       address = %{street: "I am a street, please believe me", locality: "Where ever"}
 
-      mutation = """
-          mutation {
-              createEvent(
-                  title: "my event is referenced",
-                  description: "with tags!",
-                  begins_on: "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
-                  organizer_actor_id: "#{actor.id}",
-                  category: "birthday",
-                  physical_address: {
-                    street: "#{address.street}",
-                    locality: "#{address.locality}"
-                  }
-              ) {
-                title,
-                uuid,
-                physicalAddress {
-                  id,
-                  url,
-                  geom,
-                  street
-                }
-              }
+      res =
+        conn
+        |> auth_conn(user)
+        |> AbsintheHelpers.graphql_query(
+          query: @create_event_mutation,
+          variables: %{
+            title: "my event is referenced",
+            description: "with tags!",
+            begins_on:
+              "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
+            organizer_actor_id: "#{actor.id}",
+            category: "PARTY",
+            physicalAddress: %{
+              street: "#{address.street}",
+              locality: "#{address.locality}"
             }
-      """
+          }
+        )
+
+      assert res["errors"] == nil
+
+      assert res["data"]["createEvent"]["title"] == "my event is referenced"
+
+      assert res["data"]["createEvent"]["physicalAddress"]["street"] ==
+               address.street
+
+      address_url = res["data"]["createEvent"]["physicalAddress"]["url"]
+      address_id = res["data"]["createEvent"]["physicalAddress"]["id"]
 
       res =
         conn
         |> auth_conn(user)
-        |> post("/api", AbsintheHelpers.mutation_skeleton(mutation))
-
-      assert json_response(res, 200)["errors"] == nil
-
-      assert json_response(res, 200)["data"]["createEvent"]["title"] == "my event is referenced"
-
-      assert json_response(res, 200)["data"]["createEvent"]["physicalAddress"]["street"] ==
-               address.street
-
-      address_url = json_response(res, 200)["data"]["createEvent"]["physicalAddress"]["url"]
-      address_id = json_response(res, 200)["data"]["createEvent"]["physicalAddress"]["id"]
-
-      mutation = """
-          mutation {
-              createEvent(
-                  title: "my event is referenced",
-                  description: "with tags!",
-                  begins_on: "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
-                  organizer_actor_id: "#{actor.id}",
-                  category: "birthday",
-                  physical_address: {
-                    id: "#{address_id}"
-                  }
-              ) {
-                title,
-                uuid,
-                physicalAddress {
-                  id,
-                  url,
-                  geom,
-                  street
-                }
-              }
+        |> AbsintheHelpers.graphql_query(
+          query: @create_event_mutation,
+          variables: %{
+            title: "my event is referenced",
+            description: "with tags!",
+            begins_on:
+              "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
+            organizer_actor_id: "#{actor.id}",
+            category: "PARTY",
+            physicalAddress: %{
+              id: "#{address_id}"
             }
-      """
+          }
+        )
 
-      res =
-        conn
-        |> auth_conn(user)
-        |> post("/api", AbsintheHelpers.mutation_skeleton(mutation))
+      assert res["errors"] == nil
 
-      assert json_response(res, 200)["errors"] == nil
+      assert res["data"]["createEvent"]["title"] == "my event is referenced"
 
-      assert json_response(res, 200)["data"]["createEvent"]["title"] == "my event is referenced"
-
-      assert json_response(res, 200)["data"]["createEvent"]["physicalAddress"]["street"] ==
+      assert res["data"]["createEvent"]["physicalAddress"]["street"] ==
                address.street
 
-      assert json_response(res, 200)["data"]["createEvent"]["physicalAddress"]["id"] ==
+      assert res["data"]["createEvent"]["physicalAddress"]["id"] ==
                address_id
 
-      assert json_response(res, 200)["data"]["createEvent"]["physicalAddress"]["url"] ==
+      assert res["data"]["createEvent"]["physicalAddress"]["url"] ==
                address_url
     end
 
@@ -581,35 +572,24 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       actor: actor,
       user: user
     } do
-      mutation = """
-          mutation {
-              createEvent(
-                  title: "come to my event",
-                  description: "it will be fine",
-                  begins_on: "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
-                  organizer_actor_id: "#{actor.id}",
-                  category: "birthday",
-                  picture: {
-                    media: {
-                      name: "picture for my event",
-                      alt: "A very sunny landscape",
-                      file: "event.jpg",
-                      actor_id: #{actor.id}
-                    }
-                  }
-              ) {
-                title,
-                uuid,
-                picture {
-                  name,
-                  url
-                }
-              }
-            }
-      """
-
       map = %{
-        "query" => mutation,
+        "query" => @create_event_mutation,
+        "variables" => %{
+          title: "come to my event",
+          description: "it will be fine",
+          begins_on:
+            "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
+          organizer_actor_id: "#{actor.id}",
+          category: "PARTY",
+          picture: %{
+            media: %{
+              name: "picture for my event",
+              alt: "A very sunny landscape",
+              file: "event.jpg",
+              actor_id: actor.id
+            }
+          }
+        },
         "event.jpg" => %Plug.Upload{
           path: "test/fixtures/picture.png",
           filename: "event.jpg"
@@ -620,13 +600,33 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
         conn
         |> auth_conn(user)
         |> put_req_header("content-type", "multipart/form-data")
-        |> post("/api", map)
+        |> post(
+          "/api",
+          map
+        )
+        |> json_response(200)
 
-      assert json_response(res, 200)["data"]["createEvent"]["title"] == "come to my event"
+      assert res["data"]["createEvent"]["title"] == "come to my event"
 
-      assert json_response(res, 200)["data"]["createEvent"]["picture"]["name"] ==
+      assert res["data"]["createEvent"]["picture"]["name"] ==
                "picture for my event"
     end
+
+    @upload_media_mutation """
+    mutation UploadMedia($name: String!, $alt: String, $file: Upload!) {
+      uploadMedia(
+        name: $name
+        alt: $alt
+        file: $file
+      ) {
+          id
+          url
+          name
+          content_type
+          size
+      }
+    }
+    """
 
     test "create_event/3 creates an event with an picture ID", %{
       conn: conn,
@@ -635,21 +635,9 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
     } do
       media = %{name: "my pic", alt: "represents something", file: "picture.png"}
 
-      mutation = """
-      mutation { uploadMedia (
-              name: "#{media.name}",
-              alt: "#{media.alt}",
-              file: "#{media.file}"
-            ) {
-                id,
-                url,
-                name
-              }
-        }
-      """
-
       map = %{
-        "query" => mutation,
+        "query" => @upload_media_mutation,
+        "variables" => media,
         media.file => %Plug.Upload{
           path: "test/fixtures/picture.png",
           filename: media.file
@@ -664,42 +652,37 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
           "/api",
           map
         )
+        |> json_response(200)
 
-      assert json_response(res, 200)["data"]["uploadMedia"]["name"] == media.name
-      media_id = json_response(res, 200)["data"]["uploadMedia"]["id"]
-
-      mutation = """
-          mutation {
-              createEvent(
-                  title: "come to my event",
-                  description: "it will be fine",
-                  begins_on: "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
-                  organizer_actor_id: "#{actor.id}",
-                  category: "birthday",
-                  picture: {
-                    media_id: "#{media_id}"
-                  }
-              ) {
-                title,
-                uuid,
-                picture {
-                  name,
-                  url
-                }
-              }
-            }
-      """
+      assert res["errors"] == nil
+      assert res["data"]["uploadMedia"]["name"] == media.name
+      media_id = res["data"]["uploadMedia"]["id"]
+      assert media_id !== "" and not is_nil(media_id)
 
       res =
         conn
         |> auth_conn(user)
-        |> post("/api", AbsintheHelpers.mutation_skeleton(mutation))
+        |> AbsintheHelpers.graphql_query(
+          query: @create_event_mutation,
+          variables: %{
+            title: "come to my event",
+            description: "it will be fine",
+            begins_on:
+              "#{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()}",
+            organizer_actor_id: "#{actor.id}",
+            category: "PARTY",
+            picture: %{
+              media_id: "#{media_id}"
+            }
+          }
+        )
 
-      assert json_response(res, 200)["data"]["createEvent"]["title"] == "come to my event"
+      assert res["errors"] == nil
+      assert res["data"]["createEvent"]["title"] == "come to my event"
 
-      assert json_response(res, 200)["data"]["createEvent"]["picture"]["name"] == media.name
+      assert res["data"]["createEvent"]["picture"]["name"] == media.name
 
-      assert json_response(res, 200)["data"]["createEvent"]["picture"]["url"]
+      assert res["data"]["createEvent"]["picture"]["url"]
     end
 
     test "create_event/3 creates an event with detected language", %{
@@ -842,7 +825,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
     $phoneAddress: String
     $organizerActorId: ID
     $attributedToId: ID
-    $category: String
+    $category: EventCategory
     $physicalAddress: AddressInput
     $options: EventOptionsInput
     $contacts: [Contact]
@@ -996,12 +979,11 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       %Event{uuid: event_uuid, title: event_title} =
         event = insert(:event, organizer_actor: actor)
 
-      creator = insert(:participant, event: event, actor: actor, role: :creator)
+      insert(:participant, event: event, actor: actor, role: :creator)
       participant_user = insert(:user)
       participant_actor = insert(:actor, user: participant_user)
 
-      participant =
-        insert(:participant, event: event, actor: participant_actor, role: :participant)
+      insert(:participant, event: event, actor: participant_actor, role: :participant)
 
       address = insert(:address)
 
@@ -1023,7 +1005,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
             tags: ["tag1_updated", "tag2_updated"],
             onlineAddress: "toto@example.com",
             phoneAddress: "0000000000",
-            category: "birthday",
+            category: "PARTY",
             options: %{
               maximumAttendeeCapacity: 30,
               showRemainingAttendeeCapacity: true
@@ -1046,7 +1028,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
       assert event_res["status"] == "TENTATIVE"
       assert event_res["online_address"] == "toto@example.com"
       assert event_res["phone_address"] == "0000000000"
-      assert event_res["category"] == "birthday"
+      assert event_res["category"] == "PARTY"
 
       assert event_res["options"]["maximumAttendeeCapacity"] == 30
       assert event_res["options"]["showRemainingAttendeeCapacity"] == true
@@ -1088,33 +1070,10 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
 
       Oban.drain_queue(queue: :default, with_scheduled: true)
 
-      {:ok, new_event} = Mobilizon.Events.get_event_with_preload(event.id)
+      {:ok, _new_event} = Mobilizon.Events.get_event_with_preload(event.id)
 
-      assert_delivered_email(
-        Email.Event.event_updated(
-          user.email,
-          creator,
-          actor,
-          event,
-          new_event,
-          MapSet.new([:title, :begins_on, :ends_on, :status, :physical_address]),
-          "Etc/UTC",
-          "en"
-        )
-      )
-
-      assert_delivered_email(
-        Email.Event.event_updated(
-          participant_user.email,
-          participant,
-          participant_actor,
-          event,
-          new_event,
-          MapSet.new([:title, :begins_on, :ends_on, :status, :physical_address]),
-          "Etc/UTC",
-          "en"
-        )
-      )
+      assert_email_sent(to: {actor.name, user.email})
+      assert_email_sent(to: {participant_actor.name, participant_user.email})
     end
 
     test "update_event/3 updates an event with a new picture", %{
@@ -1141,7 +1100,7 @@ defmodule Mobilizon.Web.Resolvers.EventTest do
             title: "my event updated",
             description: "description updated",
             beginsOn: "#{begins_on}",
-            category: "birthday",
+            category: "PARTY",
             picture: %{
               media: %{
                 name: "picture for my event",

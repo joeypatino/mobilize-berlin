@@ -34,14 +34,9 @@
       class="metadata-organized-by"
       :title="$t('Organized by')"
     >
-      <popover-actor-card
-        :actor="event.organizerActor"
-        v-if="!event.attributedTo"
-      >
-        <actor-card :actor="event.organizerActor" />
-      </popover-actor-card>
       <router-link
         v-if="event.attributedTo"
+        class="hover:underline"
         :to="{
           name: RouteName.GROUP,
           params: {
@@ -49,23 +44,21 @@
           },
         }"
       >
-        <popover-actor-card
-          :actor="event.attributedTo"
+        <actor-card
           v-if="
             !event.attributedTo || !event.options.hideOrganizerWhenGroupEvent
           "
-        >
-          <actor-card :actor="event.attributedTo" />
-        </popover-actor-card>
+          :actor="event.attributedTo"
+          :inline="true"
+        />
       </router-link>
-
-      <popover-actor-card
+      <actor-card v-else :actor="event.organizerActor" :inline="true" />
+      <actor-card
+        :inline="true"
         :actor="contact"
         v-for="contact in event.contacts"
         :key="contact.id"
-      >
-        <actor-card :actor="contact" />
-      </popover-actor-card>
+      />
     </event-metadata-block>
     <event-metadata-block
       v-if="event.onlineAddress && urlToHostname(event.onlineAddress)"
@@ -74,6 +67,7 @@
     >
       <a
         target="_blank"
+        class="hover:underline"
         rel="noopener noreferrer ugc"
         :href="event.onlineAddress"
         :title="

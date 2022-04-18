@@ -56,7 +56,7 @@
                     :key="index"
                     :value="radiusOption"
                   >
-                    {{ radiusString(radiusOption) }}
+                    {{ option.label }}
                   </option>
                 </b-select>
               </b-field>
@@ -96,6 +96,31 @@
                   </option>
                   <option :value="'IN_PERSON'">
                     {{ $t("In person") }}
+                  </option>
+                </b-select>
+              </b-field>
+              <b-field
+                v-if="config"
+                expanded
+                :label="$t('Category')"
+                label-for="category"
+                class="searchCategory"
+              >
+                <b-select
+                  expanded
+                  v-model="eventCategory"
+                  id="category"
+                  :disabled="activeTab !== 0"
+                >
+                  <option :value="null">
+                    {{ $t("Any category") }}
+                  </option>
+                  <option
+                    :value="category.id"
+                    v-for="category in config.eventCategories"
+                    :key="category.id"
+                  >
+                    {{ category.label }}
                   </option>
                 </b-select>
               </b-field>
@@ -594,6 +619,23 @@ export default class Search extends Vue {
     });
   }
 
+  get eventCategory(): string | null {
+    return (this.$route.query.eventCategory as string) || null;
+  }
+
+  set eventCategory(eventCategory: string | null) {
+    let query = { ...this.$route.query, eventCategory };
+    if (query.eventCategory === null) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete query.eventCategory;
+    }
+    this.$router.replace({
+      name: RouteName.SEARCH,
+      query,
+    });
+  }
+
   get weekend(): { start: Date; end: Date } {
     const now = new Date();
     const endOfWeekDate = endOfWeek(now, { locale: this.$dateFnsLocale });
@@ -725,36 +767,16 @@ h3.title {
 }
 
 form {
-  // ::v-deep .field label.label {
-  //   margin-bottom: 0;
-  // }
-
-  // .field.is-expanded:last-child > .field-body > .field.is-grouped {
-  //   flex-wrap: wrap;
-  //   flex: 1;
-  //   .field {
-  //     flex: 1 0 auto;
-  //     &:first-child {
-  //       flex: 3 0 300px;
-  //     }
-  //   }
-  // }
   display: grid;
   grid-gap: 0 15px;
-  grid-template-areas: "query" "location" "radius" "date" "type";
+  grid-template-areas: "query" "location" "radius" "date" "type" "category";
 
   & > * {
     margin-bottom: 0 !important;
   }
 
-  @include tablet {
-    grid-template-columns: max-content max-content max-content auto;
-    grid-template-areas: "query . ." "location . ." "radius date type";
-  }
-
   @include desktop {
-    grid-template-columns: max-content max-content max-content 1fr 3fr;
-    grid-template-areas: "query . location" "radius date type";
+    grid-template-areas: "query . ." "location radius ." "date type category";
   }
 
   .searchQuery {
@@ -764,7 +786,7 @@ form {
     }
     @include desktop {
       grid-column-start: 1;
-      grid-column-end: 4;
+      grid-column-end: 5;
     }
   }
 
@@ -777,21 +799,41 @@ form {
       grid-column: span 4;
     }
     @include desktop {
-      grid-column-start: 4;
-      grid-column-end: 7;
+      grid-column-start: 1;
+      grid-column-end: 4;
     }
   }
 
   .searchRadius {
     grid-area: radius;
+    @include desktop {
+      grid-column-start: 4;
+      grid-column-end: 5;
+    }
   }
 
   .searchDate {
     grid-area: date;
+    @include desktop {
+      grid-column-start: 1;
+      grid-column-end: 2;
+    }
   }
 
   .searchType {
     grid-area: type;
+    @include desktop {
+      grid-column-start: 2;
+      grid-column-end: 3;
+    }
+  }
+
+  .searchCategory {
+    grid-area: category;
+    @include desktop {
+      grid-column-start: 3;
+      grid-column-end: 5;
+    }
   }
 }
 </style>
