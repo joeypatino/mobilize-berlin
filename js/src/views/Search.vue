@@ -26,6 +26,7 @@
                   icon="magnify"
                   type="search"
                   id="search"
+                  ref="autocompleteSearchInput"
                   :value="search"
                   @input="debouncedUpdateSearchQuery"
                   dir="auto"
@@ -56,7 +57,7 @@
                     :key="index"
                     :value="radiusOption"
                   >
-                    {{ option.label }}
+                    {{ radiusString(radiusOption) }}
                   </option>
                 </b-select>
               </b-field>
@@ -561,6 +562,7 @@ export default class Search extends Vue {
       query: { ...this.$route.query, searchType: value.toString() },
     });
   }
+
   get geohash(): string | undefined {
     if (this.location?.geom) {
       const [lon, lat] = this.location.geom.split(";");

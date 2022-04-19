@@ -800,17 +800,10 @@ export default class EditEvent extends Vue {
 
   @Watch("group")
   updateEventVisibility(group: IGroup): void {
-<<<<<<< HEAD
-    if (group.visibility == GroupVisibility.UNLISTED) {
-      this.event.visibility = EventVisibility.UNLISTED;
-    }
-    if (group.visibility == GroupVisibility.PUBLIC) {
-=======
     if (!this.isUpdate && group.visibility == GroupVisibility.UNLISTED) {
       this.event.visibility = EventVisibility.UNLISTED;
     }
     if (!this.isUpdate && group.visibility == GroupVisibility.PUBLIC) {
->>>>>>> upgrade-branch
       this.event.visibility = EventVisibility.PUBLIC;
     }
   }
