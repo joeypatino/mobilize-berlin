@@ -45,7 +45,10 @@
         "
       >
         <b-button
-          v-if="!hideCreateEventsButton"
+          v-if="
+            !hideCreateEventsButton &&
+            this.$route.name !== RouteName.CREATE_EVENT
+          "
           type="is-primary"
           @click="isComponentModalActive = true"
         >

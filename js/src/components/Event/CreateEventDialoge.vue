@@ -22,7 +22,7 @@
         >.
       </p>
     </section>
-    <div style="background-color: white">
+    <div style="background-color: white; color: black">
       <p class="modal-card-body" style="color: black; font-size: large">
         <b>{{ $t("Pick a profile or a group") }}</b>
       </p>
