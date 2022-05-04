@@ -1,7 +1,7 @@
 defmodule Mobilizon.Mixfile do
   use Mix.Project
 
-  @version "2.1.0-rc.3"
+  @version "2.1.0-rc.4"
 
   def project do
     [
@@ -180,10 +180,9 @@ defmodule Mobilizon.Mixfile do
       {:ueberauth_github, "~> 0.8.1"},
       {:ueberauth_facebook, "~> 0.9"},
       {:ueberauth_google, "~> 0.10.1"},
-      {:ueberauth_keycloak_strategy,
-       git: "https://github.com/tcitworld/ueberauth_keycloak.git", branch: "upgrade-deps"},
-      {:ueberauth_gitlab_strategy,
-       git: "https://github.com/tcitworld/ueberauth_gitlab.git", branch: "upgrade-deps"},
+      {:ueberauth_keycloak_strategy, "~> 0.3.0"},
+      {:ueberauth_gitlab_strategy, "~> 0.4.0"},
+      {:ueberauth_cas, "~> 2.0"},
       {:ecto_shortuuid, "~> 0.1"},
       {:tesla, "~> 1.4.0"},
       {:sitemapper, "~> 0.6"},
@@ -194,7 +193,7 @@ defmodule Mobilizon.Mixfile do
       {:sentry, "~> 8.0"},
       {:html_entities, "~> 0.5"},
       {:sweet_xml, "~> 0.7"},
-      {:web_push_encryption, "~> 0.3"},
+      {:web_push_encryption, github: "danhper/elixir-web-push-encryption"},
       {:eblurhash, "~> 1.2.0"},
       {:struct_access, "~> 1.1.2"},
       {:paasaa, "~> 0.5.0"},

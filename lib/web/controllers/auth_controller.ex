@@ -4,8 +4,17 @@ defmodule Mobilizon.Web.AuthController do
   alias Mobilizon.Service.Auth.Authenticator
   alias Mobilizon.Users
   alias Mobilizon.Users.User
+  import Mobilizon.Service.Guards, only: [is_valid_string: 1]
   require Logger
   plug(:put_layout, false)
+
+  config = Application.get_env(:mobilizon, Mobilizon.Web.Endpoint, [])
+
+  plug(Plug.Session,
+    store: :cookie,
+    key: "_auth_callback",
+    signing_salt: Keyword.get(config, :secret_key_base)
+  )
 
   plug(Ueberauth)
 
@@ -98,7 +107,11 @@ defmodule Mobilizon.Web.AuthController do
   defp email_from_ueberauth(%Ueberauth.Auth{
          extra: %Ueberauth.Auth.Extra{raw_info: %{user: %{"email" => email}}}
        })
-       when not is_nil(email) and email != "",
+       when is_valid_string(email),
+       do: email
+
+  defp email_from_ueberauth(%Ueberauth.Auth{info: %Ueberauth.Auth.Info{email: email}})
+       when is_valid_string(email),
        do: email
 
   defp email_from_ueberauth(_), do: nil

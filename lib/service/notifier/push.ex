@@ -25,7 +25,14 @@ defmodule Mobilizon.Service.Notifier.Push do
       options = Keyword.put_new(options, :locale, locale)
 
       %Page{elements: subscriptions} = Users.list_user_push_subscriptions(user_id, 1, 100)
-      Enum.each(subscriptions, &send_subscription(activity, convert_subscription(&1), options))
+
+      subscriptions
+      |> Enum.map(&convert_subscription/1)
+      |> Enum.map(fn subscription ->
+        Task.async(fn -> send_subscription(activity, subscription, options) end)
+      end)
+      |> Task.await_many(10_000)
+
       {:ok, :sent}
     else
       {:ok, :skipped}
@@ -66,7 +73,7 @@ defmodule Mobilizon.Service.Notifier.Push do
     Map.get(@default_behavior, activity_setting, false)
   end
 
-  @spec send_subscription(Activity.t(), any, Keyword.t()) :: no_return
+  @spec send_subscription(Activity.t(), any, Keyword.t()) :: any()
   defp send_subscription(activity, subscription, options) do
     activity
     |> payload(options)
