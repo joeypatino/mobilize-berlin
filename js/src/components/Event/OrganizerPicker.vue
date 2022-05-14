@@ -83,6 +83,8 @@ export default class OrganizerPicker extends Vue {
 
   @Prop({ required: false, default: false }) restrictModeratorLevel!: boolean;
 
+  @Prop({ required: false, default: false }) groupsOnly!: boolean;
+
   groupMemberships: Paginate<IMember> = { elements: [], total: 0 };
 
   currentActor!: IPerson;
@@ -123,6 +125,9 @@ export default class OrganizerPicker extends Vue {
   }
 
   get actualAvailableActors(): IActor[] {
+    if (this.groupsOnly) {
+      return this.actualMemberships.map((member) => member.parent);
+    }
     return [
       this.currentActor,
       ...this.identities.filter(

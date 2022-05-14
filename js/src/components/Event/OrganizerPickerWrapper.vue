@@ -64,6 +64,7 @@
               v-model="selectedActor"
               @input="relay"
               :restrict-moderator-level="true"
+              :groupsOnly="groupsOnly"
             />
           </div>
         </section>
@@ -111,6 +112,8 @@ export default class OrganizerPickerWrapper extends Vue {
   @Prop({ type: Object, required: false }) value!: IActor;
 
   @Prop({ default: true, type: Boolean }) inline!: boolean;
+
+  @Prop({ required: false, default: false }) groupsOnly!: boolean;
 
   currentActor!: IPerson;
 

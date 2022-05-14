@@ -27,7 +27,10 @@
         <b>{{ $t("Pick a profile or a group") }}</b>
       </p>
       <b-field>
-        <organizer-picker-wrapper v-model="organizerActor" />
+        <organizer-picker-wrapper
+          v-model="organizerActor"
+          :groupsOnly="groupsOnly"
+        />
       </b-field>
     </div>
     <footer class="modal-card-foot">
@@ -54,6 +57,9 @@
         >
           {{ $t("Create group") }}
         </b-button>
+        <div style="color: black" v-else>
+          <b-switch v-model="groupsOnly"> Show groups only </b-switch>
+        </div>
       </div>
     </footer>
   </div>
@@ -82,6 +88,7 @@ import { CURRENT_ACTOR_CLIENT } from "../../graphql/actor";
 export default class CreateEventDialoge extends Vue {
   @Prop({ type: Object, required: false }) orgActor!: IActor;
 
+  @Prop({ required: false }) isSwitch!: boolean;
   groupMemberships: Paginate<IMember> = { elements: [], total: 0 };
   isComponentModalActive = false;
 
@@ -101,9 +108,36 @@ export default class CreateEventDialoge extends Vue {
     );
   }
 
+  get actualMemberships(): IMember[] {
+    return this.groupMemberships.elements.filter((membership: IMember) =>
+      [
+        MemberRole.ADMINISTRATOR,
+        MemberRole.MODERATOR,
+        MemberRole.CREATOR,
+      ].includes(membership.role)
+    );
+  }
+  get firstGroup(): IGroup {
+    return this.actualMemberships.map((member) => member.parent)[0];
+  }
+
+  get groupsOnly(): boolean {
+    if (this.isSwitch !== undefined) {
+      return this.isSwitch;
+    }
+    return this.hasGroups;
+  }
+
+  set groupsOnly(toggle: boolean) {
+    this.isSwitch = toggle;
+  }
+
   get organizerActor(): IActor {
     if (this.orgActor) {
       return this.orgActor;
+    }
+    if (this.hasGroups && this.groupsOnly) {
+      return this.firstGroup;
     }
     return this.currentActor;
   }
