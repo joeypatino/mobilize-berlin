@@ -216,6 +216,10 @@ defmodule Mobilizon.GraphQL.Schema.AdminType do
       description:
         "Whether this instance has a relay, meaning that it's a Mobilizon instance that we can follow"
     )
+
+    field(:relay_address, :string,
+      description: "If this instance has a relay, it's federated username"
+    )
   end
 
   @desc """
@@ -350,13 +354,6 @@ defmodule Mobilizon.GraphQL.Schema.AdminType do
       arg(:domain, non_null(:string), description: "The instance domain to add")
 
       resolve(&Admin.create_instance/3)
-    end
-
-    @desc "Add a relay subscription"
-    field :add_relay, type: :follower do
-      arg(:address, non_null(:string), description: "The relay hostname to add")
-
-      resolve(&Admin.create_relay/3)
     end
 
     @desc "Delete a relay subscription"

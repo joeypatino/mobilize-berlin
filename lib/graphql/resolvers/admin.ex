@@ -468,12 +468,16 @@ defmodule Mobilizon.GraphQL.Resolvers.Admin do
         context: %{current_user: %User{role: role}}
       })
       when is_admin(role) do
-    has_relay = Actors.has_relay?(domain)
-    remote_relay = Actors.get_actor_by_name("relay@#{domain}")
+    remote_relay = Actors.get_relay(domain)
     local_relay = Relay.get_actor()
 
     result = %{
-      has_relay: has_relay,
+      has_relay: !is_nil(remote_relay),
+      relay_address:
+        if(is_nil(remote_relay),
+          do: nil,
+          else: "#{remote_relay.preferred_username}@#{remote_relay.domain}"
+        ),
       follower_status: follow_status(remote_relay, local_relay),
       followed_status: follow_status(local_relay, remote_relay)
     }
@@ -489,24 +493,25 @@ defmodule Mobilizon.GraphQL.Resolvers.Admin do
     {:error, :unauthenticated}
   end
 
+  @spec create_instance(any, map(), Absinthe.Resolution.t()) ::
+          {:error, atom() | binary()}
+          | {:ok, Mobilizon.Instances.Instance.t()}
   def create_instance(
         parent,
         %{domain: domain} = args,
         %{context: %{current_user: %User{role: role}}} = resolution
       )
       when is_admin(role) do
-    with {:ok, _activity, _follow} <- Relay.follow(domain) do
-      Instances.refresh()
-      get_instance(parent, args, resolution)
-    end
-  end
+    case Relay.follow(domain) do
+      {:ok, _activity, _follow} ->
+        Instances.refresh()
+        get_instance(parent, args, resolution)
 
-  @spec create_relay(any(), map(), Absinthe.Resolution.t()) ::
-          {:ok, Follower.t()} | {:error, any()}
-  def create_relay(_parent, %{address: address}, %{context: %{current_user: %User{role: role}}})
-      when is_admin(role) do
-    with {:ok, _activity, follow} <- Relay.follow(address) do
-      {:ok, follow}
+      {:error, :http_error} ->
+        {:error, dgettext("errors", "Unable to find an instance to follow at this address")}
+
+      {:error, err} ->
+        {:error, err}
     end
   end
 

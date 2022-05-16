@@ -1,7 +1,7 @@
 defmodule Mobilizon.Mixfile do
   use Mix.Project
 
-  @version "2.1.0-rc.4"
+  @version "2.1.0"
 
   def project do
     [
@@ -167,8 +167,9 @@ defmodule Mobilizon.Mixfile do
       {:mogrify, "~> 0.9"},
       {:linkify, "~> 0.3"},
       {:http_signatures, "~> 0.1.0"},
-      {:ex_cldr, "~> 2.28.0"},
+      {:ex_cldr, "~> 2.29.0"},
       {:ex_cldr_dates_times, "~> 2.2"},
+      {:ex_cldr_plugs, "~> 1.0"},
       {:ex_optimizer, "~> 0.1"},
       {:progress_bar, "~> 2.0"},
       {:oban, "~> 2.2"},

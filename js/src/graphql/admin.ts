@@ -74,6 +74,7 @@ export const INSTANCE_FRAGMENT = gql`
   fragment InstanceFragment on Instance {
     domain
     hasRelay
+    relayAddress
     followerStatus
     followedStatus
     eventCount
@@ -129,15 +130,6 @@ export const ADD_INSTANCE = gql`
     }
   }
   ${INSTANCE_FRAGMENT}
-`;
-
-export const ADD_RELAY = gql`
-  mutation addRelay($address: String!) {
-    addRelay(address: $address) {
-      ...relayFragment
-    }
-  }
-  ${RELAY_FRAGMENT}
 `;
 
 export const REMOVE_RELAY = gql`
