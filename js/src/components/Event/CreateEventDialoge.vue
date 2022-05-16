@@ -10,8 +10,9 @@
     </header>
     <section v-if="!hasGroups" class="modal-card-body">
       <p>
-        Reach your audience, create a group! Users across the fediverse can
-        follow your group. Your event will appear in their timelines, too.
+        Reach your audience, create a group! Users fromm mobilize.berlin and
+        other fediverse platforms can follow your group. Your event will appear
+        in their timelines, too.
       </p>
     </section>
     <div v-else style="background-color: white; color: black">
