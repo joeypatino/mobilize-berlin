@@ -10,13 +10,6 @@
         )
       }}
     </p>
-    <div class="buttons" v-if="!hideCreateEventButton">
-      <router-link
-        class="button is-primary"
-        :to="{ name: RouteName.CREATE_EVENT }"
-        >{{ $t("Create event") }}</router-link
-      >
-    </div>
     <b-loading :active.sync="$apollo.loading"></b-loading>
     <div class="wrapper">
       <div class="event-filter">
@@ -471,10 +464,6 @@ export default class MyEvents extends Vue {
       ),
       total: this.pastParticipations.total - 1,
     };
-  }
-
-  get hideCreateEventButton(): boolean {
-    return !!this.config?.restrictions?.onlyGroupsCanCreateEvents;
   }
 
   get firstDayOfWeek(): number {
