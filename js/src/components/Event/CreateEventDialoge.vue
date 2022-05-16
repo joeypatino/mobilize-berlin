@@ -1,31 +1,20 @@
 <template>
-  <div class="modal-card">
+  <div class="modal-card" style="color: black">
     <header class="modal-card-head">
-      <p class="modal-card-title">{{ $t("General information") }}</p>
+      <p v-if="hasGroups" class="modal-card-title">
+        {{ $t("Pick a profile or a group") }}
+      </p>
+      <p v-else class="modal-card-title">
+        {{ $t("General information") }}
+      </p>
     </header>
-    <section class="modal-card-body">
-      <p style="color: red">
-        If you want to build an audience on mobilize.berlin, we strongly advice
-        you to <span v-if="!hasGroups">create a group and</span> publish your
-        events on behalf of that group.
-      </p>
-      <p style="color: black">
-        <br />As of mobilizon version 2.0, mobilizon users are able to follow
-        your group (but not your user account!). For any question or assistance
-        you can contact
-        <a href="mailto:admin@mobilize.berlin">admin@mobilize.berlin</a>.
-      </p>
-      <p style="color: black">
-        <br />For more information see
-        <a href="https://docs.mobilize.berlin/organizer.html" target="_blank"
-          >docs.mobilize.berlin/organizer.html</a
-        >.
+    <section v-if="!hasGroups" class="modal-card-body">
+      <p>
+        Reach your audience, create a group! Users across the fediverse can
+        follow your group. Your event will appear in their timelines, too.
       </p>
     </section>
-    <div style="background-color: white; color: black">
-      <p class="modal-card-body" style="color: black; font-size: large">
-        <b>{{ $t("Pick a profile or a group") }}</b>
-      </p>
+    <div v-else style="background-color: white; color: black">
       <b-field>
         <organizer-picker-wrapper
           v-model="organizerActor"
@@ -45,7 +34,7 @@
           exact
           v-on:click.native="$emit('close')"
         >
-          {{ $t("Create") }}
+          {{ $t("Create event") }}
         </b-button>
         <b-button
           v-if="!hasGroups"
@@ -108,6 +97,9 @@ export default class CreateEventDialoge extends Vue {
     );
   }
 
+  // get hasGroups(): boolean {
+  //   return false;
+  // }
   get actualMemberships(): IMember[] {
     return this.groupMemberships.elements.filter((membership: IMember) =>
       [
