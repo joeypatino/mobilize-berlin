@@ -1259,5 +1259,6 @@
   "{timezoneLongName} ({timezoneShortName})": "",
   "{title} ({count} todos)": "{title} ({count} pendentes)",
   "{username} was invited to {group}": "{username} convidoute a {group}",
-  "© The OpenStreetMap Contributors": "© The OpenStreetMap Contributors"
+  "© The OpenStreetMap Contributors": "© The OpenStreetMap Contributors",
+  "Reach your audience, create a group! Users from mobilize.berlin and other fediverse platforms can follow your group. Your event will appear in their timelines, too.": ""
 }

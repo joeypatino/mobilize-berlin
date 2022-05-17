@@ -206,8 +206,8 @@
   "Create": "Erstellen",
   "Create a calc": "Tabelle erstellen",
   "Create a discussion": "Beginne eine Diskussion",
-  "Create a folder": "Erstelle einen Ordner",
-  "Create a new event": "Erstelle eine neue Veranstaltung",
+  "Create a folder": "Ordner erstellen",
+  "Create a new event": "Neue Veranstaltung erstellen",
   "Create a new group": "Erstelle eine neue Gruppe",
   "Create a new identity": "Erstelle eine neue Identität",
   "Create a new list": "neue Liste erstellen",
@@ -217,7 +217,7 @@
   "Create an account": "Konto erstellen",
   "Create discussion": "Diskussion erstellen",
   "Create event": "Veranstaltung erstellen",
-  "Create group": "Erstelle eine Gruppe",
+  "Create group": "Gruppe erstellen",
   "Create identity": "Identität erstellen",
   "Create my event": "Erstelle meine Veranstaltung",
   "Create my group": "Erstelle meine Gruppe",
@@ -1307,5 +1307,6 @@
   "{timezoneLongName} ({timezoneShortName})": "{timezoneLongName} ({timezoneShortName})",
   "{title} ({count} todos)": "{title} ({count} To-dos)",
   "{username} was invited to {group}": "{username} wurde zu {group} eingeladen",
-  "© The OpenStreetMap Contributors": "© OpenStreetMap-Mitwirkende"
+  "© The OpenStreetMap Contributors": "© OpenStreetMap-Mitwirkende",
+  "Reach your audience, create a group! Users from mobilize.berlin and other fediverse platforms can follow your group. Your event will appear in their timelines, too.": "Erreiche dein Publikum, erstelle eine Gruppe! Nutzer*innen von mobilize.berlin und anderen fediverse Plattformen können deiner Gruppe folgen. Deine Veranstaltung wird auch in deren Timelines erscheinen."
 }

@@ -1329,5 +1329,6 @@
   "{timezoneLongName} ({timezoneShortName})": "{timezoneLongName} ({timezoneShortName})",
   "{title} ({count} todos)": "{title} ({count} ri dhèanamh)",
   "{username} was invited to {group}": "Fhuair {username} cuireadh gu {group}",
-  "© The OpenStreetMap Contributors": "© Luchd-cuideachaidh OpenStreetMap"
+  "© The OpenStreetMap Contributors": "© Luchd-cuideachaidh OpenStreetMap",
+  "Reach your audience, create a group! Users from mobilize.berlin and other fediverse platforms can follow your group. Your event will appear in their timelines, too.": ""
 }

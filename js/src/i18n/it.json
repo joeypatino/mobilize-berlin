@@ -1259,5 +1259,6 @@
   "{timezoneLongName} ({timezoneShortName})": "",
   "{title} ({count} todos)": "{title} ({count} tutti)",
   "{username} was invited to {group}": "{username} è stato invitato a {group}",
-  "© The OpenStreetMap Contributors": "© The OpenStreetMap Contributors"
+  "© The OpenStreetMap Contributors": "© The OpenStreetMap Contributors",
+  "Reach your audience, create a group! Users from mobilize.berlin and other fediverse platforms can follow your group. Your event will appear in their timelines, too.": "Raggiungi il tuo pubblico, crea un gruppo! Gli utenti di mobilize.berlin e di altre piattaforme fediverse possono seguire il vostro gruppo. Il vostro evento apparirà anche nelle loro timeline."
 }

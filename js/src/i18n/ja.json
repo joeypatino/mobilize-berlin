@@ -1290,5 +1290,6 @@
   "{timezoneLongName} ({timezoneShortName})": "",
   "{title} ({count} todos)": "",
   "{username} was invited to {group}": "{username}が{group}に招待されました",
-  "© The OpenStreetMap Contributors": ""
+  "© The OpenStreetMap Contributors": "",
+  "Reach your audience, create a group! Users from mobilize.berlin and other fediverse platforms can follow your group. Your event will appear in their timelines, too.": ""
 }
