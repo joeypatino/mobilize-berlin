@@ -2,8 +2,9 @@ defmodule Mobilizon.Web.Email.Member do
   @moduledoc """
   Handles emails sent about group members.
   """
-  use Phoenix.Swoosh, view: Mobilizon.Web.EmailView
+  use Bamboo.Phoenix, view: Mobilizon.Web.EmailView
 
+  import Bamboo.Phoenix
   import Mobilizon.Web.Gettext
 
   alias Mobilizon.{Actors, Users}
@@ -33,15 +34,13 @@ defmodule Mobilizon.Web.Email.Member do
           group: group.name
         )
 
-      [to: email, subject: subject]
-      |> Email.base_email()
-      |> render_body(:group_invite, %{
-        locale: locale,
-        inviter: inviter,
-        group: group,
-        subject: subject
-      })
-      |> Email.Mailer.send_email()
+      Email.base_email(to: email, subject: subject)
+      |> assign(:locale, locale)
+      |> assign(:inviter, inviter)
+      |> assign(:group, group)
+      |> assign(:subject, subject)
+      |> render(:group_invite)
+      |> Email.Mailer.send_email_later()
 
       :ok
     end
@@ -63,10 +62,12 @@ defmodule Mobilizon.Web.Email.Member do
           group: Actor.display_name(group)
         )
 
-      [to: email, subject: subject]
-      |> Email.base_email()
-      |> render_body(:group_membership_approval, %{locale: locale, group: group, subject: subject})
-      |> Email.Mailer.send_email()
+      Email.base_email(to: email, subject: subject)
+      |> assign(:locale, locale)
+      |> assign(:group, group)
+      |> assign(:subject, subject)
+      |> render(:group_membership_approval)
+      |> Email.Mailer.send_email_later()
 
       :ok
     end
@@ -90,14 +91,12 @@ defmodule Mobilizon.Web.Email.Member do
           group: Actor.display_name(group)
         )
 
-      [to: email, subject: subject]
-      |> Email.base_email()
-      |> render_body(:group_membership_rejection, %{
-        locale: locale,
-        group: group,
-        subject: subject
-      })
-      |> Email.Mailer.send_email()
+      Email.base_email(to: email, subject: subject)
+      |> assign(:locale, locale)
+      |> assign(:group, group)
+      |> assign(:subject, subject)
+      |> render(:group_membership_rejection)
+      |> Email.Mailer.send_email_later()
 
       :ok
     end
@@ -116,10 +115,12 @@ defmodule Mobilizon.Web.Email.Member do
           group: Actor.display_name(group)
         )
 
-      [to: email, subject: subject]
-      |> Email.base_email()
-      |> render_body(:group_member_removal, %{locale: locale, group: group, subject: subject})
-      |> Email.Mailer.send_email()
+      Email.base_email(to: email, subject: subject)
+      |> assign(:locale, locale)
+      |> assign(:group, group)
+      |> assign(:subject, subject)
+      |> render(:group_member_removal)
+      |> Email.Mailer.send_email_later()
 
       :ok
     end

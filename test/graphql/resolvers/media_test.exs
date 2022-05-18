@@ -1,5 +1,6 @@
 defmodule Mobilizon.GraphQL.Resolvers.MediaTest do
   use Mobilizon.Web.ConnCase
+  use Bamboo.Test
 
   import Mobilizon.Factory
 

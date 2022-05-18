@@ -106,8 +106,9 @@ config :mobilizon, :media_proxy,
   ]
 
 config :mobilizon, Mobilizon.Web.Email.Mailer,
-  adapter: Swoosh.Adapters.SMTP,
-  relay: "localhost",
+  adapter: Bamboo.SMTPAdapter,
+  server: "localhost",
+  hostname: "localhost",
   # usually 25, 465 or 587
   port: 25,
   username: "",

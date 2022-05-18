@@ -1,13 +1,14 @@
 defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
   use Mobilizon.Web.ConnCase
+  use Bamboo.Test
   import Mobilizon.Factory
-  import Swoosh.TestAssertions
 
   alias Mobilizon.Actors.Actor
   alias Mobilizon.Events.Event
   alias Mobilizon.Federation.ActivityPub.Relay
   alias Mobilizon.Reports.{Note, Report}
   alias Mobilizon.Users.User
+  alias Mobilizon.Web.Email
 
   alias Mobilizon.GraphQL.{AbsintheHelpers, API}
 
@@ -562,7 +563,13 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "email" => "new@email.com", "notify" => false}
         )
 
-      refute_email_sent()
+      refute_delivered_email(
+        Email.Admin.user_email_change_old(%User{user | email: "new@email.com"}, user.email)
+      )
+
+      refute_delivered_email(
+        Email.Admin.user_email_change_new(%User{user | email: "new@email.com"}, user.email)
+      )
 
       assert res["errors"] == nil
       assert res["data"]["adminUpdateUser"]["email"] == "new@email.com"
@@ -577,18 +584,13 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "email" => "new@email.com", "notify" => true}
         )
 
-      assert_email_sent(
-        to: user.email,
-        subject:
-          "An administrator manually changed the email attached to your account on Test instance"
+      assert_delivered_email(
+        Email.Admin.user_email_change_old(%User{user | email: "new@email.com"}, user.email)
       )
 
-      # # Swoosh.TestAssertions can't test multiple emails sent
-      # assert_email_sent(
-      #   to: "new@email.com",
-      #   subject:
-      #     "An administrator manually changed the email attached to your account on Test instance"
-      # )
+      assert_delivered_email(
+        Email.Admin.user_email_change_new(%User{user | email: "new@email.com"}, user.email)
+      )
 
       assert res["errors"] == nil
       assert res["data"]["adminUpdateUser"]["email"] == "new@email.com"
@@ -637,7 +639,9 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "role" => "MODERATOR", "notify" => false}
         )
 
-      refute_email_sent()
+      refute_delivered_email(
+        Email.Admin.user_role_change(%User{user | role: :moderator}, user.role)
+      )
 
       assert res["errors"] == nil
       assert res["data"]["adminUpdateUser"]["role"] == "MODERATOR"
@@ -652,7 +656,9 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "role" => "MODERATOR", "notify" => true}
         )
 
-      assert_email_sent(to: user.email)
+      assert_delivered_email(
+        Email.Admin.user_role_change(%User{user | role: :moderator}, user.role)
+      )
 
       assert res["errors"] == nil
       assert res["data"]["adminUpdateUser"]["role"] == "MODERATOR"
@@ -675,7 +681,7 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "confirmed" => true, "notify" => false}
         )
 
-      refute_email_sent()
+      refute_delivered_email(Email.Admin.user_confirmation(user))
 
       assert hd(res["errors"])["message"] == "Can't confirm an already confirmed user"
     end
@@ -689,7 +695,7 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "confirmed" => false, "notify" => false}
         )
 
-      refute_email_sent()
+      refute_delivered_email(Email.Admin.user_confirmation(user))
 
       assert hd(res["errors"])["message"] == "Deconfirming users is not supported"
     end
@@ -705,7 +711,7 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "confirmed" => true, "notify" => false}
         )
 
-      refute_email_sent()
+      refute_delivered_email(Email.Admin.user_confirmation(user))
 
       assert res["errors"] == nil
       refute res["data"]["adminUpdateUser"]["confirmedAt"] == nil
@@ -722,7 +728,7 @@ defmodule Mobilizon.GraphQL.Resolvers.AdminTest do
           variables: %{"id" => user.id, "confirmed" => true, "notify" => true}
         )
 
-      assert_email_sent(to: user.email)
+      assert_delivered_email(Email.Admin.user_confirmation(user))
 
       assert res["errors"] == nil
       refute res["data"]["adminUpdateUser"]["confirmedAt"] == nil

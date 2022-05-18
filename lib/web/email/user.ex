@@ -3,7 +3,9 @@ defmodule Mobilizon.Web.Email.User do
   Handles emails sent to users.
   """
 
-  use Phoenix.Swoosh, view: Mobilizon.Web.EmailView
+  use Bamboo.Phoenix, view: Mobilizon.Web.EmailView
+
+  import Bamboo.Phoenix
 
   import Mobilizon.Web.Gettext, only: [gettext: 2]
 
@@ -15,7 +17,7 @@ defmodule Mobilizon.Web.Email.User do
 
   require Logger
 
-  @spec confirmation_email(User.t(), String.t()) :: Swoosh.Email.t()
+  @spec confirmation_email(User.t(), String.t()) :: Bamboo.Email.t()
   def confirmation_email(
         %User{email: email, confirmation_token: confirmation_token},
         locale \\ "en"
@@ -28,17 +30,15 @@ defmodule Mobilizon.Web.Email.User do
         instance: Config.instance_name()
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:registration_confirmation, %{
-      locale: locale,
-      token: confirmation_token,
-      subject: subject,
-      offer_unsupscription: false
-    })
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:token, confirmation_token)
+    |> assign(:subject, subject)
+    |> assign(:offer_unsupscription, false)
+    |> render(:registration_confirmation)
   end
 
-  @spec reset_password_email(User.t(), String.t()) :: Swoosh.Email.t()
+  @spec reset_password_email(User.t(), String.t()) :: Bamboo.Email.t()
   def reset_password_email(
         %User{email: email, reset_password_token: reset_password_token},
         locale \\ "en"
@@ -51,14 +51,12 @@ defmodule Mobilizon.Web.Email.User do
         instance: Config.instance_name()
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:password_reset, %{
-      locale: locale,
-      token: reset_password_token,
-      subject: subject,
-      offer_unsupscription: false
-    })
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:token, reset_password_token)
+    |> assign(:subject, subject)
+    |> assign(:offer_unsupscription, false)
+    |> render(:password_reset)
   end
 
   @spec check_confirmation_token(String.t()) ::
@@ -90,18 +88,18 @@ defmodule Mobilizon.Web.Email.User do
          {:ok, user} <-
            Users.update_user(user, %{
              "confirmation_sent_at" => DateTime.utc_now() |> DateTime.truncate(:second)
-           }) do
-      send_confirmation_email(user, locale)
+           }),
+         %Bamboo.Email{} <- send_confirmation_email(user, locale) do
       Logger.info("Sent confirmation email again to #{user.email}")
       {:ok, user.email}
     end
   end
 
-  @spec send_confirmation_email(User.t(), String.t()) :: Swoosh.Email.t()
+  @spec send_confirmation_email(User.t(), String.t()) :: Bamboo.Email.t()
   def send_confirmation_email(%User{} = user, locale \\ "en") do
     user
     |> Email.User.confirmation_email(locale)
-    |> Email.Mailer.send_email()
+    |> Email.Mailer.send_email_later()
   end
 
   @doc """
@@ -137,12 +135,12 @@ defmodule Mobilizon.Web.Email.User do
                "reset_password_token" => Crypto.random_string(30),
                "reset_password_sent_at" => DateTime.utc_now() |> DateTime.truncate(:second)
              })
-           ) do
-      user_updated
-      |> Email.User.reset_password_email(locale)
-      |> Email.Mailer.send_email()
-
-      {:ok, user.email}
+           ),
+         %Bamboo.Email{} = mail <-
+           user_updated
+           |> Email.User.reset_password_email(locale)
+           |> Email.Mailer.send_email_later() do
+      {:ok, mail}
     else
       {:error, reason} -> {:error, reason}
     end
@@ -161,14 +159,12 @@ defmodule Mobilizon.Web.Email.User do
         instance: Config.instance_name()
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:email_changed_old, %{
-      locale: user_locale,
-      new_email: unconfirmed_email,
-      subject: subject,
-      offer_unsupscription: false
-    })
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, user_locale)
+    |> assign(:subject, subject)
+    |> assign(:new_email, unconfirmed_email)
+    |> assign(:offer_unsupscription, false)
+    |> render(:email_changed_old)
   end
 
   def send_email_reset_new_email(%User{
@@ -184,14 +180,12 @@ defmodule Mobilizon.Web.Email.User do
         instance: Config.instance_name()
       )
 
-    [to: unconfirmed_email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:email_changed_new, %{
-      locale: user_locale,
-      token: confirmation_token,
-      subject: subject,
-      offer_unsupscription: false
-    })
+    Email.base_email(to: unconfirmed_email, subject: subject)
+    |> assign(:locale, user_locale)
+    |> assign(:subject, subject)
+    |> assign(:token, confirmation_token)
+    |> assign(:offer_unsupscription, false)
+    |> render(:email_changed_new)
   end
 
   @spec we_can_send_email(User.t(), atom) :: :ok | {:error, :email_too_soon}

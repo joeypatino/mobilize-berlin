@@ -2,6 +2,7 @@ defmodule Mobilizon.GraphQL.Resolvers.ConfigTest do
   use Mobilizon.Web.ConnCase
   alias Mobilizon.Actors
   alias Mobilizon.Actors.Actor
+  use Bamboo.Test
 
   alias Mobilizon.GraphQL.AbsintheHelpers
 

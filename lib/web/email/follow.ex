@@ -2,8 +2,9 @@ defmodule Mobilizon.Web.Email.Follow do
   @moduledoc """
   Handles emails sent about (instance) follow.
   """
-  use Phoenix.Swoosh, view: Mobilizon.Web.EmailView
+  use Bamboo.Phoenix, view: Mobilizon.Web.EmailView
 
+  import Bamboo.Phoenix
   import Mobilizon.Web.Gettext
 
   alias Mobilizon.Users
@@ -64,10 +65,12 @@ defmodule Mobilizon.Web.Email.Follow do
         )
       end
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:instance_follow, %{locale: locale, follower: follower, subject: subject})
-    |> Email.Mailer.send_email()
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:follower, follower)
+    |> assign(:subject, subject)
+    |> render(:instance_follow)
+    |> Email.Mailer.send_email_later()
 
     :ok
   end

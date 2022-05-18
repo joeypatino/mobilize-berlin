@@ -2,8 +2,9 @@ defmodule Mobilizon.Web.Email.Participation do
   @moduledoc """
   Handles emails sent about participation.
   """
-  use Phoenix.Swoosh, view: Mobilizon.Web.EmailView
+  use Bamboo.Phoenix, view: Mobilizon.Web.EmailView
 
+  import Bamboo.Phoenix
   import Mobilizon.Web.Gettext
 
   alias Mobilizon.Actors.Actor
@@ -27,7 +28,7 @@ defmodule Mobilizon.Web.Email.Participation do
 
       email
       |> participation_updated(participation, locale)
-      |> Email.Mailer.send_email()
+      |> Email.Mailer.send_email_later()
     end
 
     :ok
@@ -39,14 +40,14 @@ defmodule Mobilizon.Web.Email.Participation do
     with %User{locale: locale} = user <- Users.get_user!(user_id) do
       user
       |> participation_updated(participation, locale)
-      |> Email.Mailer.send_email()
+      |> Email.Mailer.send_email_later()
 
       :ok
     end
   end
 
   @spec participation_updated(String.t() | User.t(), Participant.t(), String.t()) ::
-          Swoosh.Email.t()
+          Bamboo.Email.t()
   def participation_updated(user, participant, locale \\ "en")
 
   def participation_updated(
@@ -69,14 +70,12 @@ defmodule Mobilizon.Web.Email.Participation do
         title: event.title
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:event_participation_rejected, %{
-      locale: locale,
-      event: event,
-      jsonLDMetadata: json_ld(participant),
-      subject: subject
-    })
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:event, event)
+    |> assign(:jsonLDMetadata, json_ld(participant))
+    |> assign(:subject, subject)
+    |> render(:event_participation_rejected)
   end
 
   def participation_updated(
@@ -93,14 +92,12 @@ defmodule Mobilizon.Web.Email.Participation do
         title: event.title
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:event_participation_confirmed, %{
-      locale: locale,
-      event: event,
-      jsonLDMetadata: json_ld(participant),
-      subject: subject
-    })
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:event, event)
+    |> assign(:subject, subject)
+    |> assign(:jsonLDMetadata, json_ld(participant))
+    |> render(:event_participation_confirmed)
   end
 
   def participation_updated(
@@ -116,19 +113,17 @@ defmodule Mobilizon.Web.Email.Participation do
         title: event.title
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:event, event)
+    |> assign(:subject, subject)
+    |> assign(:jsonLDMetadata, json_ld(participant))
     |> Email.add_event_attachment(event)
-    |> render_body(:event_participation_approved, %{
-      locale: locale,
-      event: event,
-      jsonLDMetadata: json_ld(participant),
-      subject: subject
-    })
+    |> render(:event_participation_approved)
   end
 
   @spec anonymous_participation_confirmation(String.t(), Participant.t(), String.t()) ::
-          Swoosh.Email.t()
+          Bamboo.Email.t()
   def anonymous_participation_confirmation(
         email,
         %Participant{event: event, role: :not_confirmed} = participant,
@@ -142,15 +137,12 @@ defmodule Mobilizon.Web.Email.Participation do
         title: event.title
       )
 
-    [to: email, subject: subject]
-    |> Email.base_email()
-    |> render_body(:anonymous_participation_confirmation, %{
-      locale: locale,
-      event: event,
-      jsonLDMetadata: json_ld(participant),
-      participant: participant,
-      subject: subject
-    })
+    Email.base_email(to: email, subject: subject)
+    |> assign(:locale, locale)
+    |> assign(:participant, participant)
+    |> assign(:jsonLDMetadata, json_ld(participant))
+    |> assign(:subject, subject)
+    |> render(:anonymous_participation_confirmation)
   end
 
   defp json_ld(participant) do

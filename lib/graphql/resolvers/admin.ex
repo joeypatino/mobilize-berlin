@@ -317,11 +317,11 @@ defmodule Mobilizon.GraphQL.Resolvers.Admin do
               if notify do
                 updated_user
                 |> Email.Admin.user_email_change_old(old_email)
-                |> Email.Mailer.send_email()
+                |> Email.Mailer.send_email_later()
 
                 updated_user
                 |> Email.Admin.user_email_change_new(old_email)
-                |> Email.Mailer.send_email()
+                |> Email.Mailer.send_email_later()
               end
 
               {:ok, updated_user}
@@ -347,7 +347,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Admin do
         if notify do
           user
           |> Email.Admin.user_role_change(old_role)
-          |> Email.Mailer.send_email()
+          |> Email.Mailer.send_email_later()
         end
 
         {:ok, user}
@@ -369,7 +369,7 @@ defmodule Mobilizon.GraphQL.Resolvers.Admin do
       if notify do
         user
         |> Email.Admin.user_confirmation()
-        |> Email.Mailer.send_email()
+        |> Email.Mailer.send_email_later()
       end
 
       {:ok, user}

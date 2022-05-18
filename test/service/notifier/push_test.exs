@@ -9,6 +9,7 @@ defmodule Mobilizon.Service.Notifier.PushTest do
   alias Mobilizon.Users.{ActivitySetting, Setting, User}
 
   use Mobilizon.DataCase
+  use Bamboo.Test
 
   import Mobilizon.Factory
 

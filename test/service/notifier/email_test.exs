@@ -7,9 +7,11 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
   alias Mobilizon.{Config, Users}
   alias Mobilizon.Service.Notifier.Email
   alias Mobilizon.Users.{ActivitySetting, Setting, User}
+  alias Mobilizon.Web.Email.Activity, as: EmailActivity
 
   use Mobilizon.DataCase
-  import Swoosh.TestAssertions
+  use Bamboo.Test
+
   import Mobilizon.Factory
 
   describe "Returns if the module is loaded" do
@@ -33,7 +35,12 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
 
       assert {:ok, :skipped} == Email.send(user, activity)
 
-      refute_email_sent()
+      refute_delivered_email(
+        EmailActivity.direct_activity(
+          user.email,
+          [activity]
+        )
+      )
     end
 
     test "when the user allows it" do
@@ -50,7 +57,12 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
 
       assert {:ok, :sent} == Email.send(user, activity)
 
-      assert_email_sent(to: user.email)
+      assert_delivered_email(
+        EmailActivity.direct_activity(
+          user.email,
+          [activity]
+        )
+      )
     end
 
     test "if it's been an hour since the last notification" do
@@ -72,7 +84,12 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
 
       assert {:ok, :sent} == Email.send(user, activity)
 
-      assert_email_sent(to: user.email)
+      assert_delivered_email(
+        EmailActivity.direct_activity(
+          user.email,
+          [activity]
+        )
+      )
     end
 
     test "if there's no delay since the last notification" do
@@ -94,7 +111,12 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
 
       assert {:ok, :sent} == Email.send(user, activity)
 
-      assert_email_sent(to: user.email)
+      assert_delivered_email(
+        EmailActivity.direct_activity(
+          user.email,
+          [activity]
+        )
+      )
     end
 
     test "not if we already have sent notifications" do
@@ -130,7 +152,12 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
 
       assert {:ok, :skipped} == Email.send(user, activity, recap: :one_day)
 
-      refute_email_sent()
+      refute_delivered_email(
+        EmailActivity.direct_activity(
+          user.email,
+          [activity]
+        )
+      )
     end
   end
 
@@ -142,7 +169,7 @@ defmodule Mobilizon.Service.Notifier.EmailTest do
 
       Email.send_anonymous_activity(@email, activity, locale: "en")
 
-      assert_email_sent(to: @email)
+      assert_delivered_email(EmailActivity.anonymous_activity(@email, activity, locale: "en"))
     end
   end
 end

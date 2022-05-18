@@ -1,5 +1,6 @@
 defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
   use Mobilizon.Web.ConnCase
+  use Bamboo.Test
   use Mobilizon.Tests.Helpers
 
   alias Mobilizon.Config
@@ -7,9 +8,9 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
   alias Mobilizon.Events.{Event, EventParticipantStats, Participant}
   alias Mobilizon.GraphQL.AbsintheHelpers
   alias Mobilizon.Storage.Page
+  alias Mobilizon.Web.Email
 
   import Mobilizon.Factory
-  import Swoosh.TestAssertions
 
   @event %{
     description: "some body",
@@ -719,9 +720,9 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
       assert json_response(res, 200)["data"]["updateParticipation"]["actor"]["id"] ==
                to_string(actor.id)
 
-      assert %Participant{} = Events.get_participant(participation_id)
+      participation = Events.get_participant(participation_id)
 
-      assert_email_sent(to: user.email)
+      assert_delivered_email(Email.Participation.participation_updated(user, participation))
 
       res =
         conn
@@ -863,8 +864,8 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
       assert json_response(res, 200)["data"]["updateParticipation"]["actor"]["id"] ==
                to_string(actor.id)
 
-      assert %Participant{} = Events.get_participant(participation_id)
-      assert_email_sent(to: user.email)
+      participation = Events.get_participant(participation_id)
+      assert_delivered_email(Email.Participation.participation_updated(user, participation))
 
       res =
         conn
@@ -1111,7 +1112,12 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
       assert %Participant{
                metadata: %{confirmation_token: confirmation_token},
                role: :not_confirmed
-             } = event.id |> Events.list_participants_for_event([]) |> Map.get(:elements) |> hd()
+             } =
+               participant =
+               event.id |> Events.list_participants_for_event([]) |> Map.get(:elements) |> hd()
+
+      # hack to avoid preloading event in participant
+      participant = Map.put(participant, :event, event)
 
       res =
         conn
@@ -1122,7 +1128,9 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
 
       assert hd(res["errors"])["message"] == "You are already a participant of this event"
 
-      assert_email_sent(to: @email)
+      assert_delivered_email(
+        Email.Participation.anonymous_participation_confirmation(@email, participant)
+      )
 
       res =
         conn
@@ -1134,9 +1142,10 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
       assert is_nil(res["errors"])
 
       assert %Participant{role: :participant} =
+               participant =
                event.id |> Events.list_participants_for_event() |> Map.get(:elements) |> hd()
 
-      assert_email_sent(to: @email)
+      assert_delivered_email(Email.Participation.participation_updated(@email, participant))
     end
 
     test "I can participate anonymously and and confirm my participation with bad token",
@@ -1368,8 +1377,8 @@ defmodule Mobilizon.GraphQL.Resolvers.ParticipantTest do
                 }
               }} = Events.get_event(event.id)
 
-      assert %Participant{} = Events.get_participant(participant_id)
-      assert_email_sent(to: @email)
+      participant = Events.get_participant(participant_id)
+      assert_delivered_email(Email.Participation.participation_updated(@email, participant))
     end
   end
 end

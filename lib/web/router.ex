@@ -214,7 +214,7 @@ defmodule Mobilizon.Web.Router do
 
   if Application.fetch_env!(:mobilizon, :env) in [:dev, :e2e] do
     # If using Phoenix
-    forward("/sent_emails", Plug.Swoosh.MailboxPreview)
+    forward("/sent_emails", Bamboo.SentEmailViewerPlug)
   end
 
   scope "/", Mobilizon.Web do
