@@ -185,6 +185,18 @@ p {
   @include padding-right(0.75em);
 }
 
+.pagination-list .pagination-link {
+  background-color: $light-gray !important;
+  border-color: $light-gray !important;
+  color: $primary !important;
+
+  &.is-current {
+    background-color: $tertiary !important;
+    border-color: $tertiary !important;
+    color: $background-color !important;
+  }
+}
+
 .media-left {
   @include margin-left(1rem);
 }

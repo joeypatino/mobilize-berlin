@@ -1,9 +1,9 @@
 <template>
-  <aside class="section container">
-    <h1 class="title">{{ $t("Settings") }}</h1>
+  <div class="section container">
     <div class="columns">
       <aside class="column is-one-quarter-desktop">
         <ul>
+          <h1 class="title">{{ $t("Settings") }}</h1>
           <SettingMenuSection
             :title="$t('Settings')"
             :to="{ name: RouteName.GROUP_SETTINGS }"
@@ -27,7 +27,7 @@
         <router-view />
       </div>
     </div>
-  </aside>
+  </div>
 </template>
 <script lang="ts">
 import { Component } from "vue-property-decorator";
@@ -52,9 +52,6 @@ export default class Settings extends mixins(GroupMixin) {
 
 <style lang="scss" scoped>
 aside.section {
-  padding-top: 1rem;
-}
-.container.section {
-  background: $white;
+  padding-top: 2rem;
 }
 </style>

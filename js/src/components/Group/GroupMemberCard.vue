@@ -1,11 +1,22 @@
 <template>
   <div class="card">
     <div class="identity-header" dir="auto">
-      <figure class="image is-24x24" v-if="member.actor.avatar">
-        <img class="is-rounded" :src="member.actor.avatar.url" alt="" />
-      </figure>
-      <b-icon v-else icon="account-circle" />
-      {{ displayNameAndUsername(member.actor) }}
+      <div>
+        <figure class="image is-24x24" v-if="member.actor.avatar">
+          <img class="is-rounded" :src="member.actor.avatar.url" alt="" />
+        </figure>
+        <b-icon v-else icon="account-circle" />
+        {{ displayNameAndUsername(member.actor) }}
+      </div>
+      <div>
+        <b-dropdown aria-role="list" position="is-bottom-left">
+          <b-icon icon="dots-horizontal" slot="trigger" />
+          <b-dropdown-item aria-role="listitem" @click="$emit('leave')">
+            <b-icon icon="exit-to-app" />
+            {{ $t("Leave") }}
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
     </div>
     <div class="card-content" dir="auto">
       <div>
@@ -30,15 +41,15 @@
                 <span>{{ `@${usernameWithDomain(member.parent)}` }}</span>
                 <b-taglist>
                   <b-tag
-                    type="is-info"
+                    type="is-link"
                     v-if="member.role === MemberRole.ADMINISTRATOR"
-                    >{{ $t("Administrator") }}</b-tag
-                  >
+                    >{{ $t("Administrator") }}
+                  </b-tag>
                   <b-tag
-                    type="is-info"
+                    type="is-link"
                     v-else-if="member.role === MemberRole.MODERATOR"
-                    >{{ $t("Moderator") }}</b-tag
-                  >
+                    >{{ $t("Moderator") }}
+                  </b-tag>
                 </b-taglist>
               </p>
             </router-link>
@@ -47,16 +58,6 @@
         <div class="content" v-if="member.parent.summary">
           <p v-html="member.parent.summary" />
         </div>
-      </div>
-      <div>
-        <b-dropdown aria-role="list" position="is-bottom-left">
-          <b-icon icon="dots-horizontal" slot="trigger" />
-
-          <b-dropdown-item aria-role="listitem" @click="$emit('leave')">
-            <b-icon icon="exit-to-app" />
-            {{ $t("Leave") }}
-          </b-dropdown-item>
-        </b-dropdown>
       </div>
     </div>
   </div>
@@ -84,6 +85,7 @@ export default class GroupMemberCard extends Vue {
 </script>
 <style lang="scss" scoped>
 @use "@/styles/_mixins" as *;
+
 .card {
   .card-content {
     display: flex;
@@ -105,9 +107,13 @@ export default class GroupMemberCard extends Vue {
   }
 
   .identity-header {
-    background: $yellow-2;
+    background: $primary;
+    color: $background-color;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     display: flex;
-    padding: 5px;
+    justify-content: space-between;
+    padding: 8px 16px;
 
     figure,
     span.icon {

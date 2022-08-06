@@ -25,8 +25,9 @@
           </p>-->
           <div class="buttons">
             <b-button
+              inverted
               type="is-primary"
-              tag="router-link"
+              tag="button"
               :to="{ name: RouteName.REGISTER }"
               v-if="config.registrationsOpen"
               >{{ $t("Create an account") }}</b-button
@@ -34,6 +35,7 @@
             <!-- We don't invite to find other instances yet -->
             <!-- <b-button v-else type="is-link" tag="a" href="https://joinmastodon.org">{{ $t('Find an instance') }}</b-button> -->
             <b-button
+              inverted
               type="is-text"
               tag="router-link"
               :to="{ name: RouteName.ABOUT }"

@@ -54,13 +54,13 @@
                 <router-link
                   :to="{ name: RouteName.CREATE_GROUP }"
                   slot="create_group"
-                  >{{ $t("create a group") }}</router-link
-                >
+                  >{{ $t("create a group") }}
+                </router-link>
                 <router-link
                   :to="{ name: RouteName.SEARCH }"
                   slot="explore_groups"
-                  >{{ $t("explore the groups") }}</router-link
-                >
+                  >{{ $t("explore the groups") }}
+                </router-link>
               </i18n>
             </p>
           </div>
@@ -195,6 +195,7 @@ export default class MyGroups extends Vue {
 <style lang="scss" scoped>
 main > .container {
   background: $white;
+  padding: 32px;
 
   & > h1 {
     margin: 10px auto 5px;
@@ -224,6 +225,7 @@ section {
         background-image: url("../../../public/img/pics/group-1024w.jpg");
       }
     }
+
     &.webp {
       background-image: url("../../../public/img/pics/group-480w.webp");
       @media (min-resolution: 2dppx) {

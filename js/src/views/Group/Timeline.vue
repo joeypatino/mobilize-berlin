@@ -20,70 +20,70 @@
       <b-field>
         <b-radio-button v-model="activityType" :native-value="undefined">
           <b-icon icon="timeline-text"></b-icon>
-          {{ $t("All activities") }}</b-radio-button
-        >
+          {{ $t("All activities") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityType"
           :native-value="ActivityType.MEMBER"
         >
           <b-icon icon="account-multiple-plus"></b-icon>
-          {{ $t("Members") }}</b-radio-button
-        >
+          {{ $t("Members") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityType"
           :native-value="ActivityType.GROUP"
         >
           <b-icon icon="cog"></b-icon>
-          {{ $t("Settings") }}</b-radio-button
-        >
+          {{ $t("Settings") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityType"
           :native-value="ActivityType.EVENT"
         >
           <b-icon icon="calendar"></b-icon>
-          {{ $t("Events") }}</b-radio-button
-        >
+          {{ $t("Events") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityType"
           :native-value="ActivityType.POST"
         >
           <b-icon icon="bullhorn"></b-icon>
-          {{ $t("Posts") }}</b-radio-button
-        >
+          {{ $t("Posts") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityType"
           :native-value="ActivityType.DISCUSSION"
         >
           <b-icon icon="chat"></b-icon>
-          {{ $t("Discussions") }}</b-radio-button
-        >
+          {{ $t("Discussions") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityType"
           :native-value="ActivityType.RESOURCE"
         >
           <b-icon icon="link"></b-icon>
-          {{ $t("Resources") }}</b-radio-button
-        >
+          {{ $t("Resources") }}
+        </b-radio-button>
       </b-field>
       <b-field>
         <b-radio-button v-model="activityAuthor" :native-value="undefined">
           <b-icon icon="timeline-text"></b-icon>
-          {{ $t("All activities") }}</b-radio-button
-        >
+          {{ $t("All activities") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityAuthor"
           :native-value="ActivityAuthorFilter.SELF"
         >
           <b-icon icon="account"></b-icon>
-          {{ $t("From yourself") }}</b-radio-button
-        >
+          {{ $t("From yourself") }}
+        </b-radio-button>
         <b-radio-button
           v-model="activityAuthor"
           :native-value="ActivityAuthorFilter.BY"
         >
           <b-icon icon="account-multiple"></b-icon>
-          {{ $t("By others") }}</b-radio-button
-        >
+          {{ $t("By others") }}
+        </b-radio-button>
       </b-field>
       <transition-group name="timeline-list" tag="div">
         <div
@@ -121,8 +121,9 @@
                 :activity="activityItem"
               />
             </li>
-          </ul></div
-      ></transition-group>
+          </ul>
+        </div>
+      </transition-group>
       <empty-content
         icon="timeline-text"
         v-if="
@@ -147,8 +148,8 @@
       <b-button
         v-if="activity.elements.length < activity.total"
         @click="loadMore"
-        >{{ $t("Load more activities") }}</b-button
-      >
+        >{{ $t("Load more activities") }}
+      </b-button>
     </section>
   </div>
 </template>
@@ -385,17 +386,27 @@ export default class Timeline extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.b-radio.radio.button {
+  border: solid 1px $primary;
+}
+</style>
 <style lang="scss" scoped>
 .container.section {
   background: $white;
+  padding-top: 2em;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 .timeline {
+  margin-top: 2em;
+
   ul {
-    // padding: 0.5rem 0;
     margin: 0;
     list-style: none;
     position: relative;
+
     &::before {
       content: "";
       height: 100%;
@@ -405,6 +416,7 @@ export default class Timeline extends Vue {
       top: 0;
       left: 1rem;
     }
+
     li {
       display: flex;
       margin: 0.5rem 0;

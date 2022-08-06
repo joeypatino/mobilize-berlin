@@ -74,8 +74,8 @@
                     name: RouteName.GROUP_MEMBERS_SETTINGS,
                     params: { preferredUsername: usernameWithDomain(group) },
                   }"
-                  >{{ $t("Add / Remove…") }}</router-link
-                >
+                  >{{ $t("Add / Remove…") }}
+                </router-link>
               </p>
             </div>
             <div class="flex gap-2">
@@ -88,8 +88,8 @@
                   name: RouteName.TIMELINE,
                   params: { preferredUsername: usernameWithDomain(group) },
                 }"
-                >{{ $t("Activity") }}</b-button
-              >
+                >{{ $t("Activity") }}
+              </b-button>
               <b-button
                 outlined
                 icon-left="cog"
@@ -99,8 +99,8 @@
                   name: RouteName.GROUP_PUBLIC_SETTINGS,
                   params: { preferredUsername: usernameWithDomain(group) },
                 }"
-                >{{ $t("Group settings") }}</b-button
-              >
+                >{{ $t("Group settings") }}
+              </b-button>
               <b-dropdown
                 aria-role="list"
                 trap-focus
@@ -216,23 +216,24 @@
                 @click="leaveGroup"
                 @keyup.enter="leaveGroup"
                 type="is-primary"
-                >{{ $t("Cancel membership request") }}</b-button
-              >
+                >{{ $t("Cancel membership request") }}
+              </b-button>
               <b-button
                 outlined
                 v-if="isCurrentActorPendingFollow && currentActor.id"
                 @click="unFollowGroup"
                 @keyup.enter="unFollowGroup"
                 type="is-primary"
-                >{{ $t("Cancel follow request") }}</b-button
-              ><b-button
+                >{{ $t("Cancel follow request") }}
+              </b-button>
+              <b-button
                 v-if="
                   isCurrentActorFollowing && !previewPublic && currentActor.id
                 "
                 type="is-primary"
                 @click="unFollowGroup"
-                >{{ $t("Unfollow") }}</b-button
-              >
+                >{{ $t("Unfollow") }}
+              </b-button>
               <b-button
                 v-if="isCurrentActorFollowing"
                 @click="toggleFollowNotify"
@@ -276,9 +277,9 @@
                   aria-role="menuitem"
                   v-if="isCurrentActorAGroupMember || previewPublic"
                 >
-                  <b-switch v-model="previewPublic">{{
-                    $t("Public preview")
-                  }}</b-switch>
+                  <b-switch v-model="previewPublic"
+                    >{{ $t("Public preview") }}
+                  </b-switch>
                 </b-dropdown-item>
                 <b-dropdown-item
                   v-if="!previewPublic && isCurrentActorAGroupMember"
@@ -398,8 +399,8 @@
                 params: { preferredUsername: usernameWithDomain(group) },
               }"
               class="button is-primary"
-              >{{ $t("+ Start a discussion") }}</router-link
-            >
+              >{{ $t("+ Start a discussion") }}
+            </router-link>
           </template>
         </group-section>
         <!-- Resources -->
@@ -441,8 +442,8 @@
                 params: { preferredUsername: usernameWithDomain(group) },
               }"
               class="button is-primary"
-              >{{ $t("+ Add a resource") }}</router-link
-            >
+              >{{ $t("+ Add a resource") }}
+            </router-link>
           </template>
         </group-section>
       </div>
@@ -483,8 +484,8 @@
                 query: { actorId: group.id },
               }"
               class="button is-primary"
-              >{{ $t("+ Create an event") }}</router-link
-            >
+              >{{ $t("+ Create an event") }}
+            </router-link>
           </template>
         </group-section>
         <!-- Posts -->
@@ -515,8 +516,8 @@
                 params: { preferredUsername: usernameWithDomain(group) },
               }"
               class="button is-primary"
-              >{{ $t("+ Create a post") }}</router-link
-            >
+              >{{ $t("+ Create a post") }}
+            </router-link>
           </template>
         </group-section>
       </div>
@@ -620,8 +621,8 @@
                   <router-link
                     :to="{ name: RouteName.NOTIFICATIONS }"
                     slot="notification_settings"
-                    >{{ $t("your notification settings") }}</router-link
-                  >
+                    >{{ $t("your notification settings") }}
+                  </router-link>
                 </i18n>
               </template>
               <b-button
@@ -633,8 +634,8 @@
                   params: { preferredUsername: usernameWithDomain(group) },
                   query: { future: false },
                 }"
-                >{{ $t("View past events") }}</b-button
-              >
+                >{{ $t("View past events") }}
+              </b-button>
             </template>
           </empty-content>
           <b-skeleton animated v-else-if="$apollo.loading"></b-skeleton>
@@ -649,8 +650,8 @@
                 params: { preferredUsername: usernameWithDomain(group) },
                 query: { future: organizedEvents.elements.length > 0 },
               }"
-              >{{ $t("View all events") }}</b-button
-            >
+              >{{ $t("View all events") }}
+            </b-button>
           </div>
         </section>
         <section class="flex flex-col items-stretch">
@@ -683,8 +684,8 @@
               name: RouteName.POSTS,
               params: { preferredUsername: usernameWithDomain(group) },
             }"
-            >{{ $t("View all posts") }}</b-button
-          >
+            >{{ $t("View all posts") }}
+          </b-button>
         </section>
       </div>
       <b-modal
@@ -1185,6 +1186,7 @@ export default class Group extends mixins(GroupMixin) {
 <style lang="scss" scoped>
 @use "@/styles/_mixins" as *;
 @import "~bulma/sass/utilities/mixins.sass";
+
 div.container {
   margin-bottom: 3rem;
 
@@ -1196,7 +1198,8 @@ div.container {
 
   .header {
     background: $white;
-    padding-top: 1rem;
+    padding: 0 32px;
+    padding-top: 2em;
   }
 
   .header .breadcrumb {
@@ -1210,8 +1213,7 @@ div.container {
     margin-top: 15px;
 
     &.presentation {
-      border: 2px solid $background-color;
-      padding: 0 0 10px;
+      padding: 0 0 16px;
       position: relative;
       flex-direction: column;
 
@@ -1234,6 +1236,7 @@ div.container {
         display: flex;
         justify-content: center;
         height: 30vh;
+
         ::v-deep img {
           width: 100%;
           height: 100%;
@@ -1349,6 +1352,7 @@ div.container {
           background: white;
           height: 5rem;
           width: 5rem;
+
           i::before {
             font-size: 60px;
           }
@@ -1430,6 +1434,7 @@ div.container {
         padding: 1rem;
       }
     }
+
     .main-content {
       min-width: 20rem;
       flex: 2;
@@ -1468,10 +1473,12 @@ div.container {
     grid-template: 1fr;
   }
 }
+
 .map {
   height: 60vh;
   width: 100%;
 }
+
 button.button.notification-button ::v-deep span.icon.is-small {
   margin: 0 !important;
 }
