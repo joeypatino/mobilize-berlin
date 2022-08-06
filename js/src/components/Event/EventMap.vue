@@ -1,7 +1,12 @@
 <template>
   <div class="modal-card">
     <header class="modal-card-head">
-      <button type="button" class="delete" @click="$emit('close')" />
+      <b-button
+        inverted
+        type="button is-primary"
+        class="delete"
+        @click="$emit('close')"
+      />
     </header>
     <div class="modal-card-body">
       <section class="map">
@@ -153,8 +158,10 @@ export default class EventMap extends Vue {
 </script>
 <style lang="scss" scoped>
 @use "@/styles/_mixins" as *;
+
 .modal-card-head {
   justify-content: flex-end;
+
   button.delete {
     @include margin-right(1rem);
   }
@@ -169,6 +176,7 @@ section.map-footer {
   p.address {
     margin: 1rem auto;
   }
+
   div.buttons {
     justify-content: center;
   }

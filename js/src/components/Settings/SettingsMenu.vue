@@ -1,5 +1,6 @@
 <template>
   <aside>
+    <h1 class="title">{{ $t("Settings") }}</h1>
     <ul>
       <SettingMenuSection
         :title="$t('Account')"

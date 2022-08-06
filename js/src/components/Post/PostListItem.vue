@@ -92,7 +92,7 @@ export default class PostListItem extends Vue {
 
   .title-info-wrapper {
     .post-minimalist-title {
-      color: #3c376e;
+      color: $primary;
       font-size: 18px;
       line-height: 24px;
       font-weight: 700;

@@ -77,10 +77,10 @@ export default class Identities extends Vue {
   font-size: 1.3rem;
   padding-bottom: 0;
   margin-bottom: 15px;
-  color: #000;
+  color: $black;
 
   &.is-current-identity {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba($black, 0.1);
   }
 }
 

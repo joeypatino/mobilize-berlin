@@ -149,10 +149,9 @@ export default class EventCard extends Vue {
 a.card {
   display: block;
   background: $secondary;
-  color: #ffffff;
+  color: $white;
 
   &:hover {
-    // box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
     transform: scale(1.01, 1.01);
     &:after {
       opacity: 1;
@@ -160,7 +159,7 @@ a.card {
   }
 
   border-radius: 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba($black, 0.1);
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 
   &:after {
@@ -172,7 +171,7 @@ a.card {
     left: 0;
     width: 100%;
     height: 100%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 15px rgba($black, 0.3);
     opacity: 0;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   }
@@ -199,10 +198,10 @@ a.card {
 
       &:not(.is-info, .is-danger) {
         background-color: #e6e4f4;
-        color: $violet-3;
+        color: $primary;
       }
       &.is-info {
-        color: $violet-3;
+        color: $primary;
       }
     }
   }
@@ -264,7 +263,7 @@ a.card {
 
     .event-subtitle {
       font-size: 0.85rem;
-      color: #ffffff;
+      color: $white;
 
       span {
         width: 14rem;

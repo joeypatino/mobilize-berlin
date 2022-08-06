@@ -41,8 +41,8 @@
         role="alert"
         :key="error"
         v-for="error in changeEmailErrors"
-        >{{ error }}</b-notification
-      >
+        >{{ error }}
+      </b-notification>
       <form
         @submit.prevent="resetEmailAction"
         ref="emailForm"
@@ -70,12 +70,12 @@
             v-model="passwordForEmailChange"
           />
         </b-field>
-        <button
-          class="button is-primary"
+        <b-button
+          type="button is-primary"
           :disabled="!($refs.emailForm && $refs.emailForm.checkValidity())"
         >
           {{ $t("Change my email") }}
-        </button>
+        </b-button>
       </form>
       <div class="setting-title">
         <h2>{{ $t("Password") }}</h2>
@@ -97,8 +97,8 @@
         role="alert"
         :key="error"
         v-for="error in changePasswordErrors"
-        >{{ error }}</b-notification
-      >
+        >{{ error }}
+      </b-notification>
       <form
         @submit.prevent="resetPasswordAction"
         ref="passwordForm"
@@ -127,14 +127,14 @@
             v-model="newPassword"
           />
         </b-field>
-        <button
-          class="button is-primary"
+        <b-button
+          type="button is-primary"
           :disabled="
             !($refs.passwordForm && $refs.passwordForm.checkValidity())
           "
         >
           {{ $t("Change my password") }}
-        </button>
+        </b-button>
       </form>
       <div class="setting-title">
         <h2>{{ $t("Delete account") }}</h2>

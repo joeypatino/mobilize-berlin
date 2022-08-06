@@ -164,7 +164,7 @@ export default class Dashboard extends Vue {
 
 <style lang="scss" scoped>
 .dashboard-number {
-  color: #3c376e;
+  color: $primary;
   font-size: 40px;
   font-weight: 700;
   line-height: 1.125;

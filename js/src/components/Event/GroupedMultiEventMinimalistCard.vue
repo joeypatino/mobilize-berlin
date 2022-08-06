@@ -69,13 +69,12 @@ export default class GroupedMultiEventMinimalistCard extends Vue {
 .month-group {
   .month-name {
     text-transform: capitalize;
-    text-transform: capitalize;
     display: inline-block;
     position: relative;
     font-size: 1.3rem;
 
     &::after {
-      background: $orange-3;
+      background: $torch-red;
       position: absolute;
       left: 0;
       right: 0;

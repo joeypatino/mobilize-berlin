@@ -143,7 +143,7 @@ export default class About extends Vue {
 
 .hero.register {
   .title {
-    color: #ffffff;
+    color: $white;
   }
   background: $contrast-backgrounds;
 }

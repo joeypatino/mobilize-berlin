@@ -15,6 +15,6 @@ export default class VerticalDivider extends Vue {
 </script>
 <style lang="scss" scoped>
 .is-divider-vertical[data-content]::after {
-  background-color: $body-background-color;
+  background-color: $background-color;
 }
 </style>

@@ -83,10 +83,10 @@ export default class MentionList extends Vue {
   position: relative;
   border-radius: 0.25rem;
   background: white;
-  color: rgba(black, 0.8);
+  color: rgba($black, 0.8);
   overflow: hidden;
   font-size: 0.9rem;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 0 1px rgba($black, 0.1), 0px 10px 20px rgba($black, 0.1);
 }
 
 .item {

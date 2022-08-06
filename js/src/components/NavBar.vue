@@ -15,15 +15,15 @@
       </b-navbar-item>
     </template>
     <template slot="start">
-      <b-navbar-item tag="router-link" :to="{ name: RouteName.SEARCH }">{{
-        $t("Explore")
-      }}</b-navbar-item>
+      <b-navbar-item tag="router-link" :to="{ name: RouteName.SEARCH }"
+        >{{ $t("Explore") }}
+      </b-navbar-item>
       <b-navbar-item
         v-if="currentActor.id && currentUser.isLoggedIn"
         tag="router-link"
         :to="{ name: RouteName.MY_EVENTS }"
-        >{{ $t("My events") }}</b-navbar-item
-      >
+        >{{ $t("My events") }}
+      </b-navbar-item>
       <b-navbar-item
         tag="router-link"
         :to="{ name: RouteName.MY_GROUPS }"
@@ -33,8 +33,8 @@
           currentActor.id &&
           currentUser.isLoggedIn
         "
-        >{{ $t("My groups") }}</b-navbar-item
-      >
+        >{{ $t("My groups") }}
+      </b-navbar-item>
       <b-navbar-item
         tag="span"
         v-if="
@@ -52,8 +52,8 @@
           type="is-primary"
           @click="isComponentModalActive = true"
         >
-          {{ $t("Create") }}</b-button
-        >
+          {{ $t("Create") }}
+        </b-button>
       </b-navbar-item>
       <b-navbar-item
         v-if="config && config.features.koenaConnect"
@@ -98,19 +98,22 @@
       >
         <template slot="label" v-if="currentActor">
           <div class="identity-wrapper">
-            <div>
-              <figure class="image is-32x32" v-if="currentActor.avatar">
-                <img
-                  class="is-rounded"
-                  alt="avatarUrl"
-                  :src="currentActor.avatar.url"
-                />
-              </figure>
-              <b-icon v-else icon="account-circle" />
+            <div class="media-left">
+              <div>
+                <figure class="image is-32x32" v-if="currentActor.avatar">
+                  <img
+                    class="is-rounded"
+                    loading="lazy"
+                    :src="currentActor.avatar.url"
+                    alt
+                  />
+                </figure>
+                <b-icon v-else size="is-medium" icon="account-circle" />
+              </div>
             </div>
             <div class="media-content is-hidden-desktop">
-              <span>{{ displayName(currentActor) }}</span>
-              <span class="has-text-grey-dark" v-if="currentActor.name"
+              <span class="is-size-5">{{ displayName(currentActor) }}</span>
+              <span v-if="currentActor.name"
                 >@{{ currentActor.preferredUsername }}</span
               >
             </div>
@@ -129,26 +132,28 @@
           @click="setIdentity(identity)"
           @keyup.enter="setIdentity(identity)"
         >
-          <span>
+          <div class="media-left-tablet identity-wrapper">
             <div class="media-left">
-              <figure class="image is-32x32" v-if="identity.avatar">
-                <img
-                  class="is-rounded"
-                  loading="lazy"
-                  :src="identity.avatar.url"
-                  alt
-                />
-              </figure>
-              <b-icon v-else size="is-medium" icon="account-circle" />
+              <div>
+                <figure class="image is-32x32" v-if="identity.avatar">
+                  <img
+                    class="is-rounded"
+                    loading="lazy"
+                    :src="identity.avatar.url"
+                    alt
+                  />
+                </figure>
+                <b-icon v-else size="is-medium" icon="account-circle" />
+              </div>
             </div>
 
             <div class="media-content">
-              <span>{{ displayName(identity) }}</span>
-              <span class="has-text-grey-dark" v-if="identity.name"
+              <span class="is-size-5">{{ displayName(identity) }}</span>
+              <span v-if="identity.name"
                 >@{{ identity.preferredUsername }}</span
               >
             </div>
-          </span>
+          </div>
 
           <hr class="navbar-divider" role="presentation" />
         </b-navbar-item>
@@ -156,14 +161,14 @@
         <b-navbar-item
           tag="router-link"
           :to="{ name: RouteName.UPDATE_IDENTITY }"
-          >{{ $t("My account") }}</b-navbar-item
-        >
+          >{{ $t("My account") }}
+        </b-navbar-item>
         <b-navbar-item
           v-if="currentUser.role === ICurrentUserRole.ADMINISTRATOR"
           tag="router-link"
           :to="{ name: RouteName.ADMIN_DASHBOARD }"
-          >{{ $t("Administration") }}</b-navbar-item
-        >
+          >{{ $t("Administration") }}
+        </b-navbar-item>
 
         <b-navbar-item
           tag="span"
@@ -185,11 +190,9 @@
             <strong>{{ $t("Sign up") }}</strong>
           </router-link>
 
-          <router-link
-            class="button is-light"
-            :to="{ name: RouteName.LOGIN }"
-            >{{ $t("Log in") }}</router-link
-          >
+          <router-link class="button is-light" :to="{ name: RouteName.LOGIN }"
+            >{{ $t("Log in") }}
+          </router-link>
         </div>
       </b-navbar-item>
     </template>
@@ -358,54 +361,94 @@ export default class NavBar extends Vue {
 </script>
 <style lang="scss" scoped>
 @use "@/styles/_mixins" as *;
+
 nav {
+  box-shadow: 0 8px 16px rgba(10, 10, 10, 0.1);
+
   .navbar-item {
     a.button {
       font-weight: bold;
     }
 
     svg {
-      height: 2rem;
+      height: 100%;
+      padding: 6px 0;
+    }
+  }
+
+  //a.navbar-item {
+  //  &:hover {
+  //    background-color: transparent !important;
+  //    color: $tertiary !important;
+  //  }
+  //}
+
+  .navbar-start button {
+    border-color: $background-color;
+
+    &:hover {
+      color: $tertiary;
+      border-color: $tertiary;
     }
   }
 
   .navbar-dropdown .navbar-item {
     cursor: pointer;
-    background: $greyish;
+    color: $background-color;
+    background: $primary;
+
     span {
       display: flex;
     }
-    &.is-active {
-      background: $greyish;
-    }
+
+    //&.is-active {
+    //  color: $tertiary;
+    //  background: $primary;
+    //}
+
     span.icon.is-medium {
       display: flex;
     }
+
     img {
       max-height: 2.5em;
     }
   }
-  .navbar-item.has-dropdown a.navbar-link figure {
-    @include margin-right(0.75rem);
-    display: flex;
-    align-items: center;
+
+  .navbar-item.has-dropdown {
+    & a.navbar-link figure {
+      @include margin-right(0.75rem);
+      display: flex;
+      align-items: center;
+    }
   }
-  a.navbar-item:focus-within {
-    color: $tertiary;
-  }
+
+  //a.navbar-item:focus-within {
+  //  color: $background-color;
+  //}
+
   .koena {
     padding-top: 0;
     padding-bottom: 0;
+
     & > img {
       max-height: 4rem;
       padding-top: 0.2rem;
     }
   }
+
   .identity-wrapper {
     display: flex;
+
     .media-content span {
       display: flex;
-      color: $violet-2;
+      color: $background-color;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .media-left-tablet {
+      margin-right: 1rem;
     }
   }
 }

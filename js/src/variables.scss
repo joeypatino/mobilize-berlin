@@ -2,21 +2,18 @@
 @import "~bulma/sass/utilities/initial-variables.sass";
 @import "~bulma/sass/utilities/derived-variables.sass";
 
+$black: #000;
+$white: #fff;
+
+$charcoal: #373833;
+$torch-red: #fa2742;
+$davys-grey: #605856;
+$wild-sand: #f4f4f4;
+$light-gray: #e8eae3;
+$mustard: #d8ac70;
+
+$grey: #757575;
 $greyish: #292e38;
-$bleuvert: #5383c2;
-$jaune: $greyish;
-$violet: #424056;
-
-/**
- * Text body, paragraphs
- */
-$violet-1: #3a384c;
-$violet-2: #474467;
-
-/**
- * Titles, dark borders, buttons
- */
-$violet-3: $greyish;
 
 /**
  * Borders
@@ -25,45 +22,26 @@ $borders: #d7d6de;
 $backgrounds: #ecebf2;
 $contrast-backgrounds: #4a5364;
 
-/**
- * Text
- */
-$purple-1: $greyish;
-
-/**
- * Background
- */
-$purple-2: #cdcaea;
-$purple-3: #e6e4f4;
-
-$orange-2: #ed8d07;
-$orange-3: #d35204;
-
-$yellow-1: #ffd599;
 $yellow-2: #fff1de;
-$yellow-3: #fbd5cb;
-$yellow-4: #f7ba30;
 
-$primary: $bleuvert;
-$primary-invert: findColorInvert($primary);
-$secondary: $jaune;
-$secondary-invert: findColorInvert($secondary);
-$tertiary: #a3abbd;
+$primary: $charcoal;
+$primary-invert: $wild-sand;
+$secondary: $charcoal;
+$secondary-invert: $wild-sand;
+$tertiary: $davys-grey;
 
-$background-color: $violet-2;
-
-$logo-color: $tertiary;
-$logo-color-invert: findColorInvert($logo-color);
+$logo-color: $wild-sand;
+$logo-color-invert: $charcoal;
 $success: #0d8758;
 $success-invert: findColorInvert($success);
 $info: #36bcd4;
 $info-invert: findColorInvert($info);
-$danger: #cd2026;
+$danger: $torch-red;
 $danger-invert: findColorInvert($danger);
-$link: $primary;
-$link-invert: $primary-invert;
-$text: $violet-1;
-$grey: #757575;
+$link: $mustard;
+$link-invert: findColorInvert($link);
+$text: $primary;
+$background-color: $wild-sand;
 
 $colors: map-merge(
   $colors,
@@ -75,6 +53,10 @@ $colors: map-merge(
     "secondary": (
       $secondary,
       $secondary-invert,
+    ),
+    "inverted": (
+      $background-color,
+      $primary,
     ),
     "success": (
       $success,
@@ -89,77 +71,58 @@ $colors: map-merge(
       $danger-invert,
     ),
     "text": (
-      #3f4655,
-      #ffffff,
+      $primary,
+      $primary-invert,
     ),
     "link": (
       $link,
       $link-invert,
-    ),
-    "grey": (
-      $greyish,
-      findColorInvert($greyish),
     ),
   )
 );
 
 // Navbar
 $navbar-background-color: $secondary;
-$navbar-item-color: #FFFFFF;
+$navbar-item-color: $white;
 $navbar-height: 4rem;
+$button-border-color: $white;
 
 // Footer
 $footer-padding: 3rem 1.5rem 1rem;
 $footer-background-color: $background-color;
 
-$body-background-color: #efeef4;
+$body-background-color: $background-color;
 $fullhd-enabled: false;
 $hero-body-padding-medium: 6rem 1.5rem;
 
 main > .container {
-  background: $body-background-color;
+  background: $background-color;
   min-height: 70vh;
 }
 
-$title-color: $greyish;
-$title-family: "Liberation Sans", "Helvetica Neue", Roboto, Helvetica, Arial,
-  serif;
+$title-color: $primary;
+$title-family: "Ubuntu", "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
 $title-weight: 700;
 $title-size: 40px;
 $title-sub-size: 45px;
 $title-sup-size: 30px;
 
-$subtitle-color: #3a384c;
-$subtitle-family: "Liberation Sans", "Helvetica Neue", Roboto, Helvetica, Arial,
-  serif;
+$subtitle-color: $primary;
+$subtitle-family: "Ubuntu", "Helvetica Neue", Roboto, Helvetica, Arial,
+  sans-serif;
 $subtitle-weight: 400;
 $subtitle-size: 32px;
 $subtitle-sub-size: 30px;
 $subtitle-sup-size: 15px;
 
 .subtitle {
-  color: #ffffff;
+  color: $white;
   background: $secondary;
   display: inline;
   padding: 3px 8px;
   margin: 15px auto 30px;
 }
 
-//$input-border-color: #dbdbdb;
 $breadcrumb-item-color: $primary;
-$checkbox-background-color: #fff;
-$title-color: $violet-3;
-
-:root {
-  --color-primary: 30 125 151;
-  --color-secondary: 255 213 153;
-  --color-violet-title: 66 64 86;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-primary: 30 125 151;
-    --color-secondary: 255 213 153;
-    --color-violet-title: 66 64 86;
-  }
-}
+$checkbox-background-color: $white;
+$title-color: $primary;

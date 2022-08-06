@@ -1,6 +1,5 @@
 <template>
   <div class="section container">
-    <h1 class="title">{{ $t("Settings") }}</h1>
     <div class="columns">
       <SettingsMenu class="column is-one-quarter-desktop" />
       <div class="column">
@@ -45,7 +44,7 @@ export default class Settings extends Vue {
 
 <style lang="scss" scoped>
 aside.section {
-  padding-top: 1rem;
+  padding-top: 2em;
 }
 .breadcrumb ul li a {
   text-decoration: none;

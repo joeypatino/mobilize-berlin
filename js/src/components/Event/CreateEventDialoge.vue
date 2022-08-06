@@ -28,8 +28,9 @@
     <footer class="modal-card-foot">
       <div style="display: flex; justify-content: space-between; width: 100%">
         <b-button
-          type="is-primary"
-          tag="router-link"
+          inverted
+          type="button is-primary"
+          tag="button"
           :to="{
             name: RouteName.CREATE_EVENT,
             query: { actorId: organizerActor.id },
@@ -40,9 +41,10 @@
           {{ $t("Create event") }}
         </b-button>
         <b-button
+          inverted
+          type="button is-primary"
           v-if="!hasGroups"
-          type="is-primary"
-          tag="router-link"
+          tag="button"
           :to="{ name: RouteName.CREATE_GROUP }"
           exact
           v-on:click.native="$emit('close')"
@@ -50,7 +52,7 @@
           {{ $t("Create group") }}
         </b-button>
         <div style="color: black" v-else>
-          <b-switch v-model="groupsOnly"> Show groups only </b-switch>
+          <b-switch v-model="groupsOnly"> Show groups only</b-switch>
         </div>
       </div>
     </footer>
@@ -112,6 +114,7 @@ export default class CreateEventDialoge extends Vue {
       ].includes(membership.role)
     );
   }
+
   get firstGroup(): IGroup {
     return this.actualMemberships.map((member) => member.parent)[0];
   }
@@ -146,3 +149,15 @@ export default class CreateEventDialoge extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.box {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
+    0 0px 0 1px rgba(10, 10, 10, 0.02);
+  color: #4a4a4a;
+  display: block;
+  padding: 1.25rem;
+}
+</style>

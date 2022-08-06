@@ -1328,7 +1328,7 @@ div.sidebar {
         display: inline-block;
         padding: 0.3rem;
         background: $secondary;
-        color: #fff;
+        color: $white;
 
         &:empty {
           display: none;
@@ -1390,7 +1390,7 @@ a.participations-link {
 .intro-wrapper {
   position: relative;
   padding: 0 16px 16px;
-  background: #fff;
+  background: $white;
 
   .date-calendar-icon-wrapper {
     margin-top: 16px;

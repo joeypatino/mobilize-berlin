@@ -97,6 +97,6 @@ export default class Interact extends Vue {
 </script>
 <style lang="scss">
 main > .container {
-  background: $white;
+  background: $background-color;
 }
 </style>

@@ -34,7 +34,7 @@ export default class EventMetadataBlock extends Vue {
 h2 {
   font-size: 1.8rem;
   font-weight: 500;
-  color: $violet;
+  color: $primary;
 }
 
 div.eventMetadataBlock {

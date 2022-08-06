@@ -454,7 +454,7 @@ article.post {
         height: 0.2rem;
         content: " ";
         display: block;
-        background-color: $purple-1;
+        background-color: $primary;
       }
 
       .buttons {

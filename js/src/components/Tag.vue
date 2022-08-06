@@ -14,8 +14,8 @@ export default class Tag extends Vue {}
 
 <style lang="scss" scoped>
 span.tag {
-  background: $purple-3;
-  color: $violet-2;
+  background: $background-color;
+  color: $primary;
   text-transform: uppercase;
 
   &:not(.category)::before {

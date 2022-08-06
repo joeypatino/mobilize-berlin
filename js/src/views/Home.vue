@@ -619,7 +619,7 @@ main > div > .container {
 
 .search-autocomplete {
   border: 1px solid #dbdbdb;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba($black, 0.87);
 }
 
 .events-recent {
@@ -750,7 +750,7 @@ section.hero {
 }
 
 .home-separator {
-  background-color: $orange-2;
+  background-color: $mustard;
 }
 
 .clickable {

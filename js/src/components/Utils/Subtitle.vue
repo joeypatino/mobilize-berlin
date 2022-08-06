@@ -20,7 +20,7 @@ h2 {
     background: $secondary;
     display: inline;
     padding: 3px 8px;
-    color: #ffffff;
+    color: $white;
     font-family: "Liberation Sans", "Helvetica Neue", Roboto, Helvetica, Arial,
       serif;
     font-weight: 400;

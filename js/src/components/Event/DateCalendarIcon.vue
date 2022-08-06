@@ -63,9 +63,9 @@ div.datetime-container {
   overflow-x: hidden;
   align-items: stretch;
   width: calc(40px * var(--small));
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 12px rgba($black, 0.2);
   height: calc(40px * var(--small));
-  background: #fff;
+  background: $white;
 
   .datetime-container-header {
     height: calc(10px * var(--small));
@@ -78,7 +78,7 @@ div.datetime-container {
   time {
     display: block;
     font-weight: 600;
-    color: $violet-3;
+    color: $primary;
 
     &.month {
       padding: 2px 0;

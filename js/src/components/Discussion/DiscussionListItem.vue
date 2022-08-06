@@ -106,7 +106,7 @@ export default class DiscussionListItem extends Vue {
       align-items: center;
 
       .discussion-minimalist-title {
-        color: #3c376e;
+        color: $primary;
         font-family: Roboto, Helvetica, Arial, serif;
         font-size: 19px;
         font-weight: 600;

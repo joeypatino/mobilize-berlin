@@ -497,7 +497,7 @@ section {
     font-size: 1.3rem;
 
     &::after {
-      background: $orange-3;
+      background: $torch-red;
       position: absolute;
       left: 0;
       right: 0;

@@ -32,12 +32,11 @@ export default class SettingMenuItem extends Vue {
 <style lang="scss" scoped>
 li.setting-menu-item {
   font-size: 1.05rem;
-  background-color: #fff1de;
-  color: $background-color;
-  margin: auto;
+  background-color: $background-color;
+  color: $primary;
+  padding: 12px 16px;
 
   span {
-    padding: 5px 15px;
     display: block;
   }
 
@@ -49,7 +48,18 @@ li.setting-menu-item {
   &:hover,
   &.active {
     cursor: pointer;
-    background-color: lighten(#fea72b, 10%);
+    color: $danger;
   }
+
+  &:hover {
+    background-color: $white;
+    color: $tertiary;
+  }
+}
+
+.setting-menu-item:last-child {
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  margin-bottom: 16px;
 }
 </style>

@@ -427,7 +427,7 @@ article.box {
 
     span.tag {
       margin: 5px auto;
-      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
+      box-shadow: 0 0 5px 0 rgba($black, 1);
       /*word-break: break-all;*/
       text-overflow: ellipsis;
       overflow: hidden;

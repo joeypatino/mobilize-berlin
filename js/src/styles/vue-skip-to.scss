@@ -29,7 +29,7 @@
     height: auto;
     width: auto;
     background-color: $white;
-    border: 2px solid $violet-3;
+    border: 2px solid $primary;
   }
 
   &,
@@ -41,12 +41,12 @@
   &__link {
     display: block;
     padding: 8px 16px;
-    color: $violet-3;
+    color: $primary;
     font-size: 18px;
   }
 
   &__nav > span {
-    border-bottom: 2px solid $violet-3;
+    border-bottom: 2px solid $primary;
     font-weight: bold;
   }
 
@@ -57,7 +57,7 @@
 
   &__link:focus {
     outline: none;
-    background-color: $violet-3;
+    background-color: $primary;
     color: #f2f2f2;
   }
 }

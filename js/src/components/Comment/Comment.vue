@@ -399,7 +399,7 @@ a.comment-link {
   border-radius: 5px;
 
   &.announcement {
-    background: $purple-2;
+    background: $background-color;
 
     small {
       color: hsl(0, 0%, 21%);
@@ -407,7 +407,7 @@ a.comment-link {
   }
 
   &.selected {
-    background-color: $violet-1;
+    background-color: $text;
     color: $white;
     .reply-btn,
     small,
@@ -420,7 +420,7 @@ a.comment-link {
       text-decoration: underline;
       text-decoration-color: $white;
       small {
-        color: $purple-3;
+        color: $background-color;
       }
     }
   }
@@ -442,12 +442,12 @@ a.comment-link {
     .vertical-border {
       width: 3px;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.05);
+      background-color: rgba($black, 0.05);
       margin: 10px calc(1rem + 1px);
       cursor: pointer;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba($black, 0.1);
       }
     }
   }
@@ -483,13 +483,13 @@ a.comment-link {
 
   & > p > span {
     font-weight: bold;
-    color: $violet-2;
+    color: $background-color;
   }
 }
 
 .level-item.reply-btn {
   font-weight: bold;
-  color: $violet-2;
+  color: $background-color;
 }
 
 article {

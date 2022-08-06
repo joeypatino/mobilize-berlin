@@ -38,22 +38,22 @@ export default class SettingMenuSection extends Vue {
 </script>
 
 <style lang="scss" scoped>
+ul {
+  filter: drop-shadow(0px 2px 6px rgba($black, 0.2));
+}
+
 li {
   font-size: 1.3rem;
-  background-color: $secondary;
-  color: #ffffff;
-  margin: 2px auto;
-
-  &.active {
-  }
 
   a,
   b {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: $primary;
+    color: $background-color;
     cursor: pointer;
-    margin: 5px 0;
     display: block;
-    padding: 5px 10px;
-    color: #ffffff;
+    padding: 10px 16px;
     font-weight: 500;
   }
 }

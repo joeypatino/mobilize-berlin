@@ -91,6 +91,6 @@ export default class InvitationCard extends Vue {
   padding: 10px;
 }
 h3 {
-  color: $violet-3;
+  color: $primary;
 }
 </style>

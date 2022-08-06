@@ -1210,19 +1210,19 @@ div.container {
     margin-top: 15px;
 
     &.presentation {
-      border: 2px solid $purple-2;
+      border: 2px solid $background-color;
       padding: 0 0 10px;
       position: relative;
       flex-direction: column;
 
       h1 {
-        color: $greyish;
+        color: $primary;
         font-size: 2rem;
         font-weight: 500;
       }
 
       .button.is-outlined {
-        border-color: $purple-2;
+        border-color: $background-color;
       }
 
       & > *:not(img) {
@@ -1316,7 +1316,7 @@ div.container {
 
           .media-content {
             h2 {
-              color: #3c376e;
+              color: $primary;
               font-family: "Liberation Sans", "Helvetica Neue", Roboto,
                 Helvetica, Arial, serif;
               font-size: 1.5rem;
@@ -1359,7 +1359,7 @@ div.container {
 
           img {
             position: absolute;
-            background: #fff;
+            background: $white;
           }
         }
       }

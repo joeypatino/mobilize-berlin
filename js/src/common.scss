@@ -22,7 +22,7 @@ a.out,
 $color-black: #000;
 
 .mention {
-  background: rgba($color-black, 0.1);
+  background: rgba($black, 0.1);
   font-size: 0.9rem;
   font-weight: bold;
   border-radius: 5px;
@@ -32,7 +32,7 @@ $color-black: #000;
 }
 
 .mention-suggestion {
-  color: rgba($color-black, 0.6);
+  color: rgba($black, 0.6);
 }
 
 .mention .mention {
@@ -40,14 +40,15 @@ $color-black: #000;
   @include margin-right(0);
 }
 
-.select select {
-  border-color: $borders;
-}
+//.select select {
+//  border-color: $borders;
+//}
 
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
@@ -63,6 +64,7 @@ body {
 
 #mobilizon > .container > .message {
   margin: 1rem auto auto;
+
   .message-header {
     button.delete {
       background: #4a4a4a;
@@ -72,7 +74,7 @@ body {
 
 .module-description {
   margin-bottom: 2rem;
-  color: $violet-1;
+  color: $text;
 }
 
 $list-background-color: $scheme-main !default;
@@ -89,20 +91,25 @@ $list-item-hover-background-color: $background !default;
 .list-item {
   display: block;
   padding: 0.5em 1em;
+
   &:not(a) {
     color: $list-item-color;
   }
+
   &:first-child {
     border-top-left-radius: $list-radius;
     border-top-right-radius: $list-radius;
   }
+
   &:last-child {
     border-bottom-left-radius: $list-radius;
     border-bottom-right-radius: $list-radius;
   }
+
   &:not(:last-child) {
     border-bottom: $list-item-border;
   }
+
   &.is-active {
     background-color: $list-item-active-background-color;
     color: $list-item-active-color;
@@ -120,32 +127,18 @@ a.list-item {
 
   h2 {
     display: inline;
-    background: $secondary;
-    color: #ffffff;
-    padding: 2px 7.5px;
-    text-transform: uppercase;
+    color: $primary;
+    padding: 2px 7.5px 2px 0;
     font-size: 1.25rem;
-  }
-}
-
-@mixin focus() {
-  &:focus {
-    border: 2px solid black;
-    border-radius: 5px;
   }
 }
 
 ul.menu-list > li,
 p {
-  @include focus;
-}
-.navbar-item {
-  @include focus;
-}
-
-.navbar-dropdown span.navbar-item:hover {
-  background-color: whitesmoke;
-  color: #0a0a0a;
+  &:focus {
+    border: 2px solid black;
+    border-radius: 5px;
+  }
 }
 
 /**
@@ -160,11 +153,21 @@ p {
   @include margin-right(0.5rem);
 }
 
+.column {
+  padding: 2em 16px;
+  background-color: $white;
+}
+
+.columns {
+  gap: 16px;
+}
+
 .button .icon {
   &:first-child:not(:last-child) {
     @include margin-left(calc(-0.5em - 1px));
     @include margin-right(0.25em);
   }
+
   &:last-child:not(:first-child) {
     @include margin-right(calc(-0.5em - 1px));
     @include margin-left(0.25em);
@@ -181,9 +184,134 @@ p {
   @include padding-left(0);
   @include padding-right(0.75em);
 }
+
 .media-left {
   @include margin-left(1rem);
 }
+
 a.dropdown-item {
   @include padding-right(3rem);
+}
+
+.select:not(.is-multiple):not(.is-loading):hover::after {
+  border-color: $link;
+}
+
+// Nav bar
+
+.navbar-menu {
+  box-shadow: none;
+}
+
+.navbar-start {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.navbar-item.is-active .navbar-dropdown {
+  background-color: $primary;
+}
+
+a.navbar-item:focus,
+a.navbar-item:hover,
+span.navbar-item:focus,
+span.navbar-item:hover,
+.navbar-link:focus,
+.navbar-link:hover {
+  border-radius: 4px;
+  background-color: $primary !important;
+  color: $tertiary !important;
+}
+
+span.navbar-item.is-active,
+a.navbar-item.is-active,
+.navbar-link.is-active {
+  border-color: $link;
+  background-color: $primary;
+  color: $background-color;
+}
+
+.navbar-burger {
+  color: $background-color;
+  height: unset;
+
+  & span {
+    color: $background-color;
+    width: 24px;
+    height: 2px;
+  }
+
+  & span:nth-child(1) {
+    top: calc(50% - 8px);
+  }
+
+  &.is-active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    top: calc(50% - 8px);
+  }
+
+  & span:nth-child(2) {
+    top: calc(50%);
+  }
+
+  &.is-active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  & span:nth-child(3) {
+    top: calc(50% + 8px);
+  }
+
+  &.is-active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+}
+
+// Fullscreen Cards
+
+.modal.is-full-screen > .animation-content,
+.modal.is-full-screen > .animation-content > .modal-card {
+  background-color: $background-color;
+}
+
+.modal-card-body {
+  background-color: $background-color;
+  color: $primary;
+}
+
+.modal-card-head,
+.modal-card-foot {
+  background-color: $background-color;
+}
+
+// Cards
+
+.card {
+  background-color: $background-color;
+  border-radius: 4px;
+  box-shadow: 0 0.5em 1em -0.125em rgb($primary, 0.1),
+    0 0px 0 1px rgb($primary, 0.02);
+  color: $primary;
+}
+
+.card-body {
+  background-color: $background-color;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+
+  & img {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+}
+
+.card-head {
+  display: flex;
+  padding: 8px;
+}
+
+.card-foot {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 }

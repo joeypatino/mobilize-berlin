@@ -2,21 +2,24 @@
   <footer class="footer" ref="footer">
     <ul>
       <li>
-        <b-select
-          :aria-label="$t('Language')"
-          v-if="$i18n"
-          v-model="locale"
-          :placeholder="$t('Select a language')"
-        >
-          <option
-            v-for="(language, lang) in langs"
-            :value="lang"
-            :key="lang"
-            :selected="isLangSelected(lang)"
+        <b-field type="select is-link">
+          <b-select
+            :aria-label="$t('Language')"
+            v-if="$i18n"
+            v-model="locale"
+            :placeholder="$t('Select a language')"
+            class="language-select"
           >
-            {{ language }}
-          </option>
-        </b-select>
+            <option
+              v-for="(language, lang) in langs"
+              :value="lang"
+              :key="lang"
+              :selected="isLangSelected(lang)"
+            >
+              {{ language }}
+            </option>
+          </b-select>
+        </b-field>
       </li>
       <li>
         <router-link :to="{ name: RouteName.ABOUT }"
@@ -104,9 +107,10 @@ export default class Footer extends Vue {
 </script>
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/mixins.sass";
+
 footer.footer {
-  color: $tertiary;
-  background-color: $greyish;
+  color: $background-color;
+  background-color: $primary;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -135,30 +139,31 @@ footer.footer {
       display: inline-flex;
       margin: auto 5px;
       padding: 2px 0;
+
       a {
+        color: $background-color;
         font-size: 1.1rem;
       }
     }
   }
 
   a {
-    color: $white;
-    text-decoration: underline;
-    text-decoration-color: $secondary;
+    color: $link;
+    text-decoration: none;
+    text-decoration-color: $link;
 
-    &:focus {
-      background-color: #000;
-      color: #fff;
-      outline: 3px solid #000;
-      text-decoration: none;
+    &:focus,
+    &:hover {
+      color: $link;
+      text-decoration: underline;
     }
   }
 
   ::v-deep span.select {
     select,
     option {
-      background: $greyish;
-      color: $white;
+      background-color: $primary;
+      color: $background-color;
     }
   }
 }

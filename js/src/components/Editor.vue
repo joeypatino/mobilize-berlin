@@ -408,9 +408,6 @@ export default class EditorComponent extends Vue {
 @use "@/styles/_mixins" as *;
 @import "./Editor/style.scss";
 
-$color-black: #000;
-$color-white: #eee;
-
 .menubar {
   margin-bottom: 1rem;
   transition: visibility 0.2s 0.4s, opacity 0.2s 0.4s;
@@ -420,18 +417,18 @@ $color-white: #eee;
     display: inline-flex;
     background: transparent;
     border: 0;
-    color: $color-black;
+    color: $black;
     padding: 0.2rem 0.5rem;
     @include margin-right(0.2rem);
     border-radius: 3px;
     cursor: pointer;
 
     &:hover {
-      background-color: rgba($color-black, 0.05);
+      background-color: rgba($black, 0.05);
     }
 
     &.is-active {
-      background-color: rgba($color-black, 0.1);
+      background-color: rgba($black, 0.1);
     }
   }
 }
@@ -468,7 +465,7 @@ $color-white: #eee;
     div.ProseMirror {
       min-height: 2.5rem;
       box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
-      background-color: white;
+      background-color: $white;
       border-radius: 4px;
       color: #363636;
       border: 1px solid #dbdbdb;
@@ -508,8 +505,8 @@ $color-white: #eee;
     }
 
     blockquote {
-      border-left: 3px solid rgba($color-black, 0.1);
-      color: rgba($color-black, 0.8);
+      border-left: 3px solid rgba($black, 0.1);
+      color: rgba($black, 0.8);
       @include padding-left(0.8rem);
       font-style: italic;
 
@@ -534,7 +531,7 @@ $color-white: #eee;
   button {
     border: none;
     background: none;
-    color: #fff;
+    color: $white;
     font-size: 0.85rem;
     font-weight: 500;
     padding: 0 0.2rem;
@@ -550,24 +547,29 @@ $color-white: #eee;
 
 .suggestion-list {
   padding: 0.2rem;
-  border: 2px solid rgba($color-black, 0.1);
+  border: 2px solid rgba($black, 0.1);
   font-size: 0.8rem;
   font-weight: bold;
+
   &__no-results {
     padding: 0.2rem 0.5rem;
   }
+
   &__item {
     border-radius: 5px;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.2rem;
     cursor: pointer;
+
     &:last-child {
       margin-bottom: 0;
     }
+
     &.is-selected,
     &:hover {
-      background-color: rgba($color-white, 0.2);
+      background-color: rgba($background-color, 0.2);
     }
+
     &.is-empty {
       opacity: 0.5;
     }
@@ -578,12 +580,13 @@ $color-white: #eee;
     padding-top: 0;
   }
 }
+
 .tippy-box[data-theme~="dark"] {
-  background-color: $color-black;
+  background-color: $black;
   padding: 0;
   font-size: 1rem;
   text-align: inherit;
-  color: $color-white;
+  color: $background-color;
   border-radius: 5px;
 }
 

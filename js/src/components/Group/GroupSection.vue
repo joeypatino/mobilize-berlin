@@ -38,7 +38,7 @@ section {
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
-  border: 2px solid $violet;
+  border: 2px solid $primary;
   min-height: 30vh;
 
   .create-slot {
@@ -56,21 +56,20 @@ section {
 }
 
 div.group-section-title {
-  --title-color: $violet-2;
   display: flex;
   align-items: stretch;
   background: $secondary;
-  color: #ffffff;
+  color: $white;
 
   &.privateSection {
-    color: $purple-3;
-    background: $violet-2;
+    color: $background-color;
+    background: $background-color;
   }
 
   ::v-deep & > a {
     align-self: center;
     @include margin-right(5px);
-    color: var(--title-color);
+    color: $background-color;
   }
 
   h2 {

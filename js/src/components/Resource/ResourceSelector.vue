@@ -185,7 +185,7 @@ export default class ResourceSelector extends Vue {
 
   &.is-primary .panel-heading {
     background: $primary;
-    color: #fff;
+    color: $white;
   }
 }
 .buttons {
