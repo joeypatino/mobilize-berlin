@@ -27,7 +27,7 @@
             <b-button
               inverted
               type="is-primary"
-              tag="button"
+              tag="router-link"
               :to="{ name: RouteName.REGISTER }"
               v-if="config.registrationsOpen"
               >{{ $t("Create an account") }}</b-button

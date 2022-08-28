@@ -5,9 +5,9 @@
 $black: #000;
 $white: #fff;
 
-$charcoal: #373833;
+$purple-black: #251f29;
 $torch-red: #fa2742;
-$davys-grey: #605856;
+$davys-grey: #0e0a09;
 $wild-sand: #f4f4f4;
 $light-gray: #e8eae3;
 $mustard: #d8ac70;
@@ -24,14 +24,14 @@ $contrast-backgrounds: #4a5364;
 
 $yellow-2: #fff1de;
 
-$primary: $charcoal;
+$primary: $purple-black;
 $primary-invert: $wild-sand;
-$secondary: $charcoal;
+$secondary: $purple-black;
 $secondary-invert: $wild-sand;
 $tertiary: $davys-grey;
 
 $logo-color: $wild-sand;
-$logo-color-invert: $charcoal;
+$logo-color-invert: $purple-black;
 $success: #0d8758;
 $success-invert: findColorInvert($success);
 $info: #36bcd4;
